@@ -1,0 +1,13 @@
+*.class
+
+*.jar
+
+.idea
+*.iml
+
+hs_err_pid*
+
+target
+data
+
+.vagrant

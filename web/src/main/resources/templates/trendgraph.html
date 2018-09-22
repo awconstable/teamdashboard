@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta charset="UTF-8">
+    <title>Rating</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+      <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
+      <link type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css" rel="stylesheet" />
+    <script type="text/javascript">
+
+      google.charts.load('current', {'packages':['line']});
+      google.charts.setOnLoadCallback(drawChart);
+
+    $.urlParam = function(name){
+        var results = new RegExp('[\?&]' + name + '=([^&]*)').exec(window.location.href);
+        if (results==null){
+           return null;
+        }
+        else{
+           return results[1] || 0;
+        }
+    }
+
+    function timedReload(team) {
+
+        if(team === undefined){
+            teamParam = "";
+        } else {
+            teamParam = "?team=" + team;
+        }
+
+        setTimeout("location.replace('//' + location.host + location.pathname + teamParam);", 30000);
+    }
+
+    var team;
+
+    if($.urlParam == null || !$.urlParam('team')){
+        team = 'all';
+    } else {
+        team = $.urlParam('team');
+    }
+
+    function drawChart() {
+
+    var jsonData = $.ajax({
+         url: "/trend/" + team + "/",
+          dataType: "json",
+          async: false
+          }).responseText;
+
+     var data = new google.visualization.DataTable(jsonData);
+
+      var options = {
+        chart: {
+          title: 'Customer Satisfaction',
+          subtitle: 'average satisfaction over time'
+        },
+        width: 900,
+        height: 500,
+        series: {
+          // Gives each series an axis name that matches the Y-axis below.
+          0: {targetAxisIndex: 0},
+          1: {targetAxisIndex: 1}
+        },
+          vAxes: {
+              // Adds titles to each axis.
+              0: {title: 'Satisfaction (avg)', viewWindow:{max: 5, min: 0}},
+              1: {title: 'Responses', viewWindow:{min: 0}, gridlines:{color: '#f2f2f2'}}
+          },
+        // axes: {
+        //   // Adds labels to each axis; they don't have to match the axis names.
+        //   y: {
+        //     Satisfaction: {label: 'Satisfaction (avg)'},
+        //     Responses: {label: 'Responses'}
+        //   }
+        // },
+        colors:['orange','grey']
+      };
+
+      var chart = new google.charts.Line(document.getElementById('linechart_material'));
+
+      chart.draw(data, google.charts.Line.convertOptions(options));
+    }
+
+    $(document).ready(function(){
+        if($.urlParam('success') == "true") {
+            toastr.options = {
+                "positionClass": "toast-top-full-width",
+                "extendedTimeOut": "10000"
+            }
+            toastr.success('Thank you for your submission');
+        }
+    });
+    </script>
+  </head>
+  <body>
+    <div id="linechart_material" style="width: 900px; height: 500px"></div>
+  </body>
+</html>
