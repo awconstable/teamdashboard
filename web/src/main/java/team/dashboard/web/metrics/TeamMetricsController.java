@@ -36,8 +36,8 @@ public class TeamMetricsController
     @Autowired
     private TeamMetricRepository teamMetricRepository;
 
-    @RequestMapping("/{metricType}/{teamId}/{date}/{value}")
-    public void metricingest(@PathVariable String metricType, @PathVariable String teamId, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @PathVariable int value, HttpServletResponse response)
+    @RequestMapping(value = {"/{metricType}/{teamId}/{date}", "/{metricType}/{teamId}/{date}/{value}"})
+    public void metricingest(@PathVariable String metricType, @PathVariable String teamId, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @PathVariable Optional<Integer> value, HttpServletResponse response)
         {
 
         TeamMetricType type = TeamMetricType.get(metricType);
@@ -55,7 +55,7 @@ public class TeamMetricsController
             teamMetricRepository.deleteById(metric.get().getId());
             }
 
-        teamMetricRepository.save(new TeamMetric(teamId, type, value, date));
+        teamMetricRepository.save(new TeamMetric(teamId, type, value.isPresent() ? value.get() : null, date));
 
         }
 

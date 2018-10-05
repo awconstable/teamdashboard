@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <title>Metric Capture</title>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script th:inline="javascript">
         /*<![CDATA[*/
 
@@ -12,6 +14,13 @@
         console.log('team: ' + team);
 
         /*]]>*/
+    </script>
+    <script>
+        $(function () {
+            $("#date").datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+        });
     </script>
     <style type="text/css">
         input {
@@ -29,8 +38,8 @@
 <div><h1>Metric Capture</h1></div>
 <form id="metric_capture">
     <label for="date">Date</label><input type="text" id="date" name="date">
-    <label for="cycletime">Cycle Time</label><input type="text" id="cycletime" name="cycletime">
-    <label for="deployment_frequency">Deployment Frequency</label><input type="text" id="deployment_frequency"
+    <label for="cycletime">Cycle Time (days)</label><input type="text" id="cycletime" name="cycletime">
+    <label for="deployment_frequency">Deployment Frequency (days)</label><input type="text" id="deployment_frequency"
                                                                          name="deployment_frequency">
     <label for="incidents_due_to_change">Incidents due to change</label><input type="text" id="incidents_due_to_change"
                                                                                name="incidents_due_to_change">
@@ -47,13 +56,13 @@
         e.preventDefault();
 
         $("#metric_capture input[type=text]").each(function () {
-            if (this.name == 'date') {
-                console.log('skip date field');
+            if (this.name == 'date' || this.value == "") {
+                console.log(this.name + ': skip field');
                 return;
             }
             $.ajax({
                 method: "GET",
-                url: "/" + this.name + "/" + team + "/" + $("#date").val() + "/" + this.value + "/",
+                url: "/" + this.name + "/" + team + "/" + $("#date").val() + "/" + this.value,
                 success: function (url) {
                     console.log(url + ': Submission was successful.');
                 },
