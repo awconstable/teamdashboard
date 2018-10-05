@@ -12,11 +12,12 @@ import com.ibm.icu.util.GregorianCalendar;
 import com.ibm.icu.util.TimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
@@ -28,7 +29,7 @@ import java.util.Locale;
 import java.util.Optional;
 
 
-@RestController
+@Controller
 public class TeamMetricsController
     {
 
@@ -106,6 +107,13 @@ public class TeamMetricsController
 
         return JsonRenderer.renderDataTable(data, true, true, false).toString();
 
+        }
+
+    @GetMapping("/capture/{teamId}/")
+    public String graph(Model model, @PathVariable String teamId)
+        {
+        model.addAttribute("team", teamId);
+        return "capture";
         }
 
     }
