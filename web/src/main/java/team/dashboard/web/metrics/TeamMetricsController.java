@@ -36,8 +36,9 @@ public class TeamMetricsController
     @Autowired
     private TeamMetricRepository teamMetricRepository;
 
-    @RequestMapping(value = {"/{metricType}/{teamId}/{date}", "/{metricType}/{teamId}/{date}/{value}"})
-    public void metricingest(@PathVariable String metricType, @PathVariable String teamId, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @PathVariable Optional<Integer> value, HttpServletResponse response)
+    @RequestMapping("/{metricType}/{teamId}/{date}/{value}")
+    @ResponseBody
+    public TeamMetric metricingest(@PathVariable String metricType, @PathVariable String teamId, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @PathVariable Integer value, HttpServletResponse response)
         {
 
         TeamMetricType type = TeamMetricType.get(metricType);
@@ -45,7 +46,7 @@ public class TeamMetricsController
         if (type == null)
             {
             System.out.println("Unknown metric type: " + metricType);
-            return;
+            return null;
             }
 
         Optional<TeamMetric> metric = teamMetricRepository.findByTeamIdAndTeamMetricTypeAndDate(teamId, type, date);
@@ -55,8 +56,34 @@ public class TeamMetricsController
             teamMetricRepository.deleteById(metric.get().getId());
             }
 
-        teamMetricRepository.save(new TeamMetric(teamId, type, value.isPresent() ? value.get() : null, date));
+        TeamMetric newMetric = new TeamMetric(teamId, type, value, date);
+        teamMetricRepository.save(newMetric);
 
+        return newMetric;
+
+        }
+
+    @RequestMapping("/{metricType}/{teamId}/{date}")
+    @ResponseBody
+    public TeamMetric getmetric(@PathVariable String metricType, @PathVariable String teamId, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, HttpServletResponse response)
+        {
+
+        TeamMetricType type = TeamMetricType.get(metricType);
+
+        if (type == null)
+            {
+            System.out.println("Unknown metric type: " + metricType);
+            return null;
+            }
+
+        Optional<TeamMetric> metric = teamMetricRepository.findByTeamIdAndTeamMetricTypeAndDate(teamId, type, date);
+
+        if (metric.isPresent())
+            {
+            return metric.get();
+            }
+
+        return null;
         }
 
     private TableRow createTableRow(int year, Month month, int dayOfMonth, int rowValue)

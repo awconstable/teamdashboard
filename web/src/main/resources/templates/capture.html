@@ -32,10 +32,20 @@
             margin: 2px 0 20px 10px;
         }
 
+        #message {
+            display: block;
+            font-size: 11px;
+            padding: 4px 2px;
+            border: solid 1px darkred;
+            width: 70px;
+            margin: 2px 0 20px 10px;
+        }
+
     </style>
 </head>
 <body>
 <div><h1>Metric Capture</h1></div>
+<span id="message"></span>
 <form id="metric_capture">
     <label for="date">Date</label><input type="text" id="date" name="date">
     <label for="cycletime">Cycle Time (days)</label><input type="text" id="cycletime" name="cycletime">
@@ -47,7 +57,6 @@
                                                                      name="production_defects">
     <input type="submit" value="Submit">
 </form>
-<span id="message"></span>
 <script type="text/javascript">
     var frm = $('#metric_capture');
 
@@ -74,6 +83,38 @@
         $("#message").text("Metrics Submitted");
         return false;
 
+    });
+
+    $("#date").change(function () {
+        $("#metric_capture input[type=text]").each(function () {
+
+            var elementid = this.id;
+
+            if (this.name == 'date') {
+                console.log(this.name + ': skip field');
+                return;
+            } else {
+                $("#" + elementid).val("");
+            }
+
+            function success_cb(data) {
+                if (data != "") {
+                    console.log(elementid + " : " + data.value);
+                    $("#" + elementid).val(data.value);
+                }
+            }
+
+            $.ajax({
+                method: "GET",
+                url: "/" + this.name + "/" + team + "/" + $("#date").val(),
+                success: function (data) {
+                    success_cb(data);
+                },
+                error: function (data) {
+                    console.log(data);
+                },
+            });
+        });
     });
 </script>
 </body>
