@@ -42,6 +42,19 @@
     <input type="submit" value="Submit">
 </form>
 <script type="text/javascript">
+
+
+    function validate() {
+        var input = $("#team_id").val();
+        var re = /[^a-zA-Z0-9_]+/g;
+
+        var test = re.test(input);
+        if (test) {
+            $("#message").text("Team Id must contain letters, numbers and _ only");
+        }
+        return test;
+    }
+
     var frm = $('#team_form');
 
     frm.submit(function (e) {
@@ -50,6 +63,9 @@
 
         if ($("#team_id").val() == "") {
             $("#message").text("Team Id Required");
+            return;
+        }
+        if (validate()) {
             return;
         }
 
