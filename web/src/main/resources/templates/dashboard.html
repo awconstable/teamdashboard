@@ -22,6 +22,8 @@
       google.charts.setOnLoadCallback(drawDeploymentFrequencyChart);
       google.charts.setOnLoadCallback(drawIncidentsDueToChangeChart);
       google.charts.setOnLoadCallback(drawProductionDefectsChart);
+      google.charts.setOnLoadCallback(drawTeamHappinessChart);
+      google.charts.setOnLoadCallback(drawCustomerSatisfactionChart);
 
       function drawCycleTimeChart() {
 
@@ -161,6 +163,74 @@
 
           chart.draw(data, google.charts.Line.convertOptions(options));
       }
+
+      function drawTeamHappinessChart() {
+
+          var jsonData = $.ajax({
+              url: "/team_happiness/" + team + "/",
+              dataType: "json",
+              async: false
+          }).responseText;
+
+          var data = new google.visualization.DataTable(jsonData);
+
+          var options = {
+              chart: {
+                  title: 'Team Happiness'
+              },
+              legend: {
+                  position: 'none'
+              },
+              width: 400,
+              height: 300,
+              series: {
+                  // Gives each series an axis name that matches the Y-axis below.
+                  0: {targetAxisIndex: 0},
+              },
+              vAxes: {
+                  // Adds titles to each axis.
+                  0: {title: 'Team Happiness', viewWindow: {min: 0}},
+              }
+          };
+
+          var chart = new google.charts.Line(document.getElementById('linechart_team_happiness'));
+
+          chart.draw(data, google.charts.Line.convertOptions(options));
+      }
+
+      function drawCustomerSatisfactionChart() {
+
+          var jsonData = $.ajax({
+              url: "/customer_satisfaction/" + team + "/",
+              dataType: "json",
+              async: false
+          }).responseText;
+
+          var data = new google.visualization.DataTable(jsonData);
+
+          var options = {
+              chart: {
+                  title: 'Customer Satisfaction'
+              },
+              legend: {
+                  position: 'none'
+              },
+              width: 400,
+              height: 300,
+              series: {
+                  // Gives each series an axis name that matches the Y-axis below.
+                  0: {targetAxisIndex: 0},
+              },
+              vAxes: {
+                  // Adds titles to each axis.
+                  0: {title: 'Customer Satisfaction', viewWindow: {min: 0}},
+              }
+          };
+
+          var chart = new google.charts.Line(document.getElementById('linechart_customer_satisfaction'));
+
+          chart.draw(data, google.charts.Line.convertOptions(options));
+      }
     </script>
   </head>
   <body>
@@ -173,6 +243,9 @@
       <td>
         <div id="linechart_deployment_frequency" style="width: 400px; height: 300px"></div>
       </td>
+        <td>
+            <div id="linechart_team_happiness" style="width: 400px; height: 300px"></div>
+        </td>
     </tr>
     <tr>
       <td>
@@ -181,6 +254,9 @@
       <td>
         <div id="linechart_production_defects" style="width: 400px; height: 300px"></div>
       </td>
+        <td>
+            <div id="linechart_customer_satisfaction" style="width: 400px; height: 300px"></div>
+        </td>
     </tr>
   </table>
   </body>

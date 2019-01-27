@@ -38,7 +38,7 @@ public class TeamMetricsController
 
     @RequestMapping("/{metricType}/{teamId}/{date}/{value}")
     @ResponseBody
-    public TeamMetric metricingest(@PathVariable String metricType, @PathVariable String teamId, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @PathVariable Integer value, HttpServletResponse response)
+    public TeamMetric metricingest(@PathVariable String metricType, @PathVariable String teamId, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @PathVariable Double value, HttpServletResponse response)
         {
 
         TeamMetricType type = TeamMetricType.get(metricType);
@@ -86,7 +86,7 @@ public class TeamMetricsController
         return null;
         }
 
-    private TableRow createTableRow(int year, Month month, int dayOfMonth, int rowValue)
+    private TableRow createTableRow(int year, Month month, int dayOfMonth, double rowValue)
         {
         TableRow tr = new TableRow();
 

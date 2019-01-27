@@ -5,7 +5,9 @@ public enum TeamMetricType
         CYCLE_TIME("cycletime", "Cycle Time"),
         DEPLOYMENT_FREQUENCY("deployment_frequency", "Deployment Frequency"),
         INCIDENTS_DUE_TO_CHANGE("incidents_due_to_change", "Incidents due to change"),
-        PRODUCTION_DEFECTS("production_defects", "Production Defects");
+        PRODUCTION_DEFECTS("production_defects", "Production Defects"),
+        TEAM_HAPPINESS("team_happiness", "Team Happiness"),
+        CUSTOMER_SATISFACTION("customer_satisfaction", "Customer Satisfaction");
 
     private String key;
     private String name;

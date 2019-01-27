@@ -9,12 +9,12 @@ public class TeamMetric
 
     private final TeamMetricType teamMetricType;
     private final String teamId;
-    private final Integer value;
+    private final Double value;
     private final LocalDate date;
     @Id
     private String id;
 
-    public TeamMetric(String teamId, TeamMetricType teamMetricType, Integer value, LocalDate date)
+    public TeamMetric(String teamId, TeamMetricType teamMetricType, Double value, LocalDate date)
         {
         this.teamMetricType = teamMetricType;
         this.teamId = teamId;
@@ -37,7 +37,7 @@ public class TeamMetric
         return teamId;
         }
 
-    public Integer getValue()
+    public Double getValue()
         {
         return value;
         }
