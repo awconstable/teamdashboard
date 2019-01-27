@@ -31,13 +31,13 @@ public class TeamMetricRepositoryTest
     public void setUp() {
 
     List<TeamMetric> ratings = new ArrayList<>();
-    ratings.add(new TeamMetric("testid", TeamMetricType.CYCLE_TIME, 3.0,
+    ratings.add(new TeamMetric("testid", TeamMetricType.CYCLE_TIME, new Double("3.0"),
                 createDate(2018, Month.JANUARY, 05)));
-    ratings.add(new TeamMetric("testid", TeamMetricType.CYCLE_TIME, 5.0,
+    ratings.add(new TeamMetric("testid", TeamMetricType.CYCLE_TIME, new Double("5"),
                 createDate(2018, Month.JANUARY, 29)));
-    ratings.add(new TeamMetric("fspbm", TeamMetricType.CYCLE_TIME, 1.0,
+    ratings.add(new TeamMetric("fspbm", TeamMetricType.CYCLE_TIME, new Double("1"),
                 createDate(2018, Month.FEBRUARY, 18)));
-    ratings.add(new TeamMetric("fspbm", TeamMetricType.CYCLE_TIME, 3.0,
+    ratings.add(new TeamMetric("fspbm", TeamMetricType.CYCLE_TIME, new Double("3.0"),
                 createDate(2018, Month.MARCH, 05)));
 
         repository.saveAll(ratings);
