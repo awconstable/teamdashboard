@@ -74,7 +74,6 @@ jobs:
             then \
               mvn versions:set -DnewVersion=${CIRCLE_TAG}; \
             fi
-      - run: cd web
       - run:
           name: Publish Docker image with Jib
           command: |
