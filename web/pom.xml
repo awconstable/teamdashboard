@@ -3,7 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>dashboard</artifactId>
+        <artifactId>teamdashboard</artifactId>
         <groupId>team</groupId>
         <version>0-SNAPSHOT</version>
     </parent>
@@ -75,7 +75,6 @@
         <dependency>
             <groupId>com.google.visualization</groupId>
             <artifactId>visualization-datasource</artifactId>
-            <version>1.1.1</version>
         </dependency>
 
         <dependency>
@@ -88,20 +87,18 @@
 
     <build>
         <plugins>
-
             <plugin>
-                <groupId>com.spotify</groupId>
-                <artifactId>dockerfile-maven-plugin</artifactId>
-                <version>1.3.6</version>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
                 <configuration>
-                    <repository>team/dashboard</repository>
-                    <tag>${project.version}</tag>
-                    <buildArgs>
-                        <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
-                    </buildArgs>
+                    <to>
+                        <image>registry.hub.docker.com/awconstable/teamdashboard:${version}</image>
+                    </to>
+                    <from>
+                        <image>gcr.io/distroless/java:11</image>
+                    </from>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
 

@@ -1,0 +1,13 @@
+<settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      https://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+    <servers>
+        <server>
+            <id>registry.hub.docker.com</id>
+            <username>awconstable</username>
+            <password>{3IoGBRLDDRYH/HopxGrqZ04BYRykR2YsaWOugUXVj1c=}</password>
+        </server>
+    </servers>
+</settings>
