@@ -11,3 +11,5 @@ target
 data
 
 .vagrant
+
+*.log
