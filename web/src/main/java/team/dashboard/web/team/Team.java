@@ -1,46 +1,78 @@
 package team.dashboard.web.team;
 
-import org.springframework.data.annotation.Id;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-public class Team {
-    @Id
-    private String id;
-    private final String teamId;
-    private final String teamName;
-    private final String platformName;
-    private final String domainName;
+import java.util.Collection;
 
-    public Team(String teamId, String teamName, String platformName, String domainName) {
-        this.teamId = teamId;
-        this.teamName = teamName;
-        this.platformName = platformName;
-        this.domainName = domainName;
-    }
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Team
+    {
 
-    public String getTeamId() {
-        return teamId;
-    }
+    private final String slug;
+    private final String name;
+    private final String parentSlug;
+    private final Collection<TeamRelation> ancestors;
+    private final Collection<TeamRelation> children;
+    private final Collection<TeamMember> teamMembers;
+    private final Collection<Application> applications;
 
-    public String getTeamName() {
-        return teamName;
-    }
+    public Team(String slug, String name, String parentSlug, Collection<TeamRelation> ancestors, Collection<TeamRelation> children, Collection<TeamMember> teamMembers, Collection<Application> applications)
+        {
+        this.slug = slug;
+        this.name = name;
+        this.parentSlug = parentSlug;
+        this.ancestors = ancestors;
+        this.children = children;
+        this.teamMembers = teamMembers;
+        this.applications = applications;
+        }
 
-    public String getPlatformName() {
-        return platformName;
-    }
+    public String getSlug()
+        {
+        return slug;
+        }
 
-    public String getDomainName() {
-        return domainName;
-    }
+    public String getName()
+        {
+        return name;
+        }
+
+    public String getParentSlug()
+        {
+        return parentSlug;
+        }
+
+    public Collection<TeamRelation> getAncestors()
+        {
+        return ancestors;
+        }
+
+    public Collection<TeamRelation> getChildren()
+        {
+        return children;
+        }
+
+    public Collection<TeamMember> getTeamMembers()
+        {
+        return teamMembers;
+        }
+
+    public Collection<Application> getApplications()
+        {
+        return applications;
+        }
 
     @Override
-    public String toString() {
+    public String toString()
+        {
         return "Team{" +
-                "id='" + id + '\'' +
-                ", teamId='" + teamId + '\'' +
-                ", teamName='" + teamName + '\'' +
-                ", platformName='" + platformName + '\'' +
-                ", domainName='" + domainName + '\'' +
+                "slug='" + slug + '\'' +
+                ", name='" + name + '\'' +
+                ", parentSlug='" + parentSlug + '\'' +
+                ", ancestors=" + ancestors +
+                ", children=" + children +
+                ", teamMembers=" + teamMembers +
+                ", applications=" + applications +
                 '}';
+        }
     }
-}

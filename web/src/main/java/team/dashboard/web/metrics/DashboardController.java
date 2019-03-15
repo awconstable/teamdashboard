@@ -6,30 +6,28 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import team.dashboard.web.team.Team;
-import team.dashboard.web.team.TeamRepository;
-
-import java.util.Optional;
+import team.dashboard.web.team.TeamRestRepository;
 
 @Controller
 public class DashboardController
     {
 
     @Autowired
-    private TeamRepository teamRepository;
+    private TeamRestRepository teamRepository;
 
-    @GetMapping("/dashboard/{teamId}/")
-    public String graph(Model model, @PathVariable String teamId)
+    @GetMapping("/dashboard/{slug}/")
+    public String graph(Model model, @PathVariable String slug)
         {
 
-        Optional<Team> team = teamRepository.findByTeamId(teamId);
-        if (team.isPresent())
+        Team team = teamRepository.findByTeamSlug(slug);
+        if (team != null)
             {
-            model.addAttribute("teamName", team.get().getTeamName());
-            model.addAttribute("platformName", team.get().getPlatformName());
-            model.addAttribute("domainName", team.get().getDomainName());
+            model.addAttribute("teamName", team.getName());
+            model.addAttribute("platformName", "");
+            model.addAttribute("domainName", "");
             }
 
-        model.addAttribute("team", teamId);
+        model.addAttribute("team", slug);
         return "dashboard";
         }
     }
