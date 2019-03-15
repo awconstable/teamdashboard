@@ -118,11 +118,15 @@ public class TeamMetricsController
 
             List<TeamMetric> metrics = teamMetricRepository.findByTeamIdIgnoreCaseAndTeamMetricTypeOrderByDateDesc(teamId, type);
 
-            //TODO fill in months that are blank
-
             for (TeamMetric metric : metrics)
                 {
                 rows.add(createTableRow(metric.getDate().getYear(), metric.getDate().getMonth(), metric.getDate().getDayOfMonth(), metric.getValue()));
+                }
+
+            if (metrics.isEmpty())
+                {
+                LocalDate now = LocalDate.now();
+                rows.add(createTableRow(now.getYear(), now.getMonth(), now.getDayOfMonth(), 0));
                 }
 
             data.addRows(rows);
