@@ -10,7 +10,7 @@
     <script th:inline="javascript">
         /*<![CDATA[*/
 
-        var team = /*[[${team}]]*/ 'all';
+        var team = /*[[${slug}]]*/ 'all';
         console.log('team: ' + team);
 
         /*]]>*/
@@ -234,7 +234,10 @@
     </script>
   </head>
   <body>
-  <h1>Team: <span th:text="${teamName}"></span></h1>
+
+  <span th:each="ancestor : ${ancestors}"><a th:href="@{/dashboard/{slug}/(slug=${ancestor.slug})}"><span
+          th:text="${ancestor.name}"></span></a> </span>
+  <h1>Team: <span th:text="${team.name}"></span></h1>
   <table>
     <tr>
       <td>

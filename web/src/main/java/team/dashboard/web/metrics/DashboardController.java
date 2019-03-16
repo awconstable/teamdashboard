@@ -22,12 +22,12 @@ public class DashboardController
         Team team = teamRepository.findByTeamSlug(slug);
         if (team != null)
             {
-            model.addAttribute("teamName", team.getName());
-            model.addAttribute("platformName", "");
-            model.addAttribute("domainName", "");
-            }
+            model.addAttribute("team", team);
 
-        model.addAttribute("team", slug);
+            model.addAttribute("ancestors", team.getAncestors());
+
+            }
+        model.addAttribute("slug", slug);
         return "dashboard";
         }
     }
