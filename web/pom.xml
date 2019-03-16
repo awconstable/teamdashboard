@@ -87,7 +87,7 @@
                 <artifactId>jib-maven-plugin</artifactId>
                 <configuration>
                     <to>
-                        <image>registry.hub.docker.com/awconstable/teamdashboard:${version}</image>
+                        <image>registry.hub.docker.com/awconstable/teamdashboard:${project.version}</image>
                     </to>
                     <from>
                         <image>gcr.io/distroless/java:11</image>
