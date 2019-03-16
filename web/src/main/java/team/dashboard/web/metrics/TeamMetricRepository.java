@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RepositoryRestResource(collectionResourceRel = "teammetric", path = "teammetric")
-public interface TeamMetricRepository extends MongoRepository<TeamMetric, String>
+public interface TeamMetricRepository extends MongoRepository<TeamMetric, String>, TeamMetricAggregationRepository
     {
     List<TeamMetric> findByTeamIdIgnoreCaseAndTeamMetricTypeOrderByDateDesc(String teamId, TeamMetricType type);
 

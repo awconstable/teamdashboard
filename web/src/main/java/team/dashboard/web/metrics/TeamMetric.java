@@ -6,7 +6,6 @@ import java.time.LocalDate;
 
 public class TeamMetric
     {
-
     private final TeamMetricType teamMetricType;
     private final String teamId;
     private final Double value;

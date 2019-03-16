@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
@@ -22,9 +21,6 @@ public class TeamMetricRepositoryTest
     {
 
     @Autowired
-    private MongoTemplate mongoTemplate;
-
-    @Autowired
     private TeamMetricRepository repository;
 
     @Before
@@ -32,13 +28,23 @@ public class TeamMetricRepositoryTest
 
     List<TeamMetric> ratings = new ArrayList<>();
     ratings.add(new TeamMetric("testid", TeamMetricType.CYCLE_TIME, new Double("3.0"),
-                createDate(2018, Month.JANUARY, 05)));
+            createDate(2018, Month.JANUARY, 5)));
     ratings.add(new TeamMetric("testid", TeamMetricType.CYCLE_TIME, new Double("5"),
                 createDate(2018, Month.JANUARY, 29)));
     ratings.add(new TeamMetric("fspbm", TeamMetricType.CYCLE_TIME, new Double("1"),
                 createDate(2018, Month.FEBRUARY, 18)));
     ratings.add(new TeamMetric("fspbm", TeamMetricType.CYCLE_TIME, new Double("3.0"),
-                createDate(2018, Month.MARCH, 05)));
+            createDate(2018, Month.MARCH, 5)));
+    ratings.add(new TeamMetric("fspbm", TeamMetricType.CYCLE_TIME, new Double("4.0"),
+            createDate(2019, Month.JANUARY, 12)));
+    ratings.add(new TeamMetric("team3", TeamMetricType.CYCLE_TIME, new Double("4.0"),
+            createDate(2019, Month.JANUARY, 1)));
+    ratings.add(new TeamMetric("team3", TeamMetricType.CYCLE_TIME, new Double("2.0"),
+            createDate(2019, Month.JANUARY, 5)));
+    ratings.add(new TeamMetric("team3", TeamMetricType.CYCLE_TIME, new Double("1.0"),
+            createDate(2019, Month.JANUARY, 12)));
+    ratings.add(new TeamMetric("team3", TeamMetricType.CYCLE_TIME, new Double("5.0"),
+            createDate(2019, Month.JANUARY, 15)));
 
         repository.saveAll(ratings);
     }
@@ -58,7 +64,7 @@ public class TeamMetricRepositoryTest
 
         List<TeamMetric> metrics = repository.findByTeamIdIgnoreCaseAndTeamMetricTypeOrderByDateDesc("fspbm", TeamMetricType.CYCLE_TIME);
 
-        AssertionsForClassTypes.assertThat(metrics.size()).isEqualTo(2);
+        AssertionsForClassTypes.assertThat(metrics.size()).isEqualTo(3);
     }
 
     @Test
@@ -67,7 +73,7 @@ public class TeamMetricRepositoryTest
 
         List<TeamMetric> times = repository.findAll();
 
-        AssertionsForClassTypes.assertThat(times.size()).isEqualTo(4);
+        AssertionsForClassTypes.assertThat(times.size()).isEqualTo(9);
     }
 
     @Test
@@ -75,7 +81,7 @@ public class TeamMetricRepositoryTest
         {
 
         List<TeamMetric> times = repository.findByTeamMetricTypeAndDateBetweenOrderByDateDesc(TeamMetricType.CYCLE_TIME,
-                createDate(2018, Month.JANUARY, 01),
+                createDate(2018, Month.JANUARY, 1),
                 createDate(2018, Month.JANUARY, 30));
 
         AssertionsForClassTypes.assertThat(times.size()).isEqualTo(2);
@@ -88,9 +94,19 @@ public class TeamMetricRepositoryTest
         List<TeamMetric> times = repository.findByTeamIdAndTeamMetricTypeAndDateBetweenOrderByDateDesc(
                 "testid",
                 TeamMetricType.CYCLE_TIME,
-                createDate(2018, Month.JANUARY, 01),
+                createDate(2018, Month.JANUARY, 1),
                 createDate(2018, Month.JANUARY, 20));
 
         AssertionsForClassTypes.assertThat(times.size()).isEqualTo(1);
     }
+
+    @Test
+    public void findByTeamIdAggTest()
+        {
+
+        List<TeamMetricTrend> metrics = repository.getWeeklyMetrics("team3", TeamMetricType.CYCLE_TIME);
+
+        //TODO check calculated values
+        AssertionsForClassTypes.assertThat(metrics.size()).isEqualTo(3);
+        }
 }
