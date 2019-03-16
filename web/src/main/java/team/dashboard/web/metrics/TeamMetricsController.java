@@ -8,8 +8,6 @@ import com.google.visualization.datasource.datatable.TableRow;
 import com.google.visualization.datasource.datatable.value.DateValue;
 import com.google.visualization.datasource.datatable.value.ValueType;
 import com.google.visualization.datasource.render.JsonRenderer;
-import com.ibm.icu.util.GregorianCalendar;
-import com.ibm.icu.util.TimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -101,13 +99,10 @@ public class TeamMetricsController
         {
         TableRow tr = new TableRow();
 
-        GregorianCalendar cal = new GregorianCalendar(year, month, dayOfMonth);
-        cal.setTimeZone(TimeZone.getTimeZone("GMT"));
-
-        DateValue date = new DateValue(cal);
+        DateValue date = new DateValue(year, month - 1, dayOfMonth);
 
         tr.addCell(new TableCell(date
-                , Month.of(month).getDisplayName(TextStyle.SHORT, Locale.ENGLISH)));
+                , Month.of(month).getDisplayName(TextStyle.SHORT, Locale.ENGLISH) + ", " + year));
         tr.addCell(rowValue);
 
         return tr;

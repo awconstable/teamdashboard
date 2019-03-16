@@ -45,8 +45,6 @@ public class TeamMetricAggregationRepositoryImpl implements TeamMetricAggregatio
 
         AggregationResults<TeamMetricTrend> result = mongoTemplate.aggregate(agg, TeamMetricTrend.class);
 
-        System.out.println(result.getRawResults());
-
         return result.getMappedResults();
         }
 
@@ -71,8 +69,6 @@ public class TeamMetricAggregationRepositoryImpl implements TeamMetricAggregatio
                 sort(Sort.Direction.ASC, "year", "month"));
 
         AggregationResults<TeamMetricTrend> result = mongoTemplate.aggregate(agg, TeamMetricTrend.class);
-
-        System.out.println(result.getRawResults());
 
         return result.getMappedResults();
         }
