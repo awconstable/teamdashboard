@@ -23,6 +23,6 @@ public class TeamRestRepository
 
     public Team findByTeamSlug(String slug)
         {
-        return restTemplate.getForObject(teamServiceUrl + "/team/search/findBySlug?slug=" + slug, Team.class);
+        return restTemplate.getForObject(teamServiceUrl + "/team/relatives/" + slug, Team.class);
         }
     }

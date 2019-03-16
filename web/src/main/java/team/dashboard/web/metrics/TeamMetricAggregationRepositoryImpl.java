@@ -22,7 +22,7 @@ public class TeamMetricAggregationRepositoryImpl implements TeamMetricAggregatio
         }
 
     @Override
-    public List<TeamMetricTrend> getWeeklyMetrics(String slug, TeamMetricType metricType)
+    public List<TeamMetricTrend> getMonthlyMetrics(String slug, TeamMetricType metricType)
         {
 
         ProjectionOperation dateProjection = project()
@@ -30,9 +30,9 @@ public class TeamMetricAggregationRepositoryImpl implements TeamMetricAggregatio
                 .and("teamMetricType").as("teamMetricType")
                 .and("value").as("value")
                 .and("date").extractYear().as("year")
-                .and("date").extractWeek().as("week");
+                .and("date").extractMonth().as("month");
 
-        GroupOperation groupBy = group("teamId", "teamMetricType", "year", "week")
+        GroupOperation groupBy = group("teamId", "teamMetricType", "year", "month")
                 .avg("value").as("avg")
                 .sum("value").as("sum")
                 .count().as("count");
@@ -41,16 +41,39 @@ public class TeamMetricAggregationRepositoryImpl implements TeamMetricAggregatio
                 match(Criteria.where("teamId").is(slug).and("teamMetricType").is(metricType)),
                 dateProjection,
                 groupBy,
-                sort(Sort.Direction.ASC, "year", "week"));
+                sort(Sort.Direction.ASC, "year", "month"));
 
         AggregationResults<TeamMetricTrend> result = mongoTemplate.aggregate(agg, TeamMetricTrend.class);
+
+        System.out.println(result.getRawResults());
 
         return result.getMappedResults();
         }
 
     @Override
-    public List<TeamMetric> getWeeklyChildMetrics(String teamSlug, TeamMetricType metricType)
+    public List<TeamMetricTrend> getMonthlyChildMetrics(String[] slugs, TeamMetricType metricType)
         {
-        return null;
+        ProjectionOperation dateProjection = project()
+                .and("teamMetricType").as("teamMetricType")
+                .and("value").as("value")
+                .and("date").extractYear().as("year")
+                .and("date").extractMonth().as("month");
+
+        GroupOperation groupBy = group("teamMetricType", "year", "month")
+                .avg("value").as("avg")
+                .sum("value").as("sum")
+                .count().as("count");
+
+        TypedAggregation<TeamMetric> agg = Aggregation.newAggregation(TeamMetric.class,
+                match(Criteria.where("teamId").in(slugs).and("teamMetricType").is(metricType)),
+                dateProjection,
+                groupBy,
+                sort(Sort.Direction.ASC, "year", "month"));
+
+        AggregationResults<TeamMetricTrend> result = mongoTemplate.aggregate(agg, TeamMetricTrend.class);
+
+        System.out.println(result.getRawResults());
+
+        return result.getMappedResults();
         }
     }

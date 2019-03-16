@@ -6,17 +6,19 @@ public class TeamMetricTrend
     private final String teamId;
     private final Double avg;
     private final Double sum;
+    private final Integer count;
     private final Integer year;
-    private final Integer week;
+    private final Integer month;
 
-    public TeamMetricTrend(TeamMetricType teamMetricType, String teamId, Double avg, Double sum, Integer year, Integer week)
+    public TeamMetricTrend(TeamMetricType teamMetricType, String teamId, Double avg, Double sum, Integer count, Integer year, Integer month)
         {
         this.teamMetricType = teamMetricType;
         this.teamId = teamId;
         this.avg = avg;
         this.sum = sum;
+        this.count = count;
         this.year = year;
-        this.week = week;
+        this.month = month;
         }
 
     public TeamMetricType getTeamMetricType()
@@ -39,14 +41,19 @@ public class TeamMetricTrend
         return sum;
         }
 
+    public Integer getCount()
+        {
+        return count;
+        }
+
     public Integer getYear()
         {
         return year;
         }
 
-    public Integer getWeek()
+    public Integer getMonth()
         {
-        return week;
+        return month;
         }
 
     @Override
@@ -57,8 +64,9 @@ public class TeamMetricTrend
                 ", teamId='" + teamId + '\'' +
                 ", avg=" + avg +
                 ", sum=" + sum +
+                ", count=" + count +
                 ", year=" + year +
-                ", week=" + week +
+                ", month=" + month +
                 '}';
         }
     }

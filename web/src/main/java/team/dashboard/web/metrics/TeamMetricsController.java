@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import team.dashboard.web.team.Team;
+import team.dashboard.web.team.TeamRelation;
+import team.dashboard.web.team.TeamRestRepository;
 
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
@@ -33,8 +36,16 @@ import java.util.Optional;
 public class TeamMetricsController
     {
 
+    private final TeamMetricRepository teamMetricRepository;
+
+    private final TeamRestRepository teamRepository;
+
     @Autowired
-    private TeamMetricRepository teamMetricRepository;
+    public TeamMetricsController(TeamMetricRepository teamMetricRepository, TeamRestRepository teamRepository)
+        {
+        this.teamMetricRepository = teamMetricRepository;
+        this.teamRepository = teamRepository;
+        }
 
     @RequestMapping("/{metricType}/{teamId}/{date}/{value}")
     @ResponseBody
@@ -86,15 +97,17 @@ public class TeamMetricsController
         return null;
         }
 
-    private TableRow createTableRow(int year, Month month, int dayOfMonth, double rowValue)
+    private TableRow createTableRow(int year, int month, int dayOfMonth, double rowValue)
         {
         TableRow tr = new TableRow();
 
-        GregorianCalendar cal = new GregorianCalendar(year, month.getValue(), dayOfMonth);
+        GregorianCalendar cal = new GregorianCalendar(year, month, dayOfMonth);
         cal.setTimeZone(TimeZone.getTimeZone("GMT"));
 
-        tr.addCell(new TableCell(new DateValue(cal)
-                , month.getDisplayName(TextStyle.SHORT, Locale.ENGLISH)));
+        DateValue date = new DateValue(cal);
+
+        tr.addCell(new TableCell(date
+                , Month.of(month).getDisplayName(TextStyle.SHORT, Locale.ENGLISH)));
         tr.addCell(rowValue);
 
         return tr;
@@ -102,7 +115,7 @@ public class TeamMetricsController
 
     @RequestMapping("/{metricType}/{teamId}/")
     @ResponseBody
-    public String metrictrend(Model model, @PathVariable String metricType, @PathVariable String teamId)
+    public String metrictrend(Model model, @PathVariable String metricType, @PathVariable String teamId) throws Exception
         {
 
         TeamMetricType type = TeamMetricType.get(metricType);
@@ -116,17 +129,41 @@ public class TeamMetricsController
             {
             ArrayList<TableRow> rows = new ArrayList<>();
 
-            List<TeamMetric> metrics = teamMetricRepository.findByTeamIdIgnoreCaseAndTeamMetricTypeOrderByDateDesc(teamId, type);
+            Team team = teamRepository.findByTeamSlug(teamId);
 
-            for (TeamMetric metric : metrics)
+            ArrayList<String> teams = new ArrayList<>();
+            teams.add(teamId);
+
+            for (TeamRelation child : team.getChildren())
                 {
-                rows.add(createTableRow(metric.getDate().getYear(), metric.getDate().getMonth(), metric.getDate().getDayOfMonth(), metric.getValue()));
+                teams.add(child.getSlug());
+                }
+
+            List<TeamMetricTrend> metrics = teamMetricRepository.getMonthlyChildMetrics(teams.toArray(new String[]{}), type);
+
+            for (TeamMetricTrend metric : metrics)
+                {
+
+                Double value;
+
+                if (TeamMetricType.AggMethod.AVG.equals(metric.getTeamMetricType().getMethod()))
+                    {
+                    value = metric.getAvg();
+                    } else if (TeamMetricType.AggMethod.SUM.equals(metric.getTeamMetricType().getMethod()))
+                    {
+                    value = metric.getSum();
+                    } else
+                    {
+                    throw new Exception("Unknown AggMethod type");
+                    }
+
+                rows.add(createTableRow(metric.getYear(), metric.getMonth(), 1, value));
                 }
 
             if (metrics.isEmpty())
                 {
                 LocalDate now = LocalDate.now();
-                rows.add(createTableRow(now.getYear(), now.getMonth(), now.getDayOfMonth(), 0));
+                rows.add(createTableRow(now.getYear(), now.getMonth().getValue(), now.getDayOfMonth(), 0));
                 }
 
             data.addRows(rows);
