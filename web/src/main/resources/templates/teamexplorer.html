@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+    <meta charset="UTF-8">
+    <title>Teams</title>
+    <style>
+        body {
+            margin: 20px;
+            line-height: 3;
+            font-family: sans-serif;
+
+        }
+
+        div {
+            position: relative;
+        }
+
+        ul {
+            border-left: .25em solid gray;
+            list-style-type: none;
+            padding-inline-start: 8px;
+            height: 48px;
+        }
+
+        ul ul {
+            margin-top: -1.25em;
+            margin-left: 1em;
+            list-style-type: none;
+
+        }
+
+        li {
+            position: relative;
+            bottom: -1.25em;
+            height: 45px;
+        }
+
+        li:before {
+            content: "";
+            display: inline-block;
+            width: 2em;
+            height: 0;
+            position: relative;
+            left: -.75em;
+            border-top: .25em solid gray;
+        }
+
+        ul ul:before, h3:before, li:after {
+            content: '';
+            display: block;
+            width: 1em;
+            height: 1em;
+            position: absolute;
+            background: deepskyblue;
+            border: .25em solid white;
+            top: 1em;
+            left: .4em;
+        }
+
+        h3 {
+            position: absolute;
+            top: -1em;
+            left: 1.75em;
+            padding-left: 10px;
+        }
+
+        h3:before {
+            left: -1.25em;
+            top: .5em;
+        }
+    </style>
+</head>
+<body>
+
+
+<li th:each="child : ${children}" th:fragment="teamlist (children)">
+    <a th:href="@{/dashboard/{slug}/(slug=${child.slug})}">
+        <span th:text="${child.name}"></span>
+    </a>
+    <ul th:insert="::teamlist (${child.children})"></ul>
+</li>
+<h3>Root</h3>
+<ul>
+    <li th:each="team : ${teams}">
+        <a th:href="@{/dashboard/{slug}/(slug=${team.slug})}">
+            <span th:text="${team.name}"></span>
+        </a>
+
+        <ul th:insert="::teamlist (${team.children})"></ul>
+    </li>
+</ul>
+
+</body>
+</html>
