@@ -18,22 +18,28 @@
     <script type="text/javascript">
 
       google.charts.load('current', {'packages':['line']});
-      google.charts.setOnLoadCallback(drawCycleTimeChart);
-      google.charts.setOnLoadCallback(drawDeploymentFrequencyChart);
-      google.charts.setOnLoadCallback(drawIncidentsDueToChangeChart);
-      google.charts.setOnLoadCallback(drawProductionDefectsChart);
-      google.charts.setOnLoadCallback(drawTeamHappinessChart);
-      google.charts.setOnLoadCallback(drawCustomerSatisfactionChart);
+      google.charts.setOnLoadCallback(loadCharts);
 
-      function drawCycleTimeChart() {
+      function loadTrendData(url, slug) {
+          return $.ajax({
+              url: url + slug + "/",
+              dataType: "json"
+          });
+      }
 
-    var jsonData = $.ajax({
-         url: "/cycletime/" + team + "/",
-          dataType: "json",
-          async: false
-          }).responseText;
+      function loadCharts() {
 
-     var data = new google.visualization.DataTable(jsonData);
+          loadTrendData("/cycletime/", team).done(drawCycleTimeChart);
+          loadTrendData("/deployment_frequency/", team).done(drawDeploymentFrequencyChart);
+          loadTrendData("/incidents_due_to_change/", team).done(drawIncidentsDueToChangeChart);
+          loadTrendData("/production_defects/", team).done(drawProductionDefectsChart);
+          loadTrendData("/team_happiness/", team).done(drawTeamHappinessChart);
+          loadTrendData("/customer_satisfaction/", team).done(drawCustomerSatisfactionChart);
+      }
+
+      function drawCycleTimeChart(data) {
+
+          var dataTable = new google.visualization.DataTable(data);
 
       var options = {
         chart: {
@@ -57,18 +63,12 @@
 
           var chart = new google.charts.Line(document.getElementById('linechart_cycletime'));
 
-      chart.draw(data, google.charts.Line.convertOptions(options));
+          chart.draw(dataTable, google.charts.Line.convertOptions(options));
     }
 
-      function drawDeploymentFrequencyChart() {
+      function drawDeploymentFrequencyChart(data) {
 
-          var jsonData = $.ajax({
-              url: "/deployment_frequency/" + team + "/",
-              dataType: "json",
-              async: false
-          }).responseText;
-
-          var data = new google.visualization.DataTable(jsonData);
+          var dataTable = new google.visualization.DataTable(data);
 
           var options = {
               chart: {
@@ -92,18 +92,12 @@
 
           var chart = new google.charts.Line(document.getElementById('linechart_deployment_frequency'));
 
-          chart.draw(data, google.charts.Line.convertOptions(options));
+          chart.draw(dataTable, google.charts.Line.convertOptions(options));
       }
 
-      function drawIncidentsDueToChangeChart() {
+      function drawIncidentsDueToChangeChart(data) {
 
-          var jsonData = $.ajax({
-              url: "/incidents_due_to_change/" + team + "/",
-              dataType: "json",
-              async: false
-          }).responseText;
-
-          var data = new google.visualization.DataTable(jsonData);
+          var dataTable = new google.visualization.DataTable(data);
 
           var options = {
               chart: {
@@ -127,18 +121,12 @@
 
           var chart = new google.charts.Line(document.getElementById('linechart_incidents_due_to_change'));
 
-          chart.draw(data, google.charts.Line.convertOptions(options));
+          chart.draw(dataTable, google.charts.Line.convertOptions(options));
       }
 
-      function drawProductionDefectsChart() {
+      function drawProductionDefectsChart(data) {
 
-          var jsonData = $.ajax({
-              url: "/production_defects/" + team + "/",
-              dataType: "json",
-              async: false
-          }).responseText;
-
-          var data = new google.visualization.DataTable(jsonData);
+          var dataTable = new google.visualization.DataTable(data);
 
           var options = {
               chart: {
@@ -161,18 +149,12 @@
 
           var chart = new google.charts.Line(document.getElementById('linechart_production_defects'));
 
-          chart.draw(data, google.charts.Line.convertOptions(options));
+          chart.draw(dataTable, google.charts.Line.convertOptions(options));
       }
 
-      function drawTeamHappinessChart() {
+      function drawTeamHappinessChart(data) {
 
-          var jsonData = $.ajax({
-              url: "/team_happiness/" + team + "/",
-              dataType: "json",
-              async: false
-          }).responseText;
-
-          var data = new google.visualization.DataTable(jsonData);
+          var dataTable = new google.visualization.DataTable(data);
 
           var options = {
               chart: {
@@ -195,18 +177,12 @@
 
           var chart = new google.charts.Line(document.getElementById('linechart_team_happiness'));
 
-          chart.draw(data, google.charts.Line.convertOptions(options));
+          chart.draw(dataTable, google.charts.Line.convertOptions(options));
       }
 
-      function drawCustomerSatisfactionChart() {
+      function drawCustomerSatisfactionChart(data) {
 
-          var jsonData = $.ajax({
-              url: "/customer_satisfaction/" + team + "/",
-              dataType: "json",
-              async: false
-          }).responseText;
-
-          var data = new google.visualization.DataTable(jsonData);
+          var dataTable = new google.visualization.DataTable(data);
 
           var options = {
               chart: {
@@ -229,7 +205,7 @@
 
           var chart = new google.charts.Line(document.getElementById('linechart_customer_satisfaction'));
 
-          chart.draw(data, google.charts.Line.convertOptions(options));
+          chart.draw(dataTable, google.charts.Line.convertOptions(options));
       }
     </script>
 
