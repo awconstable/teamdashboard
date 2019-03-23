@@ -31,6 +31,7 @@ import java.util.Optional;
 
 
 @Controller
+@RequestMapping("/metrics")
 public class TeamMetricsController
     {
 
@@ -45,7 +46,7 @@ public class TeamMetricsController
         this.teamRepository = teamRepository;
         }
 
-    @RequestMapping("/{metricType}/{teamId}/{date}/{value}")
+    @GetMapping("/{metricType}/{teamId}/{date}/{value}")
     @ResponseBody
     public TeamMetric metricingest(@PathVariable String metricType, @PathVariable String teamId, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @PathVariable Double value, HttpServletResponse response)
         {
@@ -72,7 +73,7 @@ public class TeamMetricsController
 
         }
 
-    @RequestMapping("/{metricType}/{teamId}/{date}")
+    @GetMapping("/{metricType}/{teamId}/{date}")
     @ResponseBody
     public TeamMetric getmetric(@PathVariable String metricType, @PathVariable String teamId, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, HttpServletResponse response)
         {
@@ -108,7 +109,7 @@ public class TeamMetricsController
         return tr;
         }
 
-    @RequestMapping("/{metricType}/{teamId}/")
+    @GetMapping("/{metricType}/{teamId}/")
     @ResponseBody
     public String metrictrend(Model model, @PathVariable String metricType, @PathVariable String teamId) throws Exception
         {
@@ -172,10 +173,10 @@ public class TeamMetricsController
 
         }
 
-    @GetMapping("/capture/{teamId}/")
-    public String graph(Model model, @PathVariable String teamId)
+    @GetMapping(value = "/capture/{slug}/")
+    public String graph(Model model, @PathVariable String slug)
         {
-        model.addAttribute("team", teamId);
+        model.addAttribute("slug", slug);
         return "capture";
         }
 

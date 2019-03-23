@@ -1,12 +1,12 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!doctype html>
 
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta charset="UTF-8">
-      <title>Team Dashboard</title>
-      <script src="https://www.gstatic.com/charts/loader.js" type="text/javascript"></script>
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js" type="text/javascript"></script>
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <title>Team Dashboard</title>
+    <link href='/webjars/bootstrap/css/bootstrap.min.css' rel='stylesheet'>
     <script th:inline="javascript">
         /*<![CDATA[*/
 
@@ -15,207 +15,13 @@
 
         /*]]>*/
     </script>
-    <script type="text/javascript">
-
-      google.charts.load('current', {'packages':['line']});
-      google.charts.setOnLoadCallback(loadCharts);
-
-      function loadTrendData(url, slug) {
-          return $.ajax({
-              url: url + slug + "/",
-              dataType: "json"
-          });
-      }
-
-      function loadCharts() {
-
-          loadTrendData("/cycletime/", team).done(drawCycleTimeChart);
-          loadTrendData("/deployment_frequency/", team).done(drawDeploymentFrequencyChart);
-          loadTrendData("/incidents_due_to_change/", team).done(drawIncidentsDueToChangeChart);
-          loadTrendData("/production_defects/", team).done(drawProductionDefectsChart);
-          loadTrendData("/team_happiness/", team).done(drawTeamHappinessChart);
-          loadTrendData("/customer_satisfaction/", team).done(drawCustomerSatisfactionChart);
-      }
-
-      function drawCycleTimeChart(data) {
-
-          var dataTable = new google.visualization.DataTable(data);
-
-      var options = {
-        chart: {
-            title: 'Average Cycle Time'
-        },
-          legend: {
-              position: 'none'
-          },
-          width: 400,
-          height: 300,
-        series: {
-          // Gives each series an axis name that matches the Y-axis below.
-          0: {targetAxisIndex: 0},
-        },
-          vAxes: {
-              // Adds titles to each axis.
-              0: {title: 'Average Cycle Time (days)', viewWindow: {min: 0}},
-          },
-          colors: ['orange']
-      };
-
-          var chart = new google.charts.Line(document.getElementById('linechart_cycletime'));
-
-          chart.draw(dataTable, google.charts.Line.convertOptions(options));
-    }
-
-      function drawDeploymentFrequencyChart(data) {
-
-          var dataTable = new google.visualization.DataTable(data);
-
-          var options = {
-              chart: {
-                  title: 'Deployment Frequency'
-              },
-              legend: {
-                  position: 'none'
-              },
-              width: 400,
-              height: 300,
-              series: {
-                  // Gives each series an axis name that matches the Y-axis below.
-                  0: {targetAxisIndex: 0},
-              },
-              vAxes: {
-                  // Adds titles to each axis.
-                  0: {title: 'Deployment Frequency (days)', viewWindow: {min: 0}},
-              },
-              colors: ['green']
-          };
-
-          var chart = new google.charts.Line(document.getElementById('linechart_deployment_frequency'));
-
-          chart.draw(dataTable, google.charts.Line.convertOptions(options));
-      }
-
-      function drawIncidentsDueToChangeChart(data) {
-
-          var dataTable = new google.visualization.DataTable(data);
-
-          var options = {
-              chart: {
-                  title: 'Incidents due to change'
-              },
-              legend: {
-                  position: 'none'
-              },
-              width: 400,
-              height: 300,
-              series: {
-                  // Gives each series an axis name that matches the Y-axis below.
-                  0: {targetAxisIndex: 0},
-              },
-              vAxes: {
-                  // Adds titles to each axis.
-                  0: {title: 'Incidents due to change', viewWindow: {min: 0}},
-              },
-              colors: ['red']
-          };
-
-          var chart = new google.charts.Line(document.getElementById('linechart_incidents_due_to_change'));
-
-          chart.draw(dataTable, google.charts.Line.convertOptions(options));
-      }
-
-      function drawProductionDefectsChart(data) {
-
-          var dataTable = new google.visualization.DataTable(data);
-
-          var options = {
-              chart: {
-                  title: 'Production Defects'
-              },
-              legend: {
-                  position: 'none'
-              },
-              width: 400,
-              height: 300,
-              series: {
-                  // Gives each series an axis name that matches the Y-axis below.
-                  0: {targetAxisIndex: 0},
-              },
-              vAxes: {
-                  // Adds titles to each axis.
-                  0: {title: 'Production Defects', viewWindow: {min: 0}},
-              }
-          };
-
-          var chart = new google.charts.Line(document.getElementById('linechart_production_defects'));
-
-          chart.draw(dataTable, google.charts.Line.convertOptions(options));
-      }
-
-      function drawTeamHappinessChart(data) {
-
-          var dataTable = new google.visualization.DataTable(data);
-
-          var options = {
-              chart: {
-                  title: 'Team Happiness'
-              },
-              legend: {
-                  position: 'none'
-              },
-              width: 400,
-              height: 300,
-              series: {
-                  // Gives each series an axis name that matches the Y-axis below.
-                  0: {targetAxisIndex: 0},
-              },
-              vAxes: {
-                  // Adds titles to each axis.
-                  0: {title: 'Team Happiness', viewWindow: {min: 0}},
-              }
-          };
-
-          var chart = new google.charts.Line(document.getElementById('linechart_team_happiness'));
-
-          chart.draw(dataTable, google.charts.Line.convertOptions(options));
-      }
-
-      function drawCustomerSatisfactionChart(data) {
-
-          var dataTable = new google.visualization.DataTable(data);
-
-          var options = {
-              chart: {
-                  title: 'Customer Satisfaction'
-              },
-              legend: {
-                  position: 'none'
-              },
-              width: 400,
-              height: 300,
-              series: {
-                  // Gives each series an axis name that matches the Y-axis below.
-                  0: {targetAxisIndex: 0},
-              },
-              vAxes: {
-                  // Adds titles to each axis.
-                  0: {title: 'Customer Satisfaction', viewWindow: {min: 0}},
-              }
-          };
-
-          var chart = new google.charts.Line(document.getElementById('linechart_customer_satisfaction'));
-
-          chart.draw(dataTable, google.charts.Line.convertOptions(options));
-      }
-    </script>
-
   </head>
   <body>
   <a href="/"><span>Root</span></a>
   <span th:each="ancestor : ${ancestors}"><a th:href="@{/dashboard/{slug}/(slug=${ancestor.slug})}"><span
           th:text="${ancestor.name}"></span></a> </span>
   <h1>Team: <span th:text="${team.name}"></span></h1>
-  <div><a th:href="@{/capture/{slug}/(slug=${slug})}"><span>Submit Metrics</span></a></div>
+  <div><a th:href="@{/metrics/capture/{slug}/(slug=${slug})}"><span>Submit Metrics</span></a></div>
   <table>
     <tr>
       <td>
@@ -240,5 +46,204 @@
         </td>
     </tr>
   </table>
+  <script src="https://www.gstatic.com/charts/loader.js" type="text/javascript"></script>
+  <script src="/webjars/jquery/jquery.min.js" type="text/javascript"></script>
+  <script src="/webjars/popper.js/umd/popper.min.js" type="text/javascript"></script>
+  <script src="/webjars/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+  <script type="text/javascript">
+
+    $(document).ready(function () {
+      google.charts.load('current', {'packages': ['line']});
+      google.charts.setOnLoadCallback(loadCharts);
+    });
+
+    function loadTrendData(url, slug) {
+      return $.ajax({
+        url: "/metrics" + url + slug + "/",
+        dataType: "json"
+      });
+    }
+
+    function loadCharts() {
+
+      loadTrendData("/cycletime/", team).done(drawCycleTimeChart);
+      loadTrendData("/deployment_frequency/", team).done(drawDeploymentFrequencyChart);
+      loadTrendData("/incidents_due_to_change/", team).done(drawIncidentsDueToChangeChart);
+      loadTrendData("/production_defects/", team).done(drawProductionDefectsChart);
+      loadTrendData("/team_happiness/", team).done(drawTeamHappinessChart);
+      loadTrendData("/customer_satisfaction/", team).done(drawCustomerSatisfactionChart);
+    }
+
+    function drawCycleTimeChart(data) {
+
+      var dataTable = new google.visualization.DataTable(data);
+
+      var options = {
+        chart: {
+          title: 'Average Cycle Time'
+        },
+        legend: {
+          position: 'none'
+        },
+        width: 400,
+        height: 300,
+        series: {
+          // Gives each series an axis name that matches the Y-axis below.
+          0: {targetAxisIndex: 0}
+        },
+        vAxes: {
+          // Adds titles to each axis.
+          0: {title: 'Average Cycle Time (days)', viewWindow: {min: 0}}
+        },
+        colors: ['orange']
+      };
+
+      var chart = new google.charts.Line(document.getElementById('linechart_cycletime'));
+
+      chart.draw(dataTable, google.charts.Line.convertOptions(options));
+    }
+
+    function drawDeploymentFrequencyChart(data) {
+
+      var dataTable = new google.visualization.DataTable(data);
+
+      var options = {
+        chart: {
+          title: 'Deployment Frequency'
+        },
+        legend: {
+          position: 'none'
+        },
+        width: 400,
+        height: 300,
+        series: {
+          // Gives each series an axis name that matches the Y-axis below.
+          0: {targetAxisIndex: 0}
+        },
+        vAxes: {
+          // Adds titles to each axis.
+          0: {title: 'Deployment Frequency (days)', viewWindow: {min: 0}}
+        },
+        colors: ['green']
+      };
+
+      var chart = new google.charts.Line(document.getElementById('linechart_deployment_frequency'));
+
+      chart.draw(dataTable, google.charts.Line.convertOptions(options));
+    }
+
+    function drawIncidentsDueToChangeChart(data) {
+
+      var dataTable = new google.visualization.DataTable(data);
+
+      var options = {
+        chart: {
+          title: 'Incidents due to change'
+        },
+        legend: {
+          position: 'none'
+        },
+        width: 400,
+        height: 300,
+        series: {
+          // Gives each series an axis name that matches the Y-axis below.
+          0: {targetAxisIndex: 0}
+        },
+        vAxes: {
+          // Adds titles to each axis.
+          0: {title: 'Incidents due to change', viewWindow: {min: 0}}
+        },
+        colors: ['red']
+      };
+
+      var chart = new google.charts.Line(document.getElementById('linechart_incidents_due_to_change'));
+
+      chart.draw(dataTable, google.charts.Line.convertOptions(options));
+    }
+
+    function drawProductionDefectsChart(data) {
+
+      var dataTable = new google.visualization.DataTable(data);
+
+      var options = {
+        chart: {
+          title: 'Production Defects'
+        },
+        legend: {
+          position: 'none'
+        },
+        width: 400,
+        height: 300,
+        series: {
+          // Gives each series an axis name that matches the Y-axis below.
+          0: {targetAxisIndex: 0}
+        },
+        vAxes: {
+          // Adds titles to each axis.
+          0: {title: 'Production Defects', viewWindow: {min: 0}}
+        }
+      };
+
+      var chart = new google.charts.Line(document.getElementById('linechart_production_defects'));
+
+      chart.draw(dataTable, google.charts.Line.convertOptions(options));
+    }
+
+    function drawTeamHappinessChart(data) {
+
+      var dataTable = new google.visualization.DataTable(data);
+
+      var options = {
+        chart: {
+          title: 'Team Happiness'
+        },
+        legend: {
+          position: 'none'
+        },
+        width: 400,
+        height: 300,
+        series: {
+          // Gives each series an axis name that matches the Y-axis below.
+          0: {targetAxisIndex: 0}
+        },
+        vAxes: {
+          // Adds titles to each axis.
+          0: {title: 'Team Happiness', viewWindow: {min: 0}}
+        }
+      };
+
+      var chart = new google.charts.Line(document.getElementById('linechart_team_happiness'));
+
+      chart.draw(dataTable, google.charts.Line.convertOptions(options));
+    }
+
+    function drawCustomerSatisfactionChart(data) {
+
+      var dataTable = new google.visualization.DataTable(data);
+
+      var options = {
+        chart: {
+          title: 'Customer Satisfaction'
+        },
+        legend: {
+          position: 'none'
+        },
+        width: 400,
+        height: 300,
+        series: {
+          // Gives each series an axis name that matches the Y-axis below.
+          0: {targetAxisIndex: 0}
+        },
+        vAxes: {
+          // Adds titles to each axis.
+          0: {title: 'Customer Satisfaction', viewWindow: {min: 0}}
+        }
+      };
+
+      var chart = new google.charts.Line(document.getElementById('linechart_customer_satisfaction'));
+
+      chart.draw(dataTable, google.charts.Line.convertOptions(options));
+    }
+  </script>
   </body>
 </html>
