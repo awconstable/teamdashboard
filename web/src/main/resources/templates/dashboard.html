@@ -65,40 +65,39 @@
                       </button>
                   </div>
               </div>
-
-              <table>
-    <tr>
-      <td>
-        <div id="linechart_cycletime" style="width: 400px; height: 300px"></div>
-      </td>
-      <td>
-        <div id="linechart_deployment_frequency" style="width: 400px; height: 300px"></div>
-      </td>
-        <td>
-            <div id="linechart_team_happiness" style="width: 400px; height: 300px"></div>
-        </td>
-    </tr>
-    <tr>
-      <td>
-        <div id="linechart_incidents_due_to_change" style="width: 400px; height: 300px"></div>
-      </td>
-      <td>
-        <div id="linechart_production_defects" style="width: 400px; height: 300px"></div>
-      </td>
-        <td>
-            <div id="linechart_customer_satisfaction" style="width: 400px; height: 300px"></div>
-        </td>
-    </tr>
-  </table>
+              <div class="container">
+                  <div class="row">
+                      <div class="col">
+                          <canvas class="my-4" id="chart1"></canvas>
+                      </div>
+                      <div class="col">
+                          <canvas class="my-4" id="chart2"></canvas>
+                      </div>
+                      <div class="col">
+                          <canvas class="my-4" id="chart3"></canvas>
+                      </div>
+                      <div class="w-100"></div>
+                      <div class="col">
+                          <canvas class="my-4" id="chart4"></canvas>
+                      </div>
+                      <div class="col">
+                          <canvas class="my-4" id="chart5"></canvas>
+                      </div>
+                      <div class="col">
+                          <canvas class="my-4" id="chart6"></canvas>
+                      </div>
+                  </div>
+              </div>
           </main>
       </div>
   </div>
 
-  <script src="https://www.gstatic.com/charts/loader.js" type="text/javascript"></script>
   <script src="/webjars/jquery/jquery.min.js" type="text/javascript"></script>
   <script src="/webjars/popper.js/umd/popper.min.js" type="text/javascript"></script>
   <script src="/webjars/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
   <script src="/webjars/feather-icons/dist/feather.js"></script>
+  <script src="/webjars/moment/min/moment.min.js"></script>
+  <script src="/webjars/chartjs/Chart.js"></script>
 
   <script src="/static/js/dashboard.js" type="text/javascript"></script>
   </body>

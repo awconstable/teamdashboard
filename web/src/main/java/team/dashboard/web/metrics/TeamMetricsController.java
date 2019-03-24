@@ -1,13 +1,11 @@
 package team.dashboard.web.metrics;
 
-import com.google.visualization.datasource.base.TypeMismatchException;
-import com.google.visualization.datasource.datatable.ColumnDescription;
-import com.google.visualization.datasource.datatable.DataTable;
-import com.google.visualization.datasource.datatable.TableCell;
-import com.google.visualization.datasource.datatable.TableRow;
-import com.google.visualization.datasource.datatable.value.DateValue;
-import com.google.visualization.datasource.datatable.value.ValueType;
-import com.google.visualization.datasource.render.JsonRenderer;
+import be.ceau.chart.color.Color;
+import be.ceau.chart.data.LineData;
+import be.ceau.chart.dataset.LineDataset;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -21,12 +19,10 @@ import team.dashboard.web.team.TeamRelation;
 import team.dashboard.web.team.TeamRestRepository;
 
 import javax.servlet.http.HttpServletResponse;
-import java.time.LocalDate;
-import java.time.Month;
-import java.time.format.TextStyle;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 
@@ -96,81 +92,85 @@ public class TeamMetricsController
         return null;
         }
 
-    private TableRow createTableRow(int year, int month, int dayOfMonth, double rowValue)
-        {
-        TableRow tr = new TableRow();
-
-        DateValue date = new DateValue(year, month - 1, dayOfMonth);
-
-        tr.addCell(new TableCell(date
-                , Month.of(month).getDisplayName(TextStyle.SHORT, Locale.ENGLISH) + ", " + year));
-        tr.addCell(rowValue);
-
-        return tr;
-        }
 
     @GetMapping("/{metricType}/{teamId}/")
     @ResponseBody
-    public String metrictrend(Model model, @PathVariable String metricType, @PathVariable String teamId) throws Exception
+    public String chartMetricTrend(Model model, @PathVariable String metricType, @PathVariable String teamId) throws Exception
         {
 
         TeamMetricType type = TeamMetricType.get(metricType);
+        ArrayList<String> labels = new ArrayList<>();
+        ArrayList<Double> metricData = new ArrayList<>();
 
-        DataTable data = new DataTable();
+        Team team = teamRepository.findByTeamSlug(teamId);
 
-        data.addColumn(new ColumnDescription("month", ValueType.DATE, "Month"));
-        data.addColumn(new ColumnDescription(type.getKey(), ValueType.NUMBER, type.getName()));
+        ArrayList<String> teams = new ArrayList<>();
+        teams.add(teamId);
+
+        for (TeamRelation child : team.getChildren())
+            {
+            teams.add(child.getSlug());
+            }
+
+        List<TeamMetricTrend> metrics = teamMetricRepository.getMonthlyChildMetrics(teams.toArray(new String[]{}), type);
+
+        for (TeamMetricTrend metric : metrics)
+            {
+
+            Double value;
+
+            if (TeamMetricType.AggMethod.AVG.equals(metric.getTeamMetricType().getMethod()))
+                {
+                value = metric.getAvg();
+                } else if (TeamMetricType.AggMethod.SUM.equals(metric.getTeamMetricType().getMethod()))
+                {
+                value = metric.getSum();
+                } else
+                {
+                throw new Exception("Unknown AggMethod type");
+                }
+
+            metricData.add(value);
+            labels.add(createDataPointLabel(metric.getYear(), metric.getMonth()));
+            }
+
+        LineDataset dataset = new LineDataset().setLabel(type.getName());
+        metricData.forEach(dataset::addData);
+        dataset.setFill(false);
+        dataset.setBackgroundColor(Color.TRANSPARENT);
+        dataset.setBorderColor(new Color(0, 123, 255));
+        dataset.setBorderWidth(4);
+        ArrayList<Color> pointsColors = new ArrayList<>();
+        pointsColors.add(new Color(0, 123, 255));
+        dataset.setPointBackgroundColor(pointsColors);
+
+        LineData data = new LineData()
+                .addLabels(labels.toArray(new String[]{}))
+                .addDataset(dataset);
+
+        ObjectWriter writer = new ObjectMapper()
+                .writerWithDefaultPrettyPrinter()
+                .forType(LineData.class);
 
         try
             {
-            ArrayList<TableRow> rows = new ArrayList<>();
-
-            Team team = teamRepository.findByTeamSlug(teamId);
-
-            ArrayList<String> teams = new ArrayList<>();
-            teams.add(teamId);
-
-            for (TeamRelation child : team.getChildren())
-                {
-                teams.add(child.getSlug());
-                }
-
-            List<TeamMetricTrend> metrics = teamMetricRepository.getMonthlyChildMetrics(teams.toArray(new String[]{}), type);
-
-            for (TeamMetricTrend metric : metrics)
-                {
-
-                Double value;
-
-                if (TeamMetricType.AggMethod.AVG.equals(metric.getTeamMetricType().getMethod()))
-                    {
-                    value = metric.getAvg();
-                    } else if (TeamMetricType.AggMethod.SUM.equals(metric.getTeamMetricType().getMethod()))
-                    {
-                    value = metric.getSum();
-                    } else
-                    {
-                    throw new Exception("Unknown AggMethod type");
-                    }
-
-                rows.add(createTableRow(metric.getYear(), metric.getMonth(), 1, value));
-                }
-
-            if (metrics.isEmpty())
-                {
-                LocalDate now = LocalDate.now();
-                rows.add(createTableRow(now.getYear(), now.getMonth().getValue(), now.getDayOfMonth(), 0));
-                }
-
-            data.addRows(rows);
-
-            } catch (TypeMismatchException e)
+            return writer.writeValueAsString(data);
+            } catch (JsonProcessingException e)
             {
-            System.out.print(e);
+            throw new RuntimeException(e);
             }
+        }
 
-        return JsonRenderer.renderDataTable(data, true, true, false).toString();
+    private String createDataPointLabel(int year, int month)
+        {
 
+        LocalDateTime date = LocalDateTime.of(year, month, 1, 0, 0);
+
+        ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT);
+
+        ZonedDateTime zonedDateTime = ZonedDateTime.of(date, ZoneId.of("Europe/London"));
+
+        return zonedDateTime.format(DateTimeFormatter.ISO_INSTANT);
         }
 
     @GetMapping(value = "/capture/{slug}/")

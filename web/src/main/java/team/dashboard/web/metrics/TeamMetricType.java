@@ -2,7 +2,7 @@ package team.dashboard.web.metrics;
 
 public enum TeamMetricType
     {
-        CYCLE_TIME("cycletime", "Cycle Time", AggMethod.AVG),
+        CYCLE_TIME("cycletime", "Average Cycle Time", AggMethod.AVG),
         DEPLOYMENT_FREQUENCY("deployment_frequency", "Deployment Frequency", AggMethod.AVG),
         INCIDENTS_DUE_TO_CHANGE("incidents_due_to_change", "Incidents due to change", AggMethod.SUM),
         PRODUCTION_DEFECTS("production_defects", "Production Defects", AggMethod.SUM),
