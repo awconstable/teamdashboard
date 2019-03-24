@@ -36,13 +36,13 @@
               <div class="sidebar-sticky">
                   <ul class="nav flex-column">
                       <li class="nav-item">
-                          <a class="nav-link active" href="#">
+                          <a class="nav-link active" id="dashboard-link">
                               <span data-feather="bar-chart-2"></span>
                               Dashboard <span class="sr-only">(current)</span>
                           </a>
                       </li>
                       <li class="nav-item">
-                          <a class="nav-link" th:href="@{/metrics/capture/{slug}/(slug=${slug})}">
+                          <a class="nav-link" id="capture-link">
                               <span data-feather="upload"></span>
                               Capture
                           </a>
@@ -52,40 +52,72 @@
           </nav>
 
           <main class="col-md-9 ml-sm-auto col-lg-10 px-4" role="main">
-              <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                  <h1 class="h2">Dashboard</h1>
-                  <div class="btn-toolbar mb-2 mb-md-0">
-                      <div class="btn-group mr-2">
-                          <button class="btn btn-sm btn-outline-secondary" type="button">Share</button>
-                          <button class="btn btn-sm btn-outline-secondary" type="button">Export</button>
+              <div class="d-block" id="dashboard-content">
+                  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                      <h1 class="h2">Dashboard</h1>
+                      <div class="btn-toolbar mb-2 mb-md-0">
+                          <div class="btn-group mr-2">
+                              <button class="btn btn-sm btn-outline-secondary" id="refresh-button" type="button"><span
+                                      data-feather="refresh-cw"></span></button>
+                              <button class="btn btn-sm btn-outline-secondary" type="button">Export</button>
+                          </div>
+                          <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button">
+                              <span data-feather="calendar"></span>
+                              This week
+                          </button>
                       </div>
-                      <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button">
-                          <span data-feather="calendar"></span>
-                          This week
-                      </button>
+                  </div>
+                  <div class="container">
+                      <div class="row">
+                          <div class="col">
+                              <canvas class="my-4" id="chart1"></canvas>
+                          </div>
+                          <div class="col">
+                              <canvas class="my-4" id="chart2"></canvas>
+                          </div>
+                          <div class="col">
+                              <canvas class="my-4" id="chart3"></canvas>
+                          </div>
+                          <div class="w-100"></div>
+                          <div class="col">
+                              <canvas class="my-4" id="chart4"></canvas>
+                          </div>
+                          <div class="col">
+                              <canvas class="my-4" id="chart5"></canvas>
+                          </div>
+                          <div class="col">
+                              <canvas class="my-4" id="chart6"></canvas>
+                          </div>
+                      </div>
                   </div>
               </div>
-              <div class="container">
-                  <div class="row">
-                      <div class="col">
-                          <canvas class="my-4" id="chart1"></canvas>
-                      </div>
-                      <div class="col">
-                          <canvas class="my-4" id="chart2"></canvas>
-                      </div>
-                      <div class="col">
-                          <canvas class="my-4" id="chart3"></canvas>
-                      </div>
-                      <div class="w-100"></div>
-                      <div class="col">
-                          <canvas class="my-4" id="chart4"></canvas>
-                      </div>
-                      <div class="col">
-                          <canvas class="my-4" id="chart5"></canvas>
-                      </div>
-                      <div class="col">
-                          <canvas class="my-4" id="chart6"></canvas>
-                      </div>
+              <div class="d-none" id="capture-content">
+                  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                      <h1 class="h2">Metric Capture</h1>
+                  </div>
+                  <div class="container">
+                      <form id="metric_capture">
+                          <label for="date">Date</label><input id="date" name="date" type="text">
+                          <label for="cycletime">Cycle Time (days)</label><input id="cycletime" name="cycletime"
+                                                                                 type="text">
+                          <label for="deployment_frequency">Deployment Frequency (days)</label><input
+                              id="deployment_frequency" name="deployment_frequency"
+                              type="text">
+                          <label for="incidents_due_to_change">Incidents due to change</label><input
+                              id="incidents_due_to_change" name="incidents_due_to_change"
+                              type="text">
+                          <label for="production_defects">Production Defects</label><input id="production_defects"
+                                                                                           name="production_defects"
+                                                                                           type="text">
+                          <label for="team_happiness">Team Happiness</label><input id="team_happiness"
+                                                                                   name="team_happiness"
+                                                                                   type="text">
+                          <label for="customer_satisfaction">Customer Satisfaction</label><input
+                              id="customer_satisfaction"
+                              name="customer_satisfaction"
+                              type="text">
+                          <input type="submit" value="Submit">
+                      </form>
                   </div>
               </div>
           </main>
