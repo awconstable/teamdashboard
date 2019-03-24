@@ -174,7 +174,7 @@ public class TeamMetricsController
         }
 
     @GetMapping(value = "/capture/{slug}/")
-    public String graph(Model model, @PathVariable String slug)
+    public String capture(Model model, @PathVariable String slug)
         {
         model.addAttribute("slug", slug);
         return "capture";

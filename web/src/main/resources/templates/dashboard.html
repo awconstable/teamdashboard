@@ -7,6 +7,7 @@
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
     <title>Team Dashboard</title>
     <link href='/webjars/bootstrap/css/bootstrap.min.css' rel='stylesheet'>
+      <link href='/static/css/dashboard.css' rel='stylesheet'>
     <script th:inline="javascript">
         /*<![CDATA[*/
 
@@ -17,12 +18,55 @@
     </script>
   </head>
   <body>
-  <a href="/"><span>Root</span></a>
-  <span th:each="ancestor : ${ancestors}"><a th:href="@{/dashboard/{slug}/(slug=${ancestor.slug})}"><span
-          th:text="${ancestor.name}"></span></a> </span>
-  <h1>Team: <span th:text="${team.name}"></span></h1>
-  <div><a th:href="@{/metrics/capture/{slug}/(slug=${slug})}"><span>Submit Metrics</span></a></div>
-  <table>
+  <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+      <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#"><span th:text="${team.name}"></span></a>
+      <a href="/"><span>Root</span></a>
+      <span th:each="ancestor : ${ancestors}">
+    <a th:href="@{/dashboard/{slug}/(slug=${ancestor.slug})}">
+    <span th:text="${ancestor.name}"></span></a> </span>
+      <ul class="navbar-nav px-3">
+          <li class="nav-item text-nowrap">
+              <a class="nav-link" href="#">Sign out</a>
+          </li>
+      </ul>
+  </nav>
+  <div class="container-fluid">
+      <div class="row">
+          <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+              <div class="sidebar-sticky">
+                  <ul class="nav flex-column">
+                      <li class="nav-item">
+                          <a class="nav-link active" href="#">
+                              <span data-feather="bar-chart-2"></span>
+                              Dashboard <span class="sr-only">(current)</span>
+                          </a>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link" th:href="@{/metrics/capture/{slug}/(slug=${slug})}">
+                              <span data-feather="upload"></span>
+                              Capture
+                          </a>
+                      </li>
+                  </ul>
+              </div>
+          </nav>
+
+          <main class="col-md-9 ml-sm-auto col-lg-10 px-4" role="main">
+              <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                  <h1 class="h2">Dashboard</h1>
+                  <div class="btn-toolbar mb-2 mb-md-0">
+                      <div class="btn-group mr-2">
+                          <button class="btn btn-sm btn-outline-secondary" type="button">Share</button>
+                          <button class="btn btn-sm btn-outline-secondary" type="button">Export</button>
+                      </div>
+                      <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button">
+                          <span data-feather="calendar"></span>
+                          This week
+                      </button>
+                  </div>
+              </div>
+
+              <table>
     <tr>
       <td>
         <div id="linechart_cycletime" style="width: 400px; height: 300px"></div>
@@ -46,204 +90,16 @@
         </td>
     </tr>
   </table>
+          </main>
+      </div>
+  </div>
+
   <script src="https://www.gstatic.com/charts/loader.js" type="text/javascript"></script>
   <script src="/webjars/jquery/jquery.min.js" type="text/javascript"></script>
   <script src="/webjars/popper.js/umd/popper.min.js" type="text/javascript"></script>
   <script src="/webjars/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-  <script type="text/javascript">
+  <script src="/webjars/feather-icons/dist/feather.js"></script>
 
-    $(document).ready(function () {
-      google.charts.load('current', {'packages': ['line']});
-      google.charts.setOnLoadCallback(loadCharts);
-    });
-
-    function loadTrendData(url, slug) {
-      return $.ajax({
-        url: "/metrics" + url + slug + "/",
-        dataType: "json"
-      });
-    }
-
-    function loadCharts() {
-
-      loadTrendData("/cycletime/", team).done(drawCycleTimeChart);
-      loadTrendData("/deployment_frequency/", team).done(drawDeploymentFrequencyChart);
-      loadTrendData("/incidents_due_to_change/", team).done(drawIncidentsDueToChangeChart);
-      loadTrendData("/production_defects/", team).done(drawProductionDefectsChart);
-      loadTrendData("/team_happiness/", team).done(drawTeamHappinessChart);
-      loadTrendData("/customer_satisfaction/", team).done(drawCustomerSatisfactionChart);
-    }
-
-    function drawCycleTimeChart(data) {
-
-      var dataTable = new google.visualization.DataTable(data);
-
-      var options = {
-        chart: {
-          title: 'Average Cycle Time'
-        },
-        legend: {
-          position: 'none'
-        },
-        width: 400,
-        height: 300,
-        series: {
-          // Gives each series an axis name that matches the Y-axis below.
-          0: {targetAxisIndex: 0}
-        },
-        vAxes: {
-          // Adds titles to each axis.
-          0: {title: 'Average Cycle Time (days)', viewWindow: {min: 0}}
-        },
-        colors: ['orange']
-      };
-
-      var chart = new google.charts.Line(document.getElementById('linechart_cycletime'));
-
-      chart.draw(dataTable, google.charts.Line.convertOptions(options));
-    }
-
-    function drawDeploymentFrequencyChart(data) {
-
-      var dataTable = new google.visualization.DataTable(data);
-
-      var options = {
-        chart: {
-          title: 'Deployment Frequency'
-        },
-        legend: {
-          position: 'none'
-        },
-        width: 400,
-        height: 300,
-        series: {
-          // Gives each series an axis name that matches the Y-axis below.
-          0: {targetAxisIndex: 0}
-        },
-        vAxes: {
-          // Adds titles to each axis.
-          0: {title: 'Deployment Frequency (days)', viewWindow: {min: 0}}
-        },
-        colors: ['green']
-      };
-
-      var chart = new google.charts.Line(document.getElementById('linechart_deployment_frequency'));
-
-      chart.draw(dataTable, google.charts.Line.convertOptions(options));
-    }
-
-    function drawIncidentsDueToChangeChart(data) {
-
-      var dataTable = new google.visualization.DataTable(data);
-
-      var options = {
-        chart: {
-          title: 'Incidents due to change'
-        },
-        legend: {
-          position: 'none'
-        },
-        width: 400,
-        height: 300,
-        series: {
-          // Gives each series an axis name that matches the Y-axis below.
-          0: {targetAxisIndex: 0}
-        },
-        vAxes: {
-          // Adds titles to each axis.
-          0: {title: 'Incidents due to change', viewWindow: {min: 0}}
-        },
-        colors: ['red']
-      };
-
-      var chart = new google.charts.Line(document.getElementById('linechart_incidents_due_to_change'));
-
-      chart.draw(dataTable, google.charts.Line.convertOptions(options));
-    }
-
-    function drawProductionDefectsChart(data) {
-
-      var dataTable = new google.visualization.DataTable(data);
-
-      var options = {
-        chart: {
-          title: 'Production Defects'
-        },
-        legend: {
-          position: 'none'
-        },
-        width: 400,
-        height: 300,
-        series: {
-          // Gives each series an axis name that matches the Y-axis below.
-          0: {targetAxisIndex: 0}
-        },
-        vAxes: {
-          // Adds titles to each axis.
-          0: {title: 'Production Defects', viewWindow: {min: 0}}
-        }
-      };
-
-      var chart = new google.charts.Line(document.getElementById('linechart_production_defects'));
-
-      chart.draw(dataTable, google.charts.Line.convertOptions(options));
-    }
-
-    function drawTeamHappinessChart(data) {
-
-      var dataTable = new google.visualization.DataTable(data);
-
-      var options = {
-        chart: {
-          title: 'Team Happiness'
-        },
-        legend: {
-          position: 'none'
-        },
-        width: 400,
-        height: 300,
-        series: {
-          // Gives each series an axis name that matches the Y-axis below.
-          0: {targetAxisIndex: 0}
-        },
-        vAxes: {
-          // Adds titles to each axis.
-          0: {title: 'Team Happiness', viewWindow: {min: 0}}
-        }
-      };
-
-      var chart = new google.charts.Line(document.getElementById('linechart_team_happiness'));
-
-      chart.draw(dataTable, google.charts.Line.convertOptions(options));
-    }
-
-    function drawCustomerSatisfactionChart(data) {
-
-      var dataTable = new google.visualization.DataTable(data);
-
-      var options = {
-        chart: {
-          title: 'Customer Satisfaction'
-        },
-        legend: {
-          position: 'none'
-        },
-        width: 400,
-        height: 300,
-        series: {
-          // Gives each series an axis name that matches the Y-axis below.
-          0: {targetAxisIndex: 0}
-        },
-        vAxes: {
-          // Adds titles to each axis.
-          0: {title: 'Customer Satisfaction', viewWindow: {min: 0}}
-        }
-      };
-
-      var chart = new google.charts.Line(document.getElementById('linechart_customer_satisfaction'));
-
-      chart.draw(dataTable, google.charts.Line.convertOptions(options));
-    }
-  </script>
+  <script src="/static/js/dashboard.js" type="text/javascript"></script>
   </body>
 </html>
