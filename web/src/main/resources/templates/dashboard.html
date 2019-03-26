@@ -20,21 +20,18 @@
   <body>
   <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
       <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#"><span th:text="${team.name}"></span></a>
-      <a href="/"><span>Root</span></a>
-      <span th:each="ancestor : ${ancestors}">
-    <a th:href="@{/dashboard/{slug}/(slug=${ancestor.slug})}">
-    <span th:text="${ancestor.name}"></span></a> </span>
-      <ul class="navbar-nav px-3">
-          <li class="nav-item text-nowrap">
-              <a class="nav-link" href="#">Sign out</a>
-          </li>
-      </ul>
   </nav>
   <div class="container-fluid">
       <div class="row">
           <nav class="col-md-2 d-none d-md-block bg-light sidebar">
               <div class="sidebar-sticky">
                   <ul class="nav flex-column">
+                      <li class="nav-item">
+                          <a class="nav-link" href="/" id="teamexplorer-link">
+                              <span data-feather="home"></span>
+                              Team Explorer
+                          </a>
+                      </li>
                       <li class="nav-item">
                           <a class="nav-link active" id="dashboard-link">
                               <span data-feather="bar-chart-2"></span>
@@ -59,12 +56,7 @@
                           <div class="btn-group mr-2">
                               <button class="btn btn-sm btn-outline-secondary" id="refresh-button" type="button"><span
                                       data-feather="refresh-cw"></span></button>
-                              <button class="btn btn-sm btn-outline-secondary" type="button">Export</button>
                           </div>
-                          <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button">
-                              <span data-feather="calendar"></span>
-                              This week
-                          </button>
                       </div>
                   </div>
                   <div class="container">
@@ -96,28 +88,58 @@
                       <h1 class="h2">Metric Capture</h1>
                   </div>
                   <div class="container">
-                      <form id="metric_capture">
-                          <label for="date">Date</label><input id="date" name="date" type="text">
-                          <label for="cycletime">Cycle Time (days)</label><input id="cycletime" name="cycletime"
-                                                                                 type="text">
-                          <label for="deployment_frequency">Deployment Frequency (days)</label><input
-                              id="deployment_frequency" name="deployment_frequency"
-                              type="text">
-                          <label for="incidents_due_to_change">Incidents due to change</label><input
-                              id="incidents_due_to_change" name="incidents_due_to_change"
-                              type="text">
-                          <label for="production_defects">Production Defects</label><input id="production_defects"
-                                                                                           name="production_defects"
-                                                                                           type="text">
-                          <label for="team_happiness">Team Happiness</label><input id="team_happiness"
-                                                                                   name="team_happiness"
-                                                                                   type="text">
-                          <label for="customer_satisfaction">Customer Satisfaction</label><input
-                              id="customer_satisfaction"
-                              name="customer_satisfaction"
-                              type="text">
-                          <input type="submit" value="Submit">
-                      </form>
+                      <div class="col-md-8">
+                          <form id="metric_capture">
+                              <div class="row">
+                                  <div class="mb-3">
+                                      <label for="date">Date</label>
+                                      <input class="form-control" id="date" name="date" type="text">
+                                  </div>
+                              </div>
+                              <div class="row">
+                                  <div class="mb-3">
+                                      <label for="cycletime">Cycle Time (days)</label>
+                                      <input class="form-control" id="cycletime" name="cycletime" type="text">
+                                  </div>
+                              </div>
+                              <div class="row">
+                                  <div class="mb-3">
+                                      <label for="deployment_frequency">Deployment Frequency (days)</label>
+                                      <input class="form-control" id="deployment_frequency" name="deployment_frequency"
+                                             type="text">
+                                  </div>
+                              </div>
+                              <div class="row">
+                                  <div class="mb-3">
+                                      <label for="incidents_due_to_change">Incidents due to change</label>
+                                      <input class="form-control" id="incidents_due_to_change"
+                                             name="incidents_due_to_change" type="text">
+                                  </div>
+                              </div>
+                              <div class="row">
+                                  <div class="mb-3">
+                                      <label for="production_defects">Production Defects</label>
+                                      <input class="form-control" id="production_defects" name="production_defects"
+                                             type="text">
+                                  </div>
+                              </div>
+                              <div class="row">
+                                  <div class="mb-3">
+                                      <label for="team_happiness">Team Happiness</label>
+                                      <input class="form-control" id="team_happiness" name="team_happiness" type="text">
+                                  </div>
+                              </div>
+                              <div class="row">
+                                  <div class="mb-3">
+                                      <label for="customer_satisfaction">Customer Satisfaction</label>
+                                      <input class="form-control" id="customer_satisfaction"
+                                             name="customer_satisfaction" type="text">
+                                  </div>
+                              </div>
+                              <hr class="mb-4">
+                              <input class="btn btn-primary btn-lg btn-block" type="submit" value="Submit">
+                          </form>
+                      </div>
                   </div>
               </div>
           </main>
