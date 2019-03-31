@@ -1,4 +1,4 @@
-package team.dashboard.web.metrics;
+package team.dashboard.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/dashboard")
-public class DashboardController
+@RequestMapping("/")
+public class RootController
     {
 
     @GetMapping("/*")
@@ -15,5 +15,11 @@ public class DashboardController
         {
         return "dashboard";
         }
-    }
 
+    @GetMapping(value = "/capture/*")
+    public String capture(Model model)
+        {
+        return "dashboard";
+        }
+
+    }

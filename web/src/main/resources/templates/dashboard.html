@@ -1,6 +1,6 @@
 <!doctype html>
 
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta charset="UTF-8">
@@ -8,18 +8,10 @@
     <title>Team Dashboard</title>
     <link href='/webjars/bootstrap/css/bootstrap.min.css' rel='stylesheet'>
       <link href='/static/css/dashboard.css' rel='stylesheet'>
-    <script th:inline="javascript">
-        /*<![CDATA[*/
-
-        var team = /*[[${slug}]]*/ 'all';
-        console.log('team: ' + team);
-
-        /*]]>*/
-    </script>
   </head>
   <body>
   <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-      <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#"><span th:text="${team.name}"></span></a>
+      <span class="navbar-brand col-sm-3 col-md-2 mr-0" id="team-name"></span>
   </nav>
   <div class="container-fluid">
       <div class="row">
@@ -27,15 +19,15 @@
               <div class="sidebar-sticky">
                   <ul class="nav flex-column">
                       <li class="nav-item">
-                          <a class="nav-link" href="/" id="teamexplorer-link">
+                          <a class="nav-link" id="teamexplorer-link">
                               <span data-feather="home"></span>
                               Team Explorer
                           </a>
                       </li>
                       <li class="nav-item">
-                          <a class="nav-link active" id="dashboard-link">
+                          <a class="nav-link" id="dashboard-link">
                               <span data-feather="bar-chart-2"></span>
-                              Dashboard <span class="sr-only">(current)</span>
+                              Dashboard
                           </a>
                       </li>
                       <li class="nav-item">
@@ -49,12 +41,30 @@
           </nav>
 
           <main class="col-md-9 ml-sm-auto col-lg-10 px-4" role="main">
-              <div class="d-block" id="dashboard-content">
+              <div class="d-none" id="teamexplorer-content">
+                  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                      <h1 class="h2">Team Explorer</h1>
+                      <div class="btn-toolbar mb-2 mb-md-0">
+                          <div class="btn-group mr-2">
+                              <button class="btn btn-sm btn-outline-secondary" id="teamexplorer-refresh-button"
+                                      type="button"><span
+                                      data-feather="refresh-cw"></span></button>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="container">
+                      <ul class="list-group" id="team-heirarchy-list">
+
+                      </ul>
+                  </div>
+              </div>
+              <div class="d-none" id="dashboard-content">
                   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                       <h1 class="h2">Dashboard</h1>
                       <div class="btn-toolbar mb-2 mb-md-0">
                           <div class="btn-group mr-2">
-                              <button class="btn btn-sm btn-outline-secondary" id="refresh-button" type="button"><span
+                              <button class="btn btn-sm btn-outline-secondary" id="dashboard-refresh-button"
+                                      type="button"><span
                                       data-feather="refresh-cw"></span></button>
                           </div>
                       </div>

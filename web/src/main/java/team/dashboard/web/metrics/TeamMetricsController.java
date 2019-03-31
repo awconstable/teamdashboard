@@ -173,11 +173,4 @@ public class TeamMetricsController
         return zonedDateTime.format(DateTimeFormatter.ISO_INSTANT);
         }
 
-    @GetMapping(value = "/capture/{slug}/")
-    public String capture(Model model, @PathVariable String slug)
-        {
-        model.addAttribute("slug", slug);
-        return "capture";
-        }
-
     }

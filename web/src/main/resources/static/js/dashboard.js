@@ -1,12 +1,64 @@
+function findTeamFromUrl() {
+    var parts = window.location.pathname.split('/');
+
+    if (parts) {
+        if (parts[2] !== "") {
+            return parts[2];
+        }
+    }
+
+    return "all";
+}
+
+function findModeFromUrl() {
+    var parts = window.location.pathname.split('/');
+
+    if (parts) {
+        if (parts[1] !== "") {
+            return parts[1];
+        }
+    }
+
+    return "teamexplorer";
+}
+
+var mode = findModeFromUrl();
+var team = findTeamFromUrl();
+console.log('team: ' + team);
+
 $(document).ready(function () {
+
+    window.onpopstate = function (e) {
+        if (e.state) {
+            document.title = e.state.pageTitle;
+            mode = findModeFromUrl();
+            team = findTeamFromUrl();
+            processPageEntry();
+        }
+    };
+
     feather.replace();
 
-    loadGraphs();
+    processPageEntry();
 
     $("#date").datepicker({
         dateFormat: "yy-mm-dd"
     });
 });
+
+function processPageEntry() {
+    if (mode && mode === 'dashboard') {
+        selectDashboard(false, team);
+    } else if (mode && mode === 'capture') {
+        selectCapture(false, team);
+    } else {
+        selectTeamExplorer(false);
+    }
+}
+
+function loadTeams() {
+    loadTeamHierarchy().done(layoutTeamHierarchy);
+}
 
 function loadGraphs() {
     loadTrendData("/cycletime/", team).done(drawCycleTimeChart);
@@ -44,29 +96,136 @@ frm.submit(function (e) {
 
 });
 
-var captureLinkElem = $("#capture-link");
+var teamExplorerLinkElem = $("#teamexplorer-link");
 var dashboardLinkElem = $("#dashboard-link");
-var captureContentElem = $("#capture-content");
-var dashboardContentElem = $("#dashboard-content");
+var captureLinkElem = $("#capture-link");
 
-captureLinkElem.click(function () {
-    captureLinkElem.addClass("active");
-    dashboardLinkElem.removeClass("active");
-    captureContentElem.removeClass("d-none").addClass("d-block");
-    dashboardContentElem.removeClass("d-block").addClass("d-none");
+var teamExplorerContentElem = $("#teamexplorer-content");
+var dashboardContentElem = $("#dashboard-content");
+var captureContentElem = $("#capture-content");
+
+var teamNameElem = $("#team-name");
+
+teamExplorerLinkElem.click(function () {
+    selectTeamExplorer(true);
 });
 
 dashboardLinkElem.click(function () {
-    loadGraphs();
-    captureLinkElem.removeClass("active");
-    dashboardLinkElem.addClass("active");
-    captureContentElem.addClass("d-none").removeClass("d-block");
-    dashboardContentElem.addClass("d-block").removeClass("d-none");
+    selectDashboard(true, team);
 });
 
-$("#refresh-button").click(function () {
+captureLinkElem.click(function () {
+    selectCapture(true, team);
+});
+
+function selectTeamExplorer(updateHistory) {
+    if (updateHistory) {
+        history.pushState({"pageTitle": 'Team Explorer'}, null, '/teamexplorer/');
+    } else {
+        history.replaceState({"pageTitle": 'Team Explorer'}, null, '/teamexplorer/');
+    }
+
+    loadTeams();
+
+    teamNameElem.text("Root");
+    teamExplorerLinkElem.addClass("active");
+    dashboardLinkElem.removeClass("active");
+    captureLinkElem.removeClass("active");
+
+    teamExplorerContentElem.removeClass("d-none").addClass("d-block");
+    dashboardContentElem.removeClass("d-block").addClass("d-none");
+    captureContentElem.removeClass("d-block").addClass("d-none");
+}
+
+function selectDashboard(updateHistory, slug) {
+
+    if (updateHistory) {
+        history.pushState({"pageTitle": 'Dashboard - ' + slug}, null, '/dashboard/' + slug);
+    } else {
+        history.replaceState({"pageTitle": 'Dashboard - ' + slug}, null, '/dashboard/' + slug);
+    }
+
+    teamNameElem.text(slug);
+    loadGraphs();
+
+    teamExplorerLinkElem.removeClass("active");
+    dashboardLinkElem.addClass("active");
+    captureLinkElem.removeClass("active");
+
+    teamExplorerContentElem.removeClass("d-block").addClass("d-none");
+    dashboardContentElem.removeClass("d-none").addClass("d-block");
+    captureContentElem.removeClass("d-block").addClass("d-none");
+}
+
+function selectCapture(updateHistory, slug) {
+
+    if (updateHistory) {
+        history.pushState({"pageTitle": 'Capture - ' + slug}, null, '/capture/' + slug);
+    } else {
+        history.replaceState({"pageTitle": 'Capture - ' + slug}, null, '/capture/' + slug);
+    }
+
+    teamNameElem.text(slug);
+    teamExplorerLinkElem.removeClass("active");
+    dashboardLinkElem.removeClass("active");
+    captureLinkElem.addClass("active");
+
+    teamExplorerContentElem.removeClass("d-block").addClass("d-none");
+    dashboardContentElem.removeClass("d-block").addClass("d-none");
+    captureContentElem.removeClass("d-none").addClass("d-block");
+}
+
+$("#teamexplorer-refresh-button").click(function () {
+    loadTeamHierarchy();
+});
+
+$("#dashboard-refresh-button").click(function () {
     loadGraphs();
 });
+
+function loadTeamHierarchy() {
+    return $.ajax({
+        url: "/teams",
+        dataType: "json"
+    });
+}
+
+function layoutTeamHierarchy(data) {
+
+    console.log("teams : " + data);
+
+    var teamHeirarchyElem = $('#team-heirarchy-list');
+    teamHeirarchyElem.empty();
+    var htmlToAppend = "";
+    data.forEach(function (x) {
+        htmlToAppend += "<li class=\"list-group-item\"><a href=\"/dashboard/" + x.slug + "\"><span>" + x.name + "</span></a>";
+        htmlToAppend += layoutChild(x.slug, x.children);
+        htmlToAppend += ("</li>");
+    });
+    teamHeirarchyElem.append(htmlToAppend);
+    feather.replace();
+
+}
+
+function layoutChild(slug, children) {
+    if (!children) {
+        return "";
+    }
+    console.log("children: " + children);
+    var html = "<ul class=\"list-group\">";
+
+    children.forEach(function (child) {
+        if (child.slug !== slug) {
+
+            html += "<li class=\"list-group-item\"><a href=\"/dashboard/" + child.slug + "\"><span data-feather=\"corner-down-right\"></span>" + child.slug + "</a></li>";
+            html += layoutChild(child.slug, child.children, html);
+            html += "</li>";
+        }
+    });
+
+    html += "</ul>";
+    return html;
+}
 
 $("#date").change(function () {
     $("#metric_capture input[type=text]").each(function () {
@@ -186,5 +345,5 @@ function drawCustomerSatisfactionChart(data) {
     var ctx = $('#chart6');
 
     new Chart(ctx, getChartConfig(data, "Customer Satisfaction", "CSAT Index"));
-    
+
 }
