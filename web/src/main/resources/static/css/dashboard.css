@@ -104,3 +104,13 @@ body {
     border-color: transparent;
     box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
 }
+
+.list-group-hierarchy {
+    padding-left: 30px;
+}
+
+.no-border {
+    border: none;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}

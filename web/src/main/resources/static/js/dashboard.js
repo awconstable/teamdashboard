@@ -7,7 +7,7 @@ function findTeamFromUrl() {
         }
     }
 
-    return "all";
+    return null;
 }
 
 function findModeFromUrl() {
@@ -22,9 +22,8 @@ function findModeFromUrl() {
     return "teamexplorer";
 }
 
-var mode = findModeFromUrl();
-var team = findTeamFromUrl();
-console.log('team: ' + team);
+var mode = null;
+var team = null;
 
 $(document).ready(function () {
 
@@ -39,10 +38,13 @@ $(document).ready(function () {
 
     feather.replace();
 
+    mode = findModeFromUrl();
+    team = findTeamFromUrl();
+
     processPageEntry();
 
     $("#date").datepicker({
-        dateFormat: "yy-mm-dd"
+        format: "yyyy-mm-dd"
     });
 });
 
@@ -111,11 +113,15 @@ teamExplorerLinkElem.click(function () {
 });
 
 dashboardLinkElem.click(function () {
-    selectDashboard(true, team);
+    if (team) {
+        selectDashboard(true, team);
+    }
 });
 
 captureLinkElem.click(function () {
-    selectCapture(true, team);
+    if (team) {
+        selectCapture(true, team);
+    }
 });
 
 function selectTeamExplorer(updateHistory) {
@@ -127,7 +133,8 @@ function selectTeamExplorer(updateHistory) {
 
     loadTeams();
 
-    teamNameElem.text("Root");
+    loadTeam(team).done(updateTeamName);
+
     teamExplorerLinkElem.addClass("active");
     dashboardLinkElem.removeClass("active");
     captureLinkElem.removeClass("active");
@@ -145,7 +152,7 @@ function selectDashboard(updateHistory, slug) {
         history.replaceState({"pageTitle": 'Dashboard - ' + slug}, null, '/dashboard/' + slug);
     }
 
-    teamNameElem.text(slug);
+    loadTeam(slug).done(updateTeamName);
     loadGraphs();
 
     teamExplorerLinkElem.removeClass("active");
@@ -165,7 +172,8 @@ function selectCapture(updateHistory, slug) {
         history.replaceState({"pageTitle": 'Capture - ' + slug}, null, '/capture/' + slug);
     }
 
-    teamNameElem.text(slug);
+    loadTeam(slug).done(updateTeamName);
+
     teamExplorerLinkElem.removeClass("active");
     dashboardLinkElem.removeClass("active");
     captureLinkElem.addClass("active");
@@ -173,6 +181,14 @@ function selectCapture(updateHistory, slug) {
     teamExplorerContentElem.removeClass("d-block").addClass("d-none");
     dashboardContentElem.removeClass("d-block").addClass("d-none");
     captureContentElem.removeClass("d-none").addClass("d-block");
+}
+
+function updateTeamName(data) {
+
+    if (!data) {
+        teamNameElem.text("");
+    }
+    teamNameElem.text(data.name);
 }
 
 $("#teamexplorer-refresh-button").click(function () {
@@ -190,15 +206,20 @@ function loadTeamHierarchy() {
     });
 }
 
-function layoutTeamHierarchy(data) {
+function loadTeam(slug) {
+    return $.ajax({
+        url: "/teams/" + slug,
+        dataType: "json"
+    });
+}
 
-    console.log("teams : " + data);
+function layoutTeamHierarchy(data) {
 
     var teamHeirarchyElem = $('#team-heirarchy-list');
     teamHeirarchyElem.empty();
     var htmlToAppend = "";
     data.forEach(function (x) {
-        htmlToAppend += "<li class=\"list-group-item\"><a href=\"/dashboard/" + x.slug + "\"><span>" + x.name + "</span></a>";
+        htmlToAppend += "<li class=\"list-group-item no-border\"><a href=\"/dashboard/" + x.slug + "\"><span>" + x.name + "</span></a>";
         htmlToAppend += layoutChild(x.slug, x.children);
         htmlToAppend += ("</li>");
     });
@@ -211,13 +232,12 @@ function layoutChild(slug, children) {
     if (!children) {
         return "";
     }
-    console.log("children: " + children);
-    var html = "<ul class=\"list-group\">";
+    var html = "<ul class=\"list-group list-group-hierarchy no-border\">";
 
     children.forEach(function (child) {
         if (child.slug !== slug) {
 
-            html += "<li class=\"list-group-item\"><a href=\"/dashboard/" + child.slug + "\"><span data-feather=\"corner-down-right\"></span>" + child.slug + "</a></li>";
+            html += "<li class=\"list-group-item no-border\"><a href=\"/dashboard/" + child.slug + "\"><span data-feather=\"corner-down-right\"></span>" + child.slug + "</a></li>";
             html += layoutChild(child.slug, child.children, html);
             html += "</li>";
         }
