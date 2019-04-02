@@ -237,7 +237,7 @@ function layoutChild(slug, children) {
     children.forEach(function (child) {
         if (child.slug !== slug) {
 
-            html += "<li class=\"list-group-item no-border\"><a href=\"/dashboard/" + child.slug + "\"><span data-feather=\"corner-down-right\"></span>" + child.slug + "</a></li>";
+            html += "<li class=\"list-group-item no-border\"><a href=\"/dashboard/" + child.slug + "\"><span data-feather=\"corner-down-right\"></span>" + child.name + "</a></li>";
             html += layoutChild(child.slug, child.children, html);
             html += "</li>";
         }
