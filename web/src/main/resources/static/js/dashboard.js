@@ -323,7 +323,7 @@ function loadTrendData(url, slug) {
     });
 }
 
-function getChartConfig(data, title, yAxisLabel) {
+function getChartConfig(data, title, yAxisLabel1) {
     return {
         type: 'line',
         data: data,
@@ -339,11 +339,28 @@ function getChartConfig(data, title, yAxisLabel) {
                 yAxes: [{
                     scaleLabel: {
                         display: true,
-                        labelString: yAxisLabel
+                        labelString: yAxisLabel1
                     },
                     type: "linear",
                     ticks: {
                         beginAtZero: true
+                    },
+                    position: "left",
+                    id: "y-axis-1"
+                }, {
+                    scaleLabel: {
+                        display: true,
+                        labelString: "Metric Count"
+                    },
+                    type: "linear",
+                    ticks: {
+                        beginAtZero: true,
+                        stepSize: 1
+                    },
+                    position: "right",
+                    id: "y-axis-2",
+                    gridLines: {
+                        drawOnChartArea: false
                     }
                 }],
                 xAxes: [{

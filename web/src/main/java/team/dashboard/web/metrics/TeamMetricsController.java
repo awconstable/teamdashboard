@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -101,6 +102,7 @@ public class TeamMetricsController
         TeamMetricType type = TeamMetricType.get(metricType);
         ArrayList<String> labels = new ArrayList<>();
         ArrayList<Double> metricData = new ArrayList<>();
+        ArrayList<Integer> metricCount = new ArrayList<>();
 
         Team team = teamRepository.findByTeamSlug(teamId);
 
@@ -121,6 +123,8 @@ public class TeamMetricsController
 
             lineColour = metric.getTeamMetricType().getGraphColour();
 
+            metricCount.add(metric.getCount());
+
             Double value;
 
             if (TeamMetricType.AggMethod.AVG.equals(metric.getTeamMetricType().getMethod()))
@@ -138,6 +142,7 @@ public class TeamMetricsController
             labels.add(createDataPointLabel(metric.getYear(), metric.getMonth()));
             }
 
+        //Metric data
         LineDataset dataset = new LineDataset().setLabel(type.getName());
         metricData.forEach(dataset::addData);
         dataset.setFill(false);
@@ -147,10 +152,25 @@ public class TeamMetricsController
         ArrayList<Color> pointsColors = new ArrayList<>();
         pointsColors.add(lineColour);
         dataset.setPointBackgroundColor(pointsColors);
+        dataset.setYAxisID("y-axis-1");
+
+        //Count data
+        LineDataset countDataset = new LineDataset().setLabel(type.getName() + " Count");
+        metricCount.forEach(countDataset::addData);
+        countDataset.setFill(false);
+        countDataset.setBackgroundColor(Color.TRANSPARENT);
+        countDataset.setBorderColor(Color.GRAY);
+        countDataset.setBorderWidth(1);
+        ArrayList<Color> countPointsColors = new ArrayList<>();
+        pointsColors.add(Color.GRAY);
+        countDataset.setPointBackgroundColor(countPointsColors);
+        countDataset.setBorderDash(new ArrayList<>(Arrays.asList(5, 5)));
+        countDataset.setYAxisID("y-axis-2");
 
         LineData data = new LineData()
                 .addLabels(labels.toArray(new String[]{}))
-                .addDataset(dataset);
+                .addDataset(dataset)
+                .addDataset(countDataset);
 
         ObjectWriter writer = new ObjectMapper()
                 .writerWithDefaultPrettyPrinter()
