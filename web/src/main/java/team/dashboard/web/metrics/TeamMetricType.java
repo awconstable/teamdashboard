@@ -1,23 +1,31 @@
 package team.dashboard.web.metrics;
 
+import be.ceau.chart.color.Color;
+
 public enum TeamMetricType
     {
-        CYCLE_TIME("cycletime", "Average Cycle Time", AggMethod.AVG),
-        DEPLOYMENT_FREQUENCY("deployment_frequency", "Deployment Frequency", AggMethod.AVG),
-        INCIDENTS_DUE_TO_CHANGE("incidents_due_to_change", "Incidents due to change", AggMethod.SUM),
-        PRODUCTION_DEFECTS("production_defects", "Production Defects", AggMethod.SUM),
-        TEAM_HAPPINESS("team_happiness", "Team Happiness", AggMethod.AVG),
-        CUSTOMER_SATISFACTION("customer_satisfaction", "Customer Satisfaction", AggMethod.AVG);
+        LEAD_TIME_FOR_CHANGE("lead_time", "Average Lead Time for Changes", AggMethod.AVG, new Color(0, 123, 255)),
+        CYCLE_TIME("cycletime", "Average Cycle Time", AggMethod.AVG, Color.AQUA),
+        DEPLOYMENT_FREQUENCY("deployment_frequency", "Deployment Frequency", AggMethod.AVG, Color.GOLD),
+        INCIDENTS_DUE_TO_CHANGE("incidents_due_to_change", "Incidents due to change", AggMethod.SUM, Color.RED),
+        PRODUCTION_DEFECTS("production_defects", "Production Defects", AggMethod.SUM, Color.DARK_SALMON),
+        TEAM_HAPPINESS("team_happiness", "Team Happiness", AggMethod.AVG, Color.DARK_GREEN),
+        CUSTOMER_SATISFACTION("customer_satisfaction", "Customer Satisfaction", AggMethod.AVG, Color.BLUE_VIOLET),
+        MTTR("mttr", "Mean Time to Recovery", AggMethod.AVG, Color.KHAKI),
+        CHANGE_FAILURE_RATE("change_failure_rate", "Change Failure Rate %age", AggMethod.AVG, Color.PALE_TURQUOISE),
+        BATCH_SIZE("batch_size", "Batch Size", AggMethod.AVG, Color.LAVENDER);
 
     private AggMethod method;
     private String key;
     private String name;
+    private Color graphColour;
 
-    TeamMetricType(String key, String name, AggMethod method)
+    TeamMetricType(String key, String name, AggMethod method, Color graphColour)
         {
         this.key = key;
         this.name = name;
         this.method = method;
+        this.graphColour = graphColour;
         }
 
     public AggMethod getMethod()
@@ -50,13 +58,19 @@ public enum TeamMetricType
         return name;
         }
 
+    public Color getGraphColour()
+        {
+        return graphColour;
+        }
+
     @Override
     public String toString()
         {
         return "TeamMetricType{" +
-                "key='" + key + '\'' +
+                "method=" + method +
+                ", key='" + key + '\'' +
                 ", name='" + name + '\'' +
-                ", method=" + method +
+                ", graphColour=" + graphColour +
                 '}';
         }
 

@@ -114,8 +114,12 @@ public class TeamMetricsController
 
         List<TeamMetricTrend> metrics = teamMetricRepository.getMonthlyChildMetrics(teams.toArray(new String[]{}), type);
 
+        Color lineColour = Color.random();
+
         for (TeamMetricTrend metric : metrics)
             {
+
+            lineColour = metric.getTeamMetricType().getGraphColour();
 
             Double value;
 
@@ -138,10 +142,10 @@ public class TeamMetricsController
         metricData.forEach(dataset::addData);
         dataset.setFill(false);
         dataset.setBackgroundColor(Color.TRANSPARENT);
-        dataset.setBorderColor(new Color(0, 123, 255));
+        dataset.setBorderColor(lineColour);
         dataset.setBorderWidth(4);
         ArrayList<Color> pointsColors = new ArrayList<>();
-        pointsColors.add(new Color(0, 123, 255));
+        pointsColors.add(lineColour);
         dataset.setPointBackgroundColor(pointsColors);
 
         LineData data = new LineData()

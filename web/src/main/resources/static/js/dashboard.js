@@ -63,12 +63,49 @@ function loadTeams() {
 }
 
 function loadGraphs() {
-    loadTrendData("/cycletime/", team).done(drawCycleTimeChart);
-    loadTrendData("/deployment_frequency/", team).done(drawDeploymentFrequencyChart);
-    loadTrendData("/incidents_due_to_change/", team).done(drawIncidentsDueToChangeChart);
-    loadTrendData("/production_defects/", team).done(drawProductionDefectsChart);
-    loadTrendData("/team_happiness/", team).done(drawTeamHappinessChart);
-    loadTrendData("/customer_satisfaction/", team).done(drawCustomerSatisfactionChart);
+    //throughput metrics
+    loadTrendData("/lead_time/", team)
+        .done(function (data) {
+            drawChart(data, "#chart1", "Average Lead Time", "Days")
+        });
+    loadTrendData("/cycletime/", team)
+        .done(function (data) {
+            drawChart(data, "#chart2", "Average Cycle Time", "Days")
+        });
+    loadTrendData("/deployment_frequency/", team)
+        .done(function (data) {
+            drawChart(data, "#chart3", "Deployment Frequency", "Days")
+        });
+    //stability metrics
+    loadTrendData("/change_failure_rate/", team)
+        .done(function (data) {
+            drawChart(data, "#chart4", "Change Failure Rate", "%age")
+        });
+    loadTrendData("/mttr/", team)
+        .done(function (data) {
+            drawChart(data, "#chart5", "Mean Time to Recovery", "Minutes")
+        });
+    loadTrendData("/incidents_due_to_change/", team)
+        .done(function (data) {
+            drawChart(data, "#chart6", "Incidents Due To Change", "Incidents")
+        });
+    loadTrendData("/production_defects/", team)
+        .done(function (data) {
+            drawChart(data, "#chart7", "Production Defects", "Defects")
+        });
+    //culture
+    loadTrendData("/team_happiness/", team)
+        .done(function (data) {
+            drawChart(data, "#chart8", "Team Happiness", "Happiness Index")
+        });
+    loadTrendData("/customer_satisfaction/", team)
+        .done(function (data) {
+            drawChart(data, "#chart9", "Customer Satisfaction", "CSAT Index")
+        });
+    loadTrendData("/batch_size/", team)
+        .done(function (data) {
+            drawChart(data, "#chart10", "Batch Size", "Batch Size")
+        });
 }
 
 var frm = $('#metric_capture');
@@ -321,49 +358,8 @@ function getChartConfig(data, title, yAxisLabel) {
     }
 }
 
-function drawCycleTimeChart(data) {
+function drawChart(data, chartElemId, title, yAxisLabel) {
+    var ctx = $(chartElemId);
 
-    var ctx = $('#chart1');
-
-    new Chart(ctx, getChartConfig(data, "Average Cycle Time", "Days"));
-}
-
-function drawDeploymentFrequencyChart(data) {
-
-    var ctx = $('#chart2');
-
-    new Chart(ctx, getChartConfig(data, "Deployment Frequency", "Days"));
-
-}
-
-function drawIncidentsDueToChangeChart(data) {
-
-    var ctx = $('#chart3');
-
-    new Chart(ctx, getChartConfig(data, "Incidents Due To Change", "Incidents"));
-
-}
-
-function drawProductionDefectsChart(data) {
-
-    var ctx = $('#chart4');
-
-    new Chart(ctx, getChartConfig(data, "Production Defects", "Defects"));
-
-}
-
-function drawTeamHappinessChart(data) {
-
-    var ctx = $('#chart5');
-
-    new Chart(ctx, getChartConfig(data, "Team Happiness", "Happiness Index"));
-
-}
-
-function drawCustomerSatisfactionChart(data) {
-
-    var ctx = $('#chart6');
-
-    new Chart(ctx, getChartConfig(data, "Customer Satisfaction", "CSAT Index"));
-
+    new Chart(ctx, getChartConfig(data, title, yAxisLabel));
 }
