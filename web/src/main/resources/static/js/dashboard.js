@@ -38,6 +38,18 @@ $(document).ready(function () {
 
     feather.replace();
 
+    var forms = $('.needs-validation');
+
+    Array.prototype.filter.call(forms, function (form) {
+        form.addEventListener('submit', function (event) {
+            if (form.checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation()
+            }
+            form.classList.add('was-validated')
+        }, false)
+    });
+
     mode = findModeFromUrl();
     team = findTeamFromUrl();
 
@@ -68,22 +80,22 @@ function loadGraphs() {
         .done(function (data) {
             drawChart(data, "#chart1", "Average Lead Time", "Days")
         });
-    loadTrendData("/cycletime/", team)
-        .done(function (data) {
-            drawChart(data, "#chart2", "Average Cycle Time", "Days")
-        });
     loadTrendData("/deployment_frequency/", team)
         .done(function (data) {
-            drawChart(data, "#chart3", "Deployment Frequency", "Days")
+            drawChart(data, "#chart2", "Deployment Frequency", "Days")
         });
     //stability metrics
     loadTrendData("/change_failure_rate/", team)
         .done(function (data) {
-            drawChart(data, "#chart4", "Change Failure Rate", "%age")
+            drawChart(data, "#chart3", "Change Failure Rate", "%age")
         });
     loadTrendData("/mttr/", team)
         .done(function (data) {
-            drawChart(data, "#chart5", "Mean Time to Recovery", "Minutes")
+            drawChart(data, "#chart4", "Mean Time to Recovery", "Minutes")
+        });
+    loadTrendData("/cycletime/", team)
+        .done(function (data) {
+            drawChart(data, "#chart5", "Average Cycle Time", "Days")
         });
     loadTrendData("/incidents_due_to_change/", team)
         .done(function (data) {
@@ -130,10 +142,19 @@ frm.submit(function (e) {
             }
         });
     });
-    $("#message").text("Metrics Submitted");
+    submissionMessage();
     return false;
 
 });
+
+function submissionMessage() {
+    $("<div class=\"alert alert-success alert-dismissible fade show\" role=\"alert\">\n" +
+        "                                  Metrics Successfully Submitted\n" +
+        "                                  <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">\n" +
+        "                                      <span aria-hidden=\"true\">&times;</span>\n" +
+        "                                  </button>\n" +
+        "                              </div>").insertAfter("#alert");
+}
 
 var teamExplorerLinkElem = $("#teamexplorer-link");
 var dashboardLinkElem = $("#dashboard-link");
@@ -250,11 +271,20 @@ function loadTeam(slug) {
     });
 }
 
+function sortTeams(teams) {
+    teams.sort(function (a, b) {
+        return a.name.localeCompare(b.name);
+    });
+}
+
 function layoutTeamHierarchy(data) {
 
     var teamHeirarchyElem = $('#team-heirarchy-list');
     teamHeirarchyElem.empty();
     var htmlToAppend = "";
+
+    sortTeams(data);
+    
     data.forEach(function (x) {
         htmlToAppend += "<li class=\"list-group-item no-border\"><a href=\"/dashboard/" + x.slug + "\"><span>" + x.name + "</span></a>";
         htmlToAppend += layoutChild(x.slug, x.children);
@@ -270,6 +300,8 @@ function layoutChild(slug, children) {
         return "";
     }
     var html = "<ul class=\"list-group list-group-hierarchy no-border\">";
+
+    sortTeams(children);
 
     children.forEach(function (child) {
         if (child.slug !== slug) {

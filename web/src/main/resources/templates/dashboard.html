@@ -72,42 +72,78 @@
                       </div>
                   </div>
                   <div class="container">
+                      <h3 class="mb-3">Core Metrics</h3>
                       <div class="row">
-                          <div class="col-xl-4">
+                          <div class="col-xl-5">
                               <canvas class="my-4" id="chart1"></canvas>
+                              <small class="form-text text-muted">
+                                  The average time from receiving a customer request to the request being satisfied.
+                              </small>
                           </div>
-                          <div class="col-xl-4">
+                          <div class="col-xl-5">
                               <canvas class="my-4" id="chart2"></canvas>
-                          </div>
-                          <div class="col-xl-4">
-                              <canvas class="my-4" id="chart3"></canvas>
+                              <small class="form-text text-muted">
+                                  The frequency of production deployments. (A proxy for batch size).
+                              </small>
                           </div>
                           <div class="w-100"></div>
-                          <div class="col-xl-4">
-                              <canvas class="my-4" id="chart4"></canvas>
+                          <div class="col-xl-5">
+                              <canvas class="my-4" id="chart3"></canvas>
+                              <small class="form-text text-muted">
+                                  The percentage of production changes which fail.
+                              </small>
                           </div>
+                          <div class="col-xl-5">
+                              <canvas class="my-4" id="chart4"></canvas>
+                              <small class="form-text text-muted">
+                                  The mean time for recovery from production incidents.
+                              </small>
+                          </div>
+                      </div>
+                      <hr class="mb-3">
+                      <h3 class="mb-3">Additional Metrics</h3>
+                      <div class="row">
                           <div class="col-xl-4">
                               <canvas class="my-4" id="chart5"></canvas>
+                              <small class="form-text text-muted">
+                                  The average time from starting work on a customer request to the request being
+                                  satisfied.
+                              </small>
                           </div>
                           <div class="col-xl-4">
                               <canvas class="my-4" id="chart6"></canvas>
+                              <small class="form-text text-muted">
+                                  The number of incidents due to production changes.
+                              </small>
+                          </div>
+                          <div class="col-xl-4">
+                              <canvas class="my-4" id="chart7"></canvas>
+                              <small class="form-text text-muted">
+                                  The number of defects found in production.
+                              </small>
                           </div>
                           <div class="w-100"></div>
                           <div class="col-xl-4">
-                              <canvas class="my-4" id="chart7"></canvas>
-                          </div>
-                          <div class="col-xl-4">
                               <canvas class="my-4" id="chart8"></canvas>
+                              <small class="form-text text-muted">
+                                  Average team happiness rating on a scale of 1-5.
+                              </small>
                           </div>
                           <div class="col-xl-4">
                               <canvas class="my-4" id="chart9"></canvas>
+                              <small class="form-text text-muted">
+                                  Average customer satisfaction rating.
+                              </small>
                           </div>
-                          <div class="w-100"></div>
                           <div class="col-xl-4">
                               <canvas class="my-4" id="chart10"></canvas>
+                              <small class="form-text text-muted">
+                                  The size of the batch.
+                              </small>
                           </div>
                           <div class="w-100"></div>
                       </div>
+                      <hr class="mb-3">
                   </div>
               </div>
               <div class="d-none" id="capture-content">
@@ -116,23 +152,30 @@
                   </div>
                   <div class="container">
                       <div class="col-md-8">
-                          <form id="metric_capture">
+                          <form class="needs-validation" id="metric_capture">
                               <div class="row">
                                   <div class="mb-3">
                                       <label for="date">Date</label>
-                                      <input autocomplete="off" class="form-control" id="date" name="date" type="text">
+                                      <input autocomplete="off" class="form-control" id="date" name="date" required
+                                             type="text">
+                                      <small class="form-text text-muted">
+                                          The date representing the metric period.
+                                      </small>
+                                      <div class="invalid-feedback">
+                                          Please enter a metric period date.
+                                      </div>
                                   </div>
                               </div>
+                              <hr class="mb-4">
+                              <h3 class="mb-3">Core Metrics</h3>
                               <div class="row">
                                   <div class="mb-3">
                                       <label for="lead_time">Lead Time (days)</label>
                                       <input class="form-control" id="lead_time" name="lead_time" type="text">
-                                  </div>
-                              </div>
-                              <div class="row">
-                                  <div class="mb-3">
-                                      <label for="cycletime">Cycle Time (days)</label>
-                                      <input class="form-control" id="cycletime" name="cycletime" type="text">
+                                      <small class="form-text text-muted">
+                                          The average time from receiving a customer request to the request being
+                                          satisfied.
+                                      </small>
                                   </div>
                               </div>
                               <div class="row">
@@ -140,6 +183,9 @@
                                       <label for="deployment_frequency">Deployment Frequency (days)</label>
                                       <input class="form-control" id="deployment_frequency" name="deployment_frequency"
                                              type="text">
+                                      <small class="form-text text-muted">
+                                          The frequency of production deployments. (A proxy for batch size).
+                                      </small>
                                   </div>
                               </div>
                               <div class="row">
@@ -147,13 +193,30 @@
                                       <label for="change_failure_rate">Change Failure Rate (%age)</label>
                                       <input class="form-control" id="change_failure_rate" name="change_failure_rate"
                                              type="text">
+                                      <small class="form-text text-muted">
+                                          The percentage of production changes which fail.
+                                      </small>
                                   </div>
                               </div>
                               <div class="row">
                                   <div class="mb-3">
                                       <label for="mttr">Mean Time for Recovery (minutes)</label>
-                                      <input class="form-control" id="mttr" name="mttr"
-                                             type="text">
+                                      <input class="form-control" id="mttr" name="mttr" type="text">
+                                      <small class="form-text text-muted">
+                                          The mean time for recovery from production incidents.
+                                      </small>
+                                  </div>
+                              </div>
+                              <hr class="mb-4">
+                              <h3 class="mb-3">Additional Metrics</h3>
+                              <div class="row">
+                                  <div class="mb-3">
+                                      <label for="cycletime">Cycle Time (days)</label>
+                                      <input class="form-control" id="cycletime" name="cycletime" type="text">
+                                      <small class="form-text text-muted">
+                                          The average time from starting work on a customer request to the request being
+                                          satisfied.
+                                      </small>
                                   </div>
                               </div>
                               <div class="row">
@@ -161,6 +224,9 @@
                                       <label for="incidents_due_to_change">Incidents due to change</label>
                                       <input class="form-control" id="incidents_due_to_change"
                                              name="incidents_due_to_change" type="text">
+                                      <small class="form-text text-muted">
+                                          The number of incidents due to production changes.
+                                      </small>
                                   </div>
                               </div>
                               <div class="row">
@@ -168,12 +234,18 @@
                                       <label for="production_defects">Production Defects</label>
                                       <input class="form-control" id="production_defects" name="production_defects"
                                              type="text">
+                                      <small class="form-text text-muted">
+                                          The number of defects found in production.
+                                      </small>
                                   </div>
                               </div>
                               <div class="row">
                                   <div class="mb-3">
                                       <label for="team_happiness">Team Happiness</label>
                                       <input class="form-control" id="team_happiness" name="team_happiness" type="text">
+                                      <small class="form-text text-muted">
+                                          Average team happiness rating on a scale of 1-5.
+                                      </small>
                                   </div>
                               </div>
                               <div class="row">
@@ -181,14 +253,22 @@
                                       <label for="customer_satisfaction">Customer Satisfaction</label>
                                       <input class="form-control" id="customer_satisfaction"
                                              name="customer_satisfaction" type="text">
+                                      <small class="form-text text-muted">
+                                          Average customer satisfaction rating.
+                                      </small>
                                   </div>
                               </div>
                               <div class="row">
                                   <div class="mb-3">
                                       <label for="batch_size">Batch Size</label>
                                       <input class="form-control" id="batch_size" name="batch_size" type="text">
+                                      <small class="form-text text-muted">
+                                          The size of the batch.
+                                      </small>
                                   </div>
                               </div>
+
+                              <div id="alert"></div>
                               <hr class="mb-4">
                               <input class="btn btn-primary btn-lg btn-block" type="submit" value="Submit">
                               <hr class="mb-4">
