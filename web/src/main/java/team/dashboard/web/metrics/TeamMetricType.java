@@ -13,7 +13,8 @@ public enum TeamMetricType
         CUSTOMER_SATISFACTION("customer_satisfaction", "Customer Satisfaction", AggMethod.AVG, Color.BLUE_VIOLET),
         MTTR("mttr", "Mean Time to Recovery", AggMethod.AVG, Color.KHAKI),
         CHANGE_FAILURE_RATE("change_failure_rate", "Change Failure Rate %age", AggMethod.AVG, Color.PALE_TURQUOISE),
-        BATCH_SIZE("batch_size", "Batch Size", AggMethod.AVG, Color.LAVENDER);
+        BATCH_SIZE("batch_size", "Batch Size", AggMethod.AVG, Color.LAVENDER),
+        TEST_AUTOMATION_COVERAGE("test_automation_coverage", "Test Automation Coverage", AggMethod.AVG, Color.TEAL);
 
     private AggMethod method;
     private String key;

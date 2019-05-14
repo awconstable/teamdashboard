@@ -87,7 +87,7 @@ function loadGraphs() {
     //stability metrics
     loadTrendData("/change_failure_rate/", team)
         .done(function (data) {
-            drawChart(data, "#chart3", "Change Failure Rate", "%age")
+            drawChart(data, "#chart3", "Change Failure Rate", "%")
         });
     loadTrendData("/mttr/", team)
         .done(function (data) {
@@ -117,6 +117,10 @@ function loadGraphs() {
     loadTrendData("/batch_size/", team)
         .done(function (data) {
             drawChart(data, "#chart10", "Batch Size", "Batch Size")
+        });
+    loadTrendData("/test_automation_coverage/", team)
+        .done(function (data) {
+            drawChart(data, "#chart11", "Test Automation Coverage", "%")
         });
 }
 
