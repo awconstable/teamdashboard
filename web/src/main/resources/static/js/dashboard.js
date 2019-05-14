@@ -381,7 +381,7 @@ function getChartConfig(data, title, yAxisLabel1) {
                     ticks: {
                         beginAtZero: true
                     },
-                    position: "left",
+                    position: "right",
                     id: "y-axis-1"
                 }, {
                     scaleLabel: {
@@ -393,7 +393,7 @@ function getChartConfig(data, title, yAxisLabel1) {
                         beginAtZero: true,
                         stepSize: 1
                     },
-                    position: "right",
+                    position: "left",
                     id: "y-axis-2",
                     gridLines: {
                         drawOnChartArea: false
