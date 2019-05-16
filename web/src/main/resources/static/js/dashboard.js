@@ -391,7 +391,7 @@ function getChartConfig(data, title, yAxisLabel1) {
                     type: "linear",
                     ticks: {
                         beginAtZero: true,
-                        stepSize: 1
+                        precision: 0
                     },
                     position: "left",
                     id: "y-axis-2",
