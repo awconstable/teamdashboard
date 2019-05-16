@@ -185,7 +185,7 @@ public class TeamMetricsController
             }
         }
 
-    private String createDataPointLabel(int year, int month)
+    public static String createDataPointLabel(int year, int month)
         {
 
         LocalDateTime date = LocalDateTime.of(year, month, 1, 0, 0);

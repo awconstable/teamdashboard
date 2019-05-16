@@ -63,6 +63,8 @@ $(document).ready(function () {
 function processPageEntry() {
     if (mode && mode === 'dashboard') {
         selectDashboard(false, team);
+    } else if (mode && mode === 'collection') {
+        selectCollection(false, team);
     } else if (mode && mode === 'capture') {
         selectCapture(false, team);
     } else {
@@ -74,53 +76,60 @@ function loadTeams() {
     loadTeamHierarchy().done(layoutTeamHierarchy);
 }
 
+function loadCollectionGraphs() {
+    loadCollectionData(team)
+        .done(function (data) {
+            drawChart(data, "#collection-chart1", "Collection Statistics", "% of teams with data", "Metric Count")
+        });
+}
+
 function loadGraphs() {
     //throughput metrics
     loadTrendData("/lead_time/", team)
         .done(function (data) {
-            drawChart(data, "#chart1", "Average Lead Time", "Days")
+            drawChart(data, "#chart1", "Average Lead Time", "Days", "Metric Count")
         });
     loadTrendData("/deployment_frequency/", team)
         .done(function (data) {
-            drawChart(data, "#chart2", "Deployment Frequency", "Days")
+            drawChart(data, "#chart2", "Deployment Frequency", "Days", "Metric Count")
         });
     //stability metrics
     loadTrendData("/change_failure_rate/", team)
         .done(function (data) {
-            drawChart(data, "#chart3", "Change Failure Rate", "%")
+            drawChart(data, "#chart3", "Change Failure Rate", "%", "Metric Count")
         });
     loadTrendData("/mttr/", team)
         .done(function (data) {
-            drawChart(data, "#chart4", "Mean Time to Recovery", "Minutes")
+            drawChart(data, "#chart4", "Mean Time to Recovery", "Minutes", "Metric Count")
         });
     loadTrendData("/cycletime/", team)
         .done(function (data) {
-            drawChart(data, "#chart5", "Average Cycle Time", "Days")
+            drawChart(data, "#chart5", "Average Cycle Time", "Days", "Metric Count")
         });
     loadTrendData("/incidents_due_to_change/", team)
         .done(function (data) {
-            drawChart(data, "#chart6", "Incidents Due To Change", "Incidents")
+            drawChart(data, "#chart6", "Incidents Due To Change", "Incidents", "Metric Count")
         });
     loadTrendData("/production_defects/", team)
         .done(function (data) {
-            drawChart(data, "#chart7", "Production Defects", "Defects")
+            drawChart(data, "#chart7", "Production Defects", "Defects", "Metric Count")
         });
     //culture
     loadTrendData("/team_happiness/", team)
         .done(function (data) {
-            drawChart(data, "#chart8", "Team Happiness", "Happiness Index")
+            drawChart(data, "#chart8", "Team Happiness", "Happiness Index", "Metric Count")
         });
     loadTrendData("/customer_satisfaction/", team)
         .done(function (data) {
-            drawChart(data, "#chart9", "Customer Satisfaction", "CSAT Index")
+            drawChart(data, "#chart9", "Customer Satisfaction", "CSAT Index", "Metric Count")
         });
     loadTrendData("/batch_size/", team)
         .done(function (data) {
-            drawChart(data, "#chart10", "Batch Size", "Batch Size")
+            drawChart(data, "#chart10", "Batch Size", "Batch Size", "Metric Count")
         });
     loadTrendData("/test_automation_coverage/", team)
         .done(function (data) {
-            drawChart(data, "#chart11", "Test Automation Coverage", "%")
+            drawChart(data, "#chart11", "Test Automation Coverage", "%", "Metric Count")
         });
 }
 
@@ -162,10 +171,12 @@ function submissionMessage() {
 
 var teamExplorerLinkElem = $("#teamexplorer-link");
 var dashboardLinkElem = $("#dashboard-link");
+var collectionLinkElem = $("#collection-link");
 var captureLinkElem = $("#capture-link");
 
 var teamExplorerContentElem = $("#teamexplorer-content");
 var dashboardContentElem = $("#dashboard-content");
+var collectionContentElem = $("#collection-content");
 var captureContentElem = $("#capture-content");
 
 var teamNameElem = $("#team-name");
@@ -177,6 +188,12 @@ teamExplorerLinkElem.click(function () {
 dashboardLinkElem.click(function () {
     if (team) {
         selectDashboard(true, team);
+    }
+});
+
+collectionLinkElem.click(function () {
+    if (team) {
+        selectCollection(true, team);
     }
 });
 
@@ -199,19 +216,21 @@ function selectTeamExplorer(updateHistory) {
 
     teamExplorerLinkElem.addClass("active");
     dashboardLinkElem.removeClass("active");
+    collectionLinkElem.removeClass("active");
     captureLinkElem.removeClass("active");
 
     teamExplorerContentElem.removeClass("d-none").addClass("d-block");
     dashboardContentElem.removeClass("d-block").addClass("d-none");
+    collectionContentElem.removeClass("d-block").addClass("d-none");
     captureContentElem.removeClass("d-block").addClass("d-none");
 }
 
 function selectDashboard(updateHistory, slug) {
 
     if (updateHistory) {
-        history.pushState({"pageTitle": 'Dashboard - ' + slug}, null, '/dashboard/' + slug);
+        history.pushState({"pageTitle": 'Team Dashboard - ' + slug}, null, '/dashboard/' + slug);
     } else {
-        history.replaceState({"pageTitle": 'Dashboard - ' + slug}, null, '/dashboard/' + slug);
+        history.replaceState({"pageTitle": 'Team Dashboard - ' + slug}, null, '/dashboard/' + slug);
     }
 
     loadTeam(slug).done(updateTeamName);
@@ -219,10 +238,34 @@ function selectDashboard(updateHistory, slug) {
 
     teamExplorerLinkElem.removeClass("active");
     dashboardLinkElem.addClass("active");
+    collectionLinkElem.removeClass("active");
     captureLinkElem.removeClass("active");
 
     teamExplorerContentElem.removeClass("d-block").addClass("d-none");
     dashboardContentElem.removeClass("d-none").addClass("d-block");
+    collectionContentElem.removeClass("d-block").addClass("d-none");
+    captureContentElem.removeClass("d-block").addClass("d-none");
+}
+
+function selectCollection(updateHistory, slug) {
+
+    if (updateHistory) {
+        history.pushState({"pageTitle": 'Collection Dashboard - ' + slug}, null, '/collection/' + slug);
+    } else {
+        history.replaceState({"pageTitle": 'Collection Dashboard - ' + slug}, null, '/collection/' + slug);
+    }
+
+    loadTeam(slug).done(updateTeamName);
+    loadCollectionGraphs();
+
+    teamExplorerLinkElem.removeClass("active");
+    dashboardLinkElem.removeClass("active");
+    collectionLinkElem.addClass("active");
+    captureLinkElem.removeClass("active");
+
+    teamExplorerContentElem.removeClass("d-block").addClass("d-none");
+    dashboardContentElem.removeClass("d-block").addClass("d-none");
+    collectionContentElem.removeClass("d-none").addClass("d-block");
     captureContentElem.removeClass("d-block").addClass("d-none");
 }
 
@@ -238,10 +281,12 @@ function selectCapture(updateHistory, slug) {
 
     teamExplorerLinkElem.removeClass("active");
     dashboardLinkElem.removeClass("active");
+    collectionLinkElem.removeClass("active");
     captureLinkElem.addClass("active");
 
     teamExplorerContentElem.removeClass("d-block").addClass("d-none");
     dashboardContentElem.removeClass("d-block").addClass("d-none");
+    collectionContentElem.removeClass("d-block").addClass("d-none");
     captureContentElem.removeClass("d-none").addClass("d-block");
 }
 
@@ -259,6 +304,10 @@ $("#teamexplorer-refresh-button").click(function () {
 
 $("#dashboard-refresh-button").click(function () {
     loadGraphs();
+});
+
+$("#collection-refresh-button").click(function () {
+    loadCollectionGraphs();
 });
 
 function loadTeamHierarchy() {
@@ -359,7 +408,14 @@ function loadTrendData(url, slug) {
     });
 }
 
-function getChartConfig(data, title, yAxisLabel1) {
+function loadCollectionData(slug) {
+    return $.ajax({
+        url: "/collection-stats/" + slug + "/",
+        dataType: "json"
+    });
+}
+
+function getChartConfig(data, title, yAxisLabel1, yAxisLabel2) {
     return {
         type: 'line',
         data: data,
@@ -386,7 +442,7 @@ function getChartConfig(data, title, yAxisLabel1) {
                 }, {
                     scaleLabel: {
                         display: true,
-                        labelString: "Metric Count"
+                        labelString: yAxisLabel2
                     },
                     type: "linear",
                     ticks: {
@@ -411,8 +467,8 @@ function getChartConfig(data, title, yAxisLabel1) {
     }
 }
 
-function drawChart(data, chartElemId, title, yAxisLabel) {
+function drawChart(data, chartElemId, title, yAxisLabel1, yAxisLabel2) {
     var ctx = $(chartElemId);
 
-    new Chart(ctx, getChartConfig(data, title, yAxisLabel));
+    new Chart(ctx, getChartConfig(data, title, yAxisLabel1, yAxisLabel2));
 }

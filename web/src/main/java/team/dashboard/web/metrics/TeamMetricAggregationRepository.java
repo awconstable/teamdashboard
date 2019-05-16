@@ -9,4 +9,5 @@ public interface TeamMetricAggregationRepository
 
     List<TeamMetricTrend> getMonthlyChildMetrics(String[] slugs, TeamMetricType metricType);
 
+    List<TeamCollectionStat> getMonthlyCollectionStats(String[] slugs);
     }

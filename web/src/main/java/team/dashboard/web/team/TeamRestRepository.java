@@ -31,7 +31,7 @@ public class TeamRestRepository
         return restTemplate.getForObject(teamServiceUrl + "/teams/relatives/" + slug, Team.class);
         }
 
-    public List<TeamRelation> findHierarchy()
+    public List<TeamRelation> findCompleteHierarchy()
         {
 
         ResponseEntity<List<TeamRelation>> response = restTemplate.exchange(teamServiceUrl + "/teams/hierarchy/all",

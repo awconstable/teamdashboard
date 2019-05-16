@@ -72,4 +72,26 @@ public class TeamMetricAggregationRepositoryImpl implements TeamMetricAggregatio
 
         return result.getMappedResults();
         }
+
+    @Override
+    public List<TeamCollectionStat> getMonthlyCollectionStats(String[] slugs)
+        {
+        ProjectionOperation dateProjection = project()
+                .and("teamId").as("teamId")
+                .and("date").extractYear().as("year")
+                .and("date").extractMonth().as("month");
+
+        GroupOperation groupBy = group("teamId", "year", "month")
+                .count().as("count");
+
+        TypedAggregation<TeamMetric> agg = Aggregation.newAggregation(TeamMetric.class,
+                match(Criteria.where("teamId").in(slugs)),
+                dateProjection,
+                groupBy,
+                sort(Sort.Direction.ASC, "year", "month", "teamId"));
+
+        AggregationResults<TeamCollectionStat> result = mongoTemplate.aggregate(agg, TeamCollectionStat.class);
+
+        return result.getMappedResults();
+        }
     }
