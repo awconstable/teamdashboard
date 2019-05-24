@@ -3,6 +3,7 @@ package team.dashboard.web.metrics;
 import be.ceau.chart.color.Color;
 import be.ceau.chart.data.LineData;
 import be.ceau.chart.dataset.LineDataset;
+import be.ceau.chart.options.elements.Fill;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -145,7 +146,7 @@ public class TeamMetricsController
         //Metric data
         LineDataset dataset = new LineDataset().setLabel(type.getName());
         metricData.forEach(dataset::addData);
-        dataset.setFill(false);
+        dataset.setFill(new Fill(false));
         dataset.setBackgroundColor(Color.TRANSPARENT);
         dataset.setBorderColor(lineColour);
         dataset.setBorderWidth(4);
@@ -157,7 +158,7 @@ public class TeamMetricsController
         //Count data
         LineDataset countDataset = new LineDataset().setLabel(type.getName() + " Count");
         metricCount.forEach(countDataset::addData);
-        countDataset.setFill(false);
+        countDataset.setFill(new Fill(false));
         countDataset.setBackgroundColor(Color.TRANSPARENT);
         countDataset.setBorderColor(Color.GRAY);
         countDataset.setBorderWidth(1);
