@@ -22,6 +22,11 @@ A non-exhaustive list of known limitations:
  curl -H "Content-Type: application/json" -X POST -d '{"teamId": "esrp", "teamName": "Team Name", "platformName": "Platform Name", "domainName": "Domain Name"}' http://localhost:8080/team
 ```
 
+### Add some metrics
+
+```
+ curl -H "Content-Type: application/json" -X POST -d '[{"teamMetricType":"cycletime","value":23.0,"date":"2019-05-01"},{"teamMetricType":"lead_time","value":45.0,"date":"2019-05-01"}]' http://localhost:8080/metrics/team1
+```
 
 ### View team dashboard
 

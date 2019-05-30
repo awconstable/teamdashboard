@@ -3,17 +3,15 @@ package team.dashboard.web.metrics;
 import be.ceau.chart.color.Color;
 import be.ceau.chart.data.LineData;
 import be.ceau.chart.dataset.LineDataset;
+import be.ceau.chart.options.elements.Fill;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import team.dashboard.web.team.Team;
 import team.dashboard.web.team.TeamRelation;
 import team.dashboard.web.team.TeamRestRepository;
@@ -27,7 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 
-@Controller
+@RestController
 @RequestMapping("/metrics")
 public class TeamMetricsController
     {
@@ -43,11 +41,18 @@ public class TeamMetricsController
         this.teamRepository = teamRepository;
         }
 
-    @GetMapping("/{metricType}/{teamId}/{date}/{value}")
-    @ResponseBody
-    public TeamMetric metricingest(@PathVariable String metricType, @PathVariable String teamId, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @PathVariable Double value, HttpServletResponse response)
+    @PostMapping("/{teamId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void metricsingest(@PathVariable String teamId, @RequestBody ArrayList<Metric> metrics)
         {
+        for (Metric metric : metrics)
+            {
+            persistMetric(metric.getTeamMetricType(), teamId, metric.getDate(), metric.getValue());
+            }
+        }
 
+    private TeamMetric persistMetric(String metricType, String teamId, LocalDate date, Double value)
+        {
         TeamMetricType type = TeamMetricType.get(metricType);
 
         if (type == null)
@@ -67,11 +72,15 @@ public class TeamMetricsController
         teamMetricRepository.save(newMetric);
 
         return newMetric;
+        }
 
+    @GetMapping("/{metricType}/{teamId}/{date}/{value}")
+    public TeamMetric metricingest(@PathVariable String metricType, @PathVariable String teamId, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @PathVariable Double value, HttpServletResponse response)
+        {
+        return persistMetric(metricType, teamId, date, value);
         }
 
     @GetMapping("/{metricType}/{teamId}/{date}")
-    @ResponseBody
     public TeamMetric getmetric(@PathVariable String metricType, @PathVariable String teamId, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, HttpServletResponse response)
         {
 
@@ -95,7 +104,6 @@ public class TeamMetricsController
 
 
     @GetMapping("/{metricType}/{teamId}/")
-    @ResponseBody
     public String chartMetricTrend(Model model, @PathVariable String metricType, @PathVariable String teamId) throws Exception
         {
 
@@ -145,7 +153,7 @@ public class TeamMetricsController
         //Metric data
         LineDataset dataset = new LineDataset().setLabel(type.getName());
         metricData.forEach(dataset::addData);
-        dataset.setFill(false);
+        dataset.setFill(new Fill(false));
         dataset.setBackgroundColor(Color.TRANSPARENT);
         dataset.setBorderColor(lineColour);
         dataset.setBorderWidth(4);
@@ -157,7 +165,7 @@ public class TeamMetricsController
         //Count data
         LineDataset countDataset = new LineDataset().setLabel(type.getName() + " Count");
         metricCount.forEach(countDataset::addData);
-        countDataset.setFill(false);
+        countDataset.setFill(new Fill(false));
         countDataset.setBackgroundColor(Color.TRANSPARENT);
         countDataset.setBorderColor(Color.GRAY);
         countDataset.setBorderWidth(1);
