@@ -3,6 +3,7 @@ package team.dashboard.web.collection;
 import be.ceau.chart.color.Color;
 import be.ceau.chart.data.LineData;
 import be.ceau.chart.dataset.LineDataset;
+import be.ceau.chart.options.elements.Fill;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -73,7 +74,7 @@ public class CollectionController
             {
             Color lineColour = Color.random();
             LineDataset dataset = new LineDataset().setLabel(teamId2);
-            dataset.setFill(false);
+            dataset.setFill(new Fill(false));
             dataset.setBackgroundColor(Color.TRANSPARENT);
             dataset.setBorderColor(lineColour);
             dataset.setBorderWidth(4);
