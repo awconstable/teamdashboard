@@ -27,7 +27,7 @@ public class TeamController
     @ResponseBody
     public List<TeamRelation> findTeamHierarchy(Model model)
         {
-        return teamRepository.findHierarchy();
+        return teamRepository.findCompleteHierarchy();
         }
 
     @GetMapping("/{slug}")
