@@ -26,6 +26,19 @@ public class TeamRestRepository
     @Value("${team.service.url}")
     private String teamServiceUrl;
 
+    public List<Team> findAllTeams()
+        {
+        ResponseEntity<List<Team>> response = restTemplate.exchange(teamServiceUrl + "/teams/all",
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<Team>>()
+                    {
+                    });
+
+        return response.getBody();
+        }
+
+
     public Team findByTeamSlug(String slug)
         {
         return restTemplate.getForObject(teamServiceUrl + "/teams/relatives/" + slug, Team.class);

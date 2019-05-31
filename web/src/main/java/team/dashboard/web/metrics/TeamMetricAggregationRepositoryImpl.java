@@ -6,7 +6,10 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 
+import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
@@ -93,5 +96,32 @@ public class TeamMetricAggregationRepositoryImpl implements TeamMetricAggregatio
         AggregationResults<TeamCollectionStat> result = mongoTemplate.aggregate(agg, TeamCollectionStat.class);
 
         return result.getMappedResults();
+        }
+
+    @Override
+    public Set<TeamCollectionStat> getCollectionStats(String[] slugs, Integer year, Integer month)
+        {
+        ProjectionOperation dateProjection = project()
+                .and("teamId").as("teamId")
+                .and("date").extractYear().as("year")
+                .and("date").extractMonth().as("month");
+
+        GroupOperation groupBy = group("teamId", "year", "month")
+                .count().as("count");
+
+        LocalDate startDate = LocalDate.of(year, month, 1);
+        LocalDate endDate = LocalDate.of(year, month, 1).plusMonths(1).minusDays(1);
+
+        TypedAggregation<TeamMetric> agg = Aggregation.newAggregation(TeamMetric.class,
+                match(Criteria.where("teamId").in(slugs)
+                        .and("date").gte(startDate).lte(endDate)),
+                dateProjection,
+                groupBy,
+                sort(Sort.Direction.ASC, "year", "month", "teamId"));
+
+        AggregationResults<TeamCollectionStat> result = mongoTemplate.aggregate(agg, TeamCollectionStat.class);
+
+        Set set = new HashSet(result.getMappedResults());
+        return set;
         }
     }
