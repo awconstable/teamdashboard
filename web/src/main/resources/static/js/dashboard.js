@@ -131,6 +131,14 @@ function loadGraphs() {
         .done(function (data) {
             drawChart(data, "#chart11", "Test Automation Coverage", "%", "Metric Count")
         });
+    loadTrendData("/total_test_execution_count/", team)
+        .done(function (data) {
+            drawChart(data, "#chart12", "Total Test Execution Count", "#", "Metric Count")
+        });
+    loadTrendData("/test_automation_execution_count/", team)
+        .done(function (data) {
+            drawChart(data, "#chart13", "Test Automation Execution Count", "#", "Metric Count")
+        });
 }
 
 var frm = $('#metric_capture');

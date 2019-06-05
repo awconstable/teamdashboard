@@ -14,7 +14,9 @@ public enum TeamMetricType
         MTTR("mttr", "Mean Time to Recovery", AggMethod.AVG, Color.KHAKI),
         CHANGE_FAILURE_RATE("change_failure_rate", "Change Failure Rate %age", AggMethod.AVG, Color.PALE_TURQUOISE),
         BATCH_SIZE("batch_size", "Batch Size", AggMethod.AVG, Color.LAVENDER),
-        TEST_AUTOMATION_COVERAGE("test_automation_coverage", "Test Automation Coverage", AggMethod.AVG, Color.TEAL);
+        TEST_AUTOMATION_COVERAGE("test_automation_coverage", "Test Automation Coverage", AggMethod.AVG, Color.TEAL),
+        TEST_TOTAL_EXECUTION_COUNT("total_test_execution_count", "Total Test Execution Count", AggMethod.AVG, Color.LIGHT_CYAN),
+        TEST_AUTOMATION_EXECUTION_COUNT("test_automation_execution_count", "Automated Test Execution Count", AggMethod.AVG, Color.LIGHT_CYAN);
 
     private AggMethod method;
     private String key;
