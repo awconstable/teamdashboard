@@ -1,9 +1,8 @@
 package team.dashboard.web.collection;
 
 import be.ceau.chart.color.Color;
-import be.ceau.chart.data.LineData;
-import be.ceau.chart.dataset.LineDataset;
-import be.ceau.chart.options.elements.Fill;
+import be.ceau.chart.data.BarData;
+import be.ceau.chart.dataset.BarDataset;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -13,91 +12,33 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import team.dashboard.web.metrics.TeamCollectionStat;
-import team.dashboard.web.metrics.TeamMetricRepository;
 import team.dashboard.web.metrics.TeamMetricsController;
-import team.dashboard.web.team.Team;
 import team.dashboard.web.team.TeamRelation;
 import team.dashboard.web.team.TeamRestRepository;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
 
 @Controller
 @RequestMapping("/collection-stats")
 public class CollectionStatsController
     {
 
-    private final TeamMetricRepository teamMetricRepository;
-
     private final TeamRestRepository teamRepository;
 
     private final TeamCollectionReportRepository teamCollectionReportRepository;
 
+    private final TeamCollectionReportService teamCollectionReportService;
+
     @Autowired
-    public CollectionStatsController(TeamMetricRepository teamMetricRepository, TeamRestRepository teamRepository, TeamCollectionReportRepository teamCollectionReportRepository)
+    public CollectionStatsController(TeamRestRepository teamRepository, TeamCollectionReportRepository teamCollectionReportRepository, TeamCollectionReportService teamCollectionReportService)
         {
-        this.teamMetricRepository = teamMetricRepository;
         this.teamRepository = teamRepository;
         this.teamCollectionReportRepository = teamCollectionReportRepository;
-        }
-
-    private double calculatePercentage(int totalTeams, int collectingTeams)
-        {
-        if (totalTeams == 0 || collectingTeams == 0)
-            {
-            return 0;
-            } else
-            {
-            return ((double) collectingTeams * 100 / (double) totalTeams);
-            }
-        }
-
-    private void createCollectionStats(String teamId, Integer year, Integer month)
-        {
-
-        int teamCount;
-        int collectingTeamCount;
-        double percentageTeamsCollectingMetrics;
-
-        Team team = teamRepository.findByTeamSlug(teamId);
-
-        ArrayList<String> teams = new ArrayList<>();
-        teams.add(teamId);
-
-        for (TeamRelation child : team.getChildren())
-            {
-            teams.add(child.getSlug());
-            }
-
-        teamCount = teams.size();
-
-        Set<TeamCollectionStat> stats = teamMetricRepository.getCollectionStats(teams.toArray(new String[]{}), year, month);
-
-        collectingTeamCount = stats.size();
-
-        percentageTeamsCollectingMetrics = calculatePercentage(teams.size(), stats.size());
-
-        for (String teamStat : teams)
-            {
-            TeamCollectionStat stat = new TeamCollectionStat(teamStat, 0, year, month);
-            stats.add(stat);
-            }
-
-        LocalDate reportingDate = LocalDate.of(year, month, 1);
-        TeamCollectionId id = new TeamCollectionId(teamId, reportingDate, ReportingPeriod.MONTH);
-
-        Optional<TeamCollectionReport> existingReport = teamCollectionReportRepository.findById(id);
-
-        if (existingReport.isPresent())
-            {
-            teamCollectionReportRepository.deleteById(id);
-            }
-
-        TeamCollectionReport report = new TeamCollectionReport(id, teamId, reportingDate, ReportingPeriod.MONTH, teamCount, collectingTeamCount, percentageTeamsCollectingMetrics, stats);
-
-        teamCollectionReportRepository.save(report);
-
+        this.teamCollectionReportService = teamCollectionReportService;
         }
 
     @GetMapping("/generate")
@@ -105,18 +46,8 @@ public class CollectionStatsController
     public String generateLast12MonthsCollectionReporting()
         {
 
-        List<Team> teams = teamRepository.findAllTeams();
+        teamCollectionReportService.generateLast12MonthsCollectionReporting();
 
-        for (Team team : teams)
-            {
-            int m = 0;
-            while (m < 12)
-                {
-                LocalDate date = LocalDate.now().minusMonths(m);
-                createCollectionStats(team.getSlug(), date.getYear(), date.getMonth().getValue());
-                m++;
-                }
-            }
         return "OK";
         }
 
@@ -125,11 +56,11 @@ public class CollectionStatsController
     @ResponseBody
     public String chartCollectionStats(@PathVariable String teamId)
         {
-        ArrayList<String> labels = new ArrayList<>();
-        LinkedHashMap<String, Integer> teamCollectionStats = new LinkedHashMap<>();
-        ArrayList<LineDataset> datasets = new ArrayList<>();
+        LinkedHashSet<String> labels = new LinkedHashSet<>();
+        LinkedHashMap<String, Double> teamCollectionStats = new LinkedHashMap<>();
+        ArrayList<BarDataset> datasets = new ArrayList<>();
 
-        Team team = teamRepository.findByTeamSlug(teamId);
+        TeamRelation team = teamRepository.findTeamHierarchyBySlug(teamId);
 
         ArrayList<String> teams = new ArrayList<>();
         teams.add(teamId);
@@ -139,51 +70,38 @@ public class CollectionStatsController
             teams.add(child.getSlug());
             }
 
-        List<TeamCollectionStat> stats = teamMetricRepository.getMonthlyCollectionStats(teams.toArray(new String[]{}));
+        List<TeamCollectionReport> reports = teamCollectionReportRepository.findByIdTeamIdInAndIdReportingPeriodAndIdReportingDateGreaterThanEqualAndReportingDateLessThanEqualOrderByReportingDateDesc(teams, ReportingPeriod.MONTH, LocalDate.now().minusMonths(12).atStartOfDay(), LocalDate.now().atStartOfDay());
 
-        for (TeamCollectionStat stat : stats)
+        for (TeamCollectionReport report : reports)
             {
-            String label = TeamMetricsController.createDataPointLabel(stat.getYear(), stat.getMonth());
-            if (!labels.contains(label))
-                {
-                labels.add(label);
-                }
-            teamCollectionStats.put(stat.getTeamId() + label, stat.getCount());
+            String label = TeamMetricsController.createDataPointLabel(report.getReportingDate().getYear(), report.getReportingDate().getMonth().getValue());
+            labels.add(label);
+            teamCollectionStats.put(report.getTeamId() + label, report.getChildPercentageTeamsCollectingMetrics());
             }
 
         for (String teamId2 : teams)
             {
             Color lineColour = Color.random();
-            LineDataset dataset = new LineDataset().setLabel(teamId2);
-            dataset.setFill(new Fill(false));
-            dataset.setBackgroundColor(Color.TRANSPARENT);
+            BarDataset dataset = new BarDataset().setLabel(teamId2);
+            dataset.setBackgroundColor(lineColour);
             dataset.setBorderColor(lineColour);
-            dataset.setBorderWidth(4);
-            ArrayList<Color> pointsColors = new ArrayList<>();
-            pointsColors.add(lineColour);
-            dataset.setPointBackgroundColor(pointsColors);
+            dataset.setBorderWidth(1);
             dataset.setYAxisID("y-axis-1");
 
             for (String label : labels)
                 {
-                dataset.addData(teamCollectionStats.getOrDefault(teamId2 + label, 0));
+                dataset.addData(teamCollectionStats.getOrDefault(teamId2 + label, 0.0));
                 }
             datasets.add(dataset);
             }
 
-        for (TeamCollectionStat stat : stats)
-            {
-            String label = TeamMetricsController.createDataPointLabel(stat.getYear(), stat.getMonth());
-            teamCollectionStats.put(stat.getTeamId() + label, stat.getCount());
-            }
-
-        LineData data = new LineData()
+        BarData data = new BarData()
                 .addLabels(labels.toArray(new String[]{}));
         datasets.forEach(data::addDataset);
 
         ObjectWriter writer = new ObjectMapper()
                 .writerWithDefaultPrettyPrinter()
-                .forType(LineData.class);
+                .forType(BarData.class);
 
         try
             {
@@ -193,4 +111,5 @@ public class CollectionStatsController
             throw new RuntimeException(e);
             }
         }
+
     }

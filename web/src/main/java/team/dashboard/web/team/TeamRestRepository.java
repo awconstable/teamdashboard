@@ -56,4 +56,16 @@ public class TeamRestRepository
 
         return response.getBody();
         }
+
+    public TeamRelation findTeamHierarchyBySlug(String slug)
+        {
+        ResponseEntity<List<TeamRelation>> response = restTemplate.exchange(teamServiceUrl + "/teams/hierarchy/" + slug,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<TeamRelation>>()
+                    {
+                    });
+
+        return response.getBody().get(0);
+        }
     }

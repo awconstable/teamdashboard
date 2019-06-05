@@ -12,12 +12,16 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import team.dashboard.web.collection.TeamCollectionReportService;
 import team.dashboard.web.team.Team;
 import team.dashboard.web.team.TeamRelation;
 import team.dashboard.web.team.TeamRestRepository;
 
 import javax.servlet.http.HttpServletResponse;
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,11 +38,14 @@ public class TeamMetricsController
 
     private final TeamRestRepository teamRepository;
 
+    private final TeamCollectionReportService teamCollectionReportService;
+
     @Autowired
-    public TeamMetricsController(TeamMetricRepository teamMetricRepository, TeamRestRepository teamRepository)
+    public TeamMetricsController(TeamMetricRepository teamMetricRepository, TeamRestRepository teamRepository, TeamCollectionReportService teamCollectionReportService)
         {
         this.teamMetricRepository = teamMetricRepository;
         this.teamRepository = teamRepository;
+        this.teamCollectionReportService = teamCollectionReportService;
         }
 
     @PostMapping("/{teamId}")
@@ -51,27 +58,13 @@ public class TeamMetricsController
             }
         }
 
-    private TeamMetric persistMetric(String metricType, String teamId, LocalDate date, Double value)
+    public static String createDataPointLabel(int year, int month)
         {
-        TeamMetricType type = TeamMetricType.get(metricType);
 
-        if (type == null)
-            {
-            System.out.println("Unknown metric type: " + metricType);
-            return null;
-            }
+        LocalDateTime dateTime = LocalDate.of(year, month, 1).atStartOfDay();
 
-        Optional<TeamMetric> metric = teamMetricRepository.findByTeamIdAndTeamMetricTypeAndDate(teamId, type, date);
+        return ZonedDateTime.of(dateTime, ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT);
 
-        if (metric.isPresent())
-            {
-            teamMetricRepository.deleteById(metric.get().getId());
-            }
-
-        TeamMetric newMetric = new TeamMetric(teamId, type, value, date);
-        teamMetricRepository.save(newMetric);
-
-        return newMetric;
         }
 
     @GetMapping("/{metricType}/{teamId}/{date}/{value}")
@@ -193,16 +186,29 @@ public class TeamMetricsController
             }
         }
 
-    public static String createDataPointLabel(int year, int month)
+    private TeamMetric persistMetric(String metricType, String teamId, LocalDate date, Double value)
         {
+        TeamMetricType type = TeamMetricType.get(metricType);
 
-        LocalDateTime date = LocalDateTime.of(year, month, 1, 0, 0);
+        if (type == null)
+            {
+            System.out.println("Unknown metric type: " + metricType);
+            return null;
+            }
 
-        ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT);
+        Optional<TeamMetric> metric = teamMetricRepository.findByTeamIdAndTeamMetricTypeAndDate(teamId, type, date);
 
-        ZonedDateTime zonedDateTime = ZonedDateTime.of(date, ZoneId.of("Europe/London"));
+        if (metric.isPresent())
+            {
+            teamMetricRepository.deleteById(metric.get().getId());
+            }
 
-        return zonedDateTime.format(DateTimeFormatter.ISO_INSTANT);
+        TeamMetric newMetric = new TeamMetric(teamId, type, value, date);
+        teamMetricRepository.save(newMetric);
+
+        teamCollectionReportService.updateCollectionStats(teamId, date.getYear(), date.getMonth().getValue());
+
+        return newMetric;
         }
 
     }

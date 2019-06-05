@@ -79,7 +79,7 @@ function loadTeams() {
 function loadCollectionGraphs() {
     loadCollectionData(team)
         .done(function (data) {
-            drawChart(data, "#collection-chart1", "Collection Statistics", "% of teams with data", "Metric Count")
+            drawBarChart(data, "#collection-chart1", "Collection Report", "% of teams collecting data")
         });
 }
 
@@ -415,6 +415,55 @@ function loadCollectionData(slug) {
     });
 }
 
+function getBarChartConfig(data, title, yAxisLabel1) {
+    return {
+        type: 'bar',
+        data: data,
+        options: {
+            title: {
+                display: true,
+                text: title
+            },
+            legend: {
+                display: true
+            },
+            responsive: true,
+            tooltips: {
+                mode: 'index',
+                intersect: false
+            },
+            scales: {
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: yAxisLabel1
+                    },
+                    ticks: {
+                        beginAtZero: true,
+                        max: 100
+                    },
+                    id: "y-axis-1"
+                }],
+                xAxes: [{
+                    type: 'time',
+                    time: {
+                        unit: 'month',
+                        tooltipFormat: 'MMM YYYY'
+                    },
+                    bounds: "data",
+                    ticks: {
+                        source: 'labels'
+                    },
+                    gridLines: {
+                        offsetGridLines: true
+                    },
+                    offset: true
+                }]
+            }
+        }
+    }
+}
+
 function getChartConfig(data, title, yAxisLabel1, yAxisLabel2) {
     return {
         type: 'line',
@@ -465,6 +514,12 @@ function getChartConfig(data, title, yAxisLabel1, yAxisLabel2) {
             }
         }
     }
+}
+
+function drawBarChart(data, chartElemId, title, yAxisLabel1) {
+    var ctx = $(chartElemId);
+
+    new Chart(ctx, getBarChartConfig(data, title, yAxisLabel1));
 }
 
 function drawChart(data, chartElemId, title, yAxisLabel1, yAxisLabel2) {
