@@ -9,7 +9,10 @@ import team.dashboard.web.team.TeamRelation;
 import team.dashboard.web.team.TeamRestRepository;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class TeamCollectionReportService
@@ -88,7 +91,7 @@ public class TeamCollectionReportService
 
         Team team = teamRepository.findByTeamSlug(teamId);
 
-        ArrayList<String> teams = new ArrayList<>();
+        Set<String> teams = new HashSet<>();
         teams.add(teamId);
 
         for (TeamRelation child : team.getChildren())
