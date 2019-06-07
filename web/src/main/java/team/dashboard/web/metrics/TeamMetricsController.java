@@ -48,7 +48,7 @@ public class TeamMetricsController
         this.teamCollectionReportService = teamCollectionReportService;
         }
 
-    @PostMapping("/{teamId}/{date}")
+    @PostMapping("/{teamId}/{reportingDate}")
     @ResponseStatus(HttpStatus.CREATED)
     public void metricsingest(@PathVariable String teamId, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate reportingDate, @RequestBody ArrayList<Metric> metrics)
         {
