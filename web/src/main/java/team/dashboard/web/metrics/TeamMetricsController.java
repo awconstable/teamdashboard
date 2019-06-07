@@ -48,13 +48,13 @@ public class TeamMetricsController
         this.teamCollectionReportService = teamCollectionReportService;
         }
 
-    @PostMapping("/{teamId}")
+    @PostMapping("/{teamId}/{date}")
     @ResponseStatus(HttpStatus.CREATED)
-    public void metricsingest(@PathVariable String teamId, @RequestBody ArrayList<Metric> metrics)
+    public void metricsingest(@PathVariable String teamId, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate reportingDate, @RequestBody ArrayList<Metric> metrics)
         {
         for (Metric metric : metrics)
             {
-            persistMetric(metric.getTeamMetricType(), teamId, metric.getDate(), metric.getValue());
+            persistMetric(metric.getTeamMetricType(), teamId, reportingDate, metric.getValue());
             }
         }
 
