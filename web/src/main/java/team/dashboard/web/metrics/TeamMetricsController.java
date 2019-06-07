@@ -206,6 +206,18 @@ public class TeamMetricsController
         TeamMetric newMetric = new TeamMetric(teamId, type, value, date);
         teamMetricRepository.save(newMetric);
 
+        if (TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT.equals(type) || TeamMetricType.TEST_TOTAL_EXECUTION_COUNT.equals(type))
+            {
+            Optional<TeamMetric> totalTestExecution = teamMetricRepository.findByTeamIdAndTeamMetricTypeAndDate(teamId, TeamMetricType.TEST_TOTAL_EXECUTION_COUNT, date);
+            Optional<TeamMetric> totalAutomationExecution = teamMetricRepository.findByTeamIdAndTeamMetricTypeAndDate(teamId, TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT, date);
+            if (totalTestExecution.isPresent() && totalAutomationExecution.isPresent())
+                {
+                Double testCoverage = totalAutomationExecution.get().getValue() / totalTestExecution.get().getValue() * 100;
+                TeamMetric testCoverageMetric = new TeamMetric(teamId, TeamMetricType.TEST_AUTOMATION_COVERAGE, testCoverage, date);
+                teamMetricRepository.save(testCoverageMetric);
+                }
+            }
+
         teamCollectionReportService.updateCollectionStats(teamId, date.getYear(), date.getMonth().getValue());
 
         return newMetric;
