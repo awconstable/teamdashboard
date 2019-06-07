@@ -79,7 +79,7 @@ function loadTeams() {
 function loadCollectionGraphs() {
     loadCollectionData(team)
         .done(function (data) {
-            drawBarChart(data, "#collection-chart1", "Collection Report", "% of teams collecting data")
+            drawBarChart(data, "#collection-chart1", "Collection Report", "% of teams collecting data", "Total Team Count")
         });
 }
 
@@ -423,7 +423,7 @@ function loadCollectionData(slug) {
     });
 }
 
-function getBarChartConfig(data, title, yAxisLabel1) {
+function getBarChartConfig(data, title, yAxisLabel1, yAxisLabel2) {
     return {
         type: 'bar',
         data: data,
@@ -452,7 +452,23 @@ function getBarChartConfig(data, title, yAxisLabel1) {
                         max: 100,
                         precision: 1
                     },
+                    position: "right",
                     id: "y-axis-1"
+                }, {
+                    scaleLabel: {
+                        display: true,
+                        labelString: yAxisLabel2
+                    },
+                    type: "linear",
+                    ticks: {
+                        beginAtZero: true,
+                        precision: 0
+                    },
+                    position: "left",
+                    id: "y-axis-2",
+                    gridLines: {
+                        drawOnChartArea: false
+                    }
                 }],
                 xAxes: [{
                     type: 'time',
@@ -526,10 +542,17 @@ function getChartConfig(data, title, yAxisLabel1, yAxisLabel2) {
     }
 }
 
-function drawBarChart(data, chartElemId, title, yAxisLabel1) {
+function drawBarChart(data, chartElemId, title, yAxisLabel1, yAxisLabel2) {
     var ctx = $(chartElemId);
 
-    new Chart(ctx, getBarChartConfig(data, title, yAxisLabel1));
+    var i;
+    for (i = 0; i < data.datasets.length; i++) {
+        if (data.datasets[i].yAxisID === 'y-axis-2') {
+            data.datasets[i].type = 'line';
+        }
+    }
+
+    new Chart(ctx, getBarChartConfig(data, title, yAxisLabel1, yAxisLabel2));
 }
 
 function drawChart(data, chartElemId, title, yAxisLabel1, yAxisLabel2) {

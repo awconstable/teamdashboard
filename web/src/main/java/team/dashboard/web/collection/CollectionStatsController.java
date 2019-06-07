@@ -58,6 +58,8 @@ public class CollectionStatsController
         {
         LinkedHashSet<String> labels = new LinkedHashSet<>();
         LinkedHashMap<String, Double> teamCollectionStats = new LinkedHashMap<>();
+        LinkedHashMap<String, Integer> teamCountStats = new LinkedHashMap<>();
+        LinkedHashMap<String, Integer> teamCollectionCountStats = new LinkedHashMap<>();
         ArrayList<BarDataset> datasets = new ArrayList<>();
 
         TeamRelation team = teamRepository.findTeamHierarchyBySlug(teamId);
@@ -80,16 +82,19 @@ public class CollectionStatsController
             String label = TeamMetricsController.createDataPointLabel(report.getReportingDate().getYear(), report.getReportingDate().getMonth().getValue());
             labels.add(label);
             teamCollectionStats.put(report.getTeamId() + label, report.getChildPercentageTeamsCollectingMetrics());
+            teamCountStats.put(report.getTeamId() + label, report.getChildTeamCount());
+            teamCollectionCountStats.put(report.getTeamId() + label, report.getChildTeamsCollectingMetrics());
             }
 
         for (TeamRelation teamId2 : teams)
             {
-            Color lineColour = Color.random();
+            Color barColor = Color.random();
             BarDataset dataset = new BarDataset().setLabel(teamId2.getName());
-            dataset.setBackgroundColor(lineColour);
-            dataset.setBorderColor(lineColour);
+            dataset.setBackgroundColor(barColor);
+            dataset.setBorderColor(barColor);
             dataset.setBorderWidth(1);
             dataset.setYAxisID("y-axis-1");
+
 
             for (String label : labels)
                 {
@@ -97,6 +102,32 @@ public class CollectionStatsController
                 }
             datasets.add(dataset);
             }
+
+        Color lineColour = Color.BLACK;
+        BarDataset teamCountDataSet = new BarDataset().setLabel("Total Team Count");
+        teamCountDataSet.setBackgroundColor(lineColour);
+        teamCountDataSet.setBackgroundColor(Color.TRANSPARENT);
+        teamCountDataSet.setBorderColor(lineColour);
+        teamCountDataSet.setBorderWidth(1);
+        teamCountDataSet.setYAxisID("y-axis-2");
+        for (String label : labels)
+            {
+            teamCountDataSet.addData(teamCountStats.getOrDefault(teamId + label, 0));
+            }
+        datasets.add(teamCountDataSet);
+
+        lineColour = Color.DARK_ORANGE;
+        BarDataset teamCollectionCountDataSet = new BarDataset().setLabel("Team Collection Count");
+        teamCollectionCountDataSet.setBackgroundColor(lineColour);
+        teamCollectionCountDataSet.setBackgroundColor(Color.TRANSPARENT);
+        teamCollectionCountDataSet.setBorderColor(lineColour);
+        teamCollectionCountDataSet.setBorderWidth(2);
+        teamCollectionCountDataSet.setYAxisID("y-axis-2");
+        for (String label : labels)
+            {
+            teamCollectionCountDataSet.addData(teamCollectionCountStats.getOrDefault(teamId + label, 0));
+            }
+        datasets.add(teamCollectionCountDataSet);
 
         BarData data = new BarData()
                 .addLabels(labels.toArray(new String[]{}));
