@@ -62,15 +62,18 @@ public class CollectionStatsController
 
         TeamRelation team = teamRepository.findTeamHierarchyBySlug(teamId);
 
-        ArrayList<String> teams = new ArrayList<>();
-        teams.add(teamId);
+        LinkedHashSet<TeamRelation> teams = new LinkedHashSet<>();
+        teams.add(team);
 
-        for (TeamRelation child : team.getChildren())
+        teams.addAll(team.getChildren());
+
+        ArrayList<String> teamIdList = new ArrayList<>();
+        for (TeamRelation teamIdForQuery : teams)
             {
-            teams.add(child.getSlug());
+            teamIdList.add(teamIdForQuery.getSlug());
             }
 
-        List<TeamCollectionReport> reports = teamCollectionReportRepository.findByIdTeamIdInAndIdReportingPeriodAndIdReportingDateGreaterThanEqualAndReportingDateLessThanEqualOrderByReportingDateDesc(teams, ReportingPeriod.MONTH, LocalDate.now().minusMonths(12).atStartOfDay(), LocalDate.now().atStartOfDay());
+        List<TeamCollectionReport> reports = teamCollectionReportRepository.findByIdTeamIdInAndIdReportingPeriodAndIdReportingDateGreaterThanEqualAndReportingDateLessThanEqualOrderByReportingDateDesc(teamIdList, ReportingPeriod.MONTH, LocalDate.now().minusMonths(12).atStartOfDay(), LocalDate.now().atStartOfDay());
 
         for (TeamCollectionReport report : reports)
             {
@@ -79,10 +82,10 @@ public class CollectionStatsController
             teamCollectionStats.put(report.getTeamId() + label, report.getChildPercentageTeamsCollectingMetrics());
             }
 
-        for (String teamId2 : teams)
+        for (TeamRelation teamId2 : teams)
             {
             Color lineColour = Color.random();
-            BarDataset dataset = new BarDataset().setLabel(teamId2);
+            BarDataset dataset = new BarDataset().setLabel(teamId2.getName());
             dataset.setBackgroundColor(lineColour);
             dataset.setBorderColor(lineColour);
             dataset.setBorderWidth(1);
@@ -90,7 +93,7 @@ public class CollectionStatsController
 
             for (String label : labels)
                 {
-                dataset.addData(teamCollectionStats.getOrDefault(teamId2 + label, 0.0));
+                dataset.addData(teamCollectionStats.getOrDefault(teamId2.getSlug() + label, 0.0));
                 }
             datasets.add(dataset);
             }

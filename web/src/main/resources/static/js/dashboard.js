@@ -433,7 +433,8 @@ function getBarChartConfig(data, title, yAxisLabel1) {
                 text: title
             },
             legend: {
-                display: true
+                display: true,
+                position: 'right'
             },
             responsive: true,
             tooltips: {
@@ -448,7 +449,8 @@ function getBarChartConfig(data, title, yAxisLabel1) {
                     },
                     ticks: {
                         beginAtZero: true,
-                        max: 100
+                        max: 100,
+                        precision: 1
                     },
                     id: "y-axis-1"
                 }],
