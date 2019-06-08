@@ -52,6 +52,8 @@ jobs:
       - run: mvn test integration-test verify
       - store_artifacts:
           path:  target
+      - store_artifacts:
+          path:  web/target
 
   publish-docker:
     docker:
