@@ -50,10 +50,21 @@ jobs:
 
       # run tests!
       - run: mvn test integration-test verify
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/test-results/junit/
+            find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/junit/ \;
+            find . -type f -regex ".*/target/failsafe-reports/.*xml" -exec cp {} ~/test-results/junit/ \;
+            mkdir -p ~/test-results/jacoco/
+            find . -type f -regex ".*/target/jacoco-reports/.*xml" -exec cp {} ~/test-results/junit/ \;
+          when: always
+      - store_test_results:
+          path: ~/test-results
       - store_artifacts:
-          path:  target
+          path: ~/test-results
       - store_artifacts:
-          path:  web/target
+          path: ~/web/target/jacoco-reports
 
   publish-docker:
     docker:
@@ -78,7 +89,7 @@ jobs:
             then \
               mvn versions:set -DnewVersion=${CIRCLE_TAG}; \
             fi
-      - run:
+      - deploy:
           name: Publish Docker image with Jib
           command: |
             if [ -n "$CIRCLE_TAG" ]; \
