@@ -49,7 +49,7 @@ jobs:
           key: v1-dependencies-{{ checksum "pom.xml" }}-{{ checksum "web/pom.xml" }}
 
       # run tests!
-      - run: mvn integration-test
+      - run: mvn test integration-test verify
       - store_artifacts:
           path:  target
 
