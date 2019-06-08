@@ -64,7 +64,7 @@ jobs:
       - store_artifacts:
           path: ~/test-results
       - store_artifacts:
-          path: ~/web/target/jacoco-reports
+          path: web/target/jacoco-reports
 
   publish-docker:
     docker:

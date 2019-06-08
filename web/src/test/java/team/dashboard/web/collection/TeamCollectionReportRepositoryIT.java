@@ -20,7 +20,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 @RunWith(SpringRunner.class)
 @DataMongoTest
-public class TeamCollectionReportRepositoryTest
+public class TeamCollectionReportRepositoryIT
     {
 
     @Autowired

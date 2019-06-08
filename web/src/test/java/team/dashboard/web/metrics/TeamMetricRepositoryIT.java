@@ -17,7 +17,7 @@ import java.util.List;
 
 @RunWith(SpringRunner.class)
 @DataMongoTest
-public class TeamMetricRepositoryTest
+public class TeamMetricRepositoryIT
     {
 
     @Autowired
