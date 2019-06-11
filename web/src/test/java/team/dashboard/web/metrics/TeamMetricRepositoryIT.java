@@ -27,23 +27,23 @@ public class TeamMetricRepositoryIT
     public void setUp() {
 
     List<TeamMetric> ratings = new ArrayList<>();
-    ratings.add(new TeamMetric("team1", TeamMetricType.CYCLE_TIME, new Double("3.0"),
+    ratings.add(new TeamMetric("team1", TeamMetricType.CYCLE_TIME, Double.valueOf("3.0"),
             createDate(2018, Month.JANUARY, 5)));
-    ratings.add(new TeamMetric("team1", TeamMetricType.CYCLE_TIME, new Double("5"),
+    ratings.add(new TeamMetric("team1", TeamMetricType.CYCLE_TIME, Double.valueOf("5"),
                 createDate(2018, Month.JANUARY, 29)));
-    ratings.add(new TeamMetric("team2", TeamMetricType.CYCLE_TIME, new Double("1"),
+    ratings.add(new TeamMetric("team2", TeamMetricType.CYCLE_TIME, Double.valueOf("1"),
                 createDate(2018, Month.FEBRUARY, 18)));
-    ratings.add(new TeamMetric("team2", TeamMetricType.CYCLE_TIME, new Double("3.0"),
+    ratings.add(new TeamMetric("team2", TeamMetricType.CYCLE_TIME, Double.valueOf("3.0"),
             createDate(2018, Month.MARCH, 5)));
-    ratings.add(new TeamMetric("team2", TeamMetricType.CYCLE_TIME, new Double("4.0"),
+    ratings.add(new TeamMetric("team2", TeamMetricType.CYCLE_TIME, Double.valueOf("4.0"),
             createDate(2019, Month.JANUARY, 12)));
-    ratings.add(new TeamMetric("team3", TeamMetricType.CYCLE_TIME, new Double("4.0"),
+    ratings.add(new TeamMetric("team3", TeamMetricType.CYCLE_TIME, Double.valueOf("4.0"),
             createDate(2019, Month.JANUARY, 1)));
-    ratings.add(new TeamMetric("team3", TeamMetricType.CYCLE_TIME, new Double("2.0"),
+    ratings.add(new TeamMetric("team3", TeamMetricType.CYCLE_TIME, Double.valueOf("2.0"),
             createDate(2019, Month.JANUARY, 5)));
-    ratings.add(new TeamMetric("team3", TeamMetricType.CYCLE_TIME, new Double("1.0"),
+    ratings.add(new TeamMetric("team3", TeamMetricType.CYCLE_TIME, Double.valueOf("1.0"),
             createDate(2019, Month.JANUARY, 12)));
-    ratings.add(new TeamMetric("team3", TeamMetricType.CYCLE_TIME, new Double("5.0"),
+    ratings.add(new TeamMetric("team3", TeamMetricType.CYCLE_TIME, Double.valueOf("5.0"),
             createDate(2019, Month.JANUARY, 15)));
 
         repository.saveAll(ratings);

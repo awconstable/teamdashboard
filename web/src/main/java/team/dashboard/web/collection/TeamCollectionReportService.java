@@ -45,7 +45,7 @@ public class TeamCollectionReportService
 
     public void updateCollectionStats(String teamId, Integer year, Integer month)
         {
-        Set<String> teamids = new HashSet<String>();
+        Set<String> teamids = new HashSet<>();
         Team team = teamRepository.findByTeamSlug(teamId);
 
         teamids.add(teamId);
@@ -65,7 +65,7 @@ public class TeamCollectionReportService
             }
         }
 
-    public void generateLast12MonthsCollectionReporting()
+    void generateLast12MonthsCollectionReporting()
         {
 
         List<Team> teams = teamRepository.findAllTeams();

@@ -9,7 +9,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import team.dashboard.web.metrics.TeamCollectionStat;
 
 import java.time.LocalDate;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,11 +27,11 @@ public class TeamCollectionReportRepositoryIT
     private TeamCollectionReportRepository repository;
 
     @Before
-    public void setUp() throws Exception
+    public void setUp()
         {
         String teamId = "team1";
         LocalDate reportingDate = LocalDate.of(2019, 2, 1);
-        Set<TeamCollectionStat> stats = new HashSet();
+        Set<TeamCollectionStat> stats = new HashSet<>();
         TeamCollectionReport report1 = new TeamCollectionReport(
                 new TeamCollectionId(teamId, reportingDate, ReportingPeriod.MONTH)
                 , teamId, reportingDate, ReportingPeriod.MONTH, 5,
@@ -47,7 +47,7 @@ public class TeamCollectionReportRepositoryIT
         LocalDate endDate = LocalDate.of(2019, 2, 1).plusMonths(1).minusDays(1);
         List<TeamCollectionReport> allReports = repository.findAll();
         assertThat(allReports.size(), is(equalTo(1)));
-        List<TeamCollectionReport> reports = repository.findByIdTeamIdInAndIdReportingPeriodAndIdReportingDateGreaterThanEqualAndReportingDateLessThanEqualOrderByReportingDateDesc(Arrays.asList("team1"), ReportingPeriod.MONTH, startDate.atStartOfDay(), endDate.atStartOfDay());
+        List<TeamCollectionReport> reports = repository.findByIdTeamIdInAndIdReportingPeriodAndIdReportingDateGreaterThanEqualAndReportingDateLessThanEqualOrderByReportingDateDesc(Collections.singletonList("team1"), ReportingPeriod.MONTH, startDate.atStartOfDay(), endDate.atStartOfDay());
         assertThat(reports.size(), is(equalTo(1)));
         }
     }

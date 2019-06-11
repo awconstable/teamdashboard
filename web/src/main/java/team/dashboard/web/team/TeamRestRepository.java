@@ -10,12 +10,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Objects;
 
 @Repository
 public class TeamRestRepository
     {
 
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
     @Autowired
     public TeamRestRepository(RestTemplateBuilder builder)
@@ -44,7 +45,7 @@ public class TeamRestRepository
         return restTemplate.getForObject(teamServiceUrl + "/teams/relatives/" + slug, Team.class);
         }
 
-    public List<TeamRelation> findCompleteHierarchy()
+    List<TeamRelation> findCompleteHierarchy()
         {
 
         ResponseEntity<List<TeamRelation>> response = restTemplate.exchange(teamServiceUrl + "/teams/hierarchy/all",
@@ -66,6 +67,6 @@ public class TeamRestRepository
                     {
                     });
 
-        return response.getBody().get(0);
+        return Objects.requireNonNull(response.getBody()).get(0);
         }
     }

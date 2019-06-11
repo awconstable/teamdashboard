@@ -10,14 +10,12 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import team.dashboard.web.collection.TeamCollectionReportService;
 import team.dashboard.web.team.Team;
 import team.dashboard.web.team.TeamRelation;
 import team.dashboard.web.team.TeamRestRepository;
 
-import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -54,6 +52,7 @@ public class TeamMetricsController
         {
         for (Metric metric : metrics)
             {
+            System.out.println(metric);
             persistMetric(metric.getTeamMetricType(), teamId, reportingDate, metric.getValue());
             }
         }
@@ -68,13 +67,13 @@ public class TeamMetricsController
         }
 
     @GetMapping("/{metricType}/{teamId}/{date}/{value}")
-    public TeamMetric metricingest(@PathVariable String metricType, @PathVariable String teamId, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @PathVariable Double value, HttpServletResponse response)
+    public TeamMetric metricingest(@PathVariable String metricType, @PathVariable String teamId, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @PathVariable Double value)
         {
         return persistMetric(metricType, teamId, date, value);
         }
 
     @GetMapping("/{metricType}/{teamId}/{date}")
-    public TeamMetric getmetric(@PathVariable String metricType, @PathVariable String teamId, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, HttpServletResponse response)
+    public TeamMetric getmetric(@PathVariable String metricType, @PathVariable String teamId, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date)
         {
 
         TeamMetricType type = TeamMetricType.get(metricType);
@@ -87,17 +86,13 @@ public class TeamMetricsController
 
         Optional<TeamMetric> metric = teamMetricRepository.findByTeamIdAndTeamMetricTypeAndDate(teamId, type, date);
 
-        if (metric.isPresent())
-            {
-            return metric.get();
-            }
+        return metric.orElse(null);
 
-        return null;
         }
 
 
     @GetMapping("/{metricType}/{teamId}/")
-    public String chartMetricTrend(Model model, @PathVariable String metricType, @PathVariable String teamId) throws Exception
+    public String chartMetricTrend(@PathVariable String metricType, @PathVariable String teamId) throws Exception
         {
 
         TeamMetricType type = TeamMetricType.get(metricType);
@@ -144,7 +139,7 @@ public class TeamMetricsController
             }
 
         //Metric data
-        LineDataset dataset = new LineDataset().setLabel(type.getName());
+        LineDataset dataset = new LineDataset().setLabel(type != null ? type.getName() : "Metric");
         metricData.forEach(dataset::addData);
         dataset.setFill(new Fill(false));
         dataset.setBackgroundColor(Color.TRANSPARENT);
@@ -156,7 +151,7 @@ public class TeamMetricsController
         dataset.setYAxisID("y-axis-1");
 
         //Count data
-        LineDataset countDataset = new LineDataset().setLabel(type.getName() + " Count");
+        LineDataset countDataset = new LineDataset().setLabel((type != null ? type.getName() : "") + " Count");
         metricCount.forEach(countDataset::addData);
         countDataset.setFill(new Fill(false));
         countDataset.setBackgroundColor(Color.TRANSPARENT);
@@ -198,10 +193,7 @@ public class TeamMetricsController
 
         Optional<TeamMetric> metric = teamMetricRepository.findByTeamIdAndTeamMetricTypeAndDate(teamId, type, date);
 
-        if (metric.isPresent())
-            {
-            teamMetricRepository.deleteById(metric.get().getId());
-            }
+        metric.ifPresent(teamMetric -> teamMetricRepository.deleteById(teamMetric.getId()));
 
         TeamMetric newMetric = new TeamMetric(teamId, type, value, date);
         teamMetricRepository.save(newMetric);

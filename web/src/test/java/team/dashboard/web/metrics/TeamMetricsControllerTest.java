@@ -18,6 +18,7 @@ import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -35,7 +36,7 @@ public class TeamMetricsControllerTest
     private TeamRestRepository teamRestRepository;
 
     @MockBean
-    private TeamCollectionReportService teamCollectionReportService;
+    private TeamCollectionReportService mockTeamCollectionReportService;
 
     private LocalDate now;
 
@@ -45,13 +46,14 @@ public class TeamMetricsControllerTest
     public void init()
         {
         now = LocalDate.now();
-        metric = new TeamMetric("team1", TeamMetricType.CYCLE_TIME, new Double(12), now);
-        when(mockTeamMetricRepository.findByTeamIdAndTeamMetricTypeAndDate("team1", TeamMetricType.CYCLE_TIME, now)).thenReturn(Optional.of(metric));
         }
 
     @Test
     public void metricIngest() throws Exception
         {
+        metric = new TeamMetric("team1", TeamMetricType.CYCLE_TIME, 12d, now);
+        when(mockTeamMetricRepository.findByTeamIdAndTeamMetricTypeAndDate("team1", TeamMetricType.CYCLE_TIME, now)).thenReturn(Optional.of(metric));
+
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String formattedString = now.format(formatter);
@@ -62,6 +64,28 @@ public class TeamMetricsControllerTest
                 .andExpect(status().isOk());
         verify(mockTeamMetricRepository, times(1)).findByTeamIdAndTeamMetricTypeAndDate("team1", TeamMetricType.CYCLE_TIME, now);
         verify(mockTeamMetricRepository, times(1)).save(metric);
+
+        }
+
+    @Test
+    public void metricReportIngest() throws Exception
+        {
+
+        metric = new TeamMetric("team1", TeamMetricType.LEAD_TIME_FOR_CHANGE, 12d, now);
+        when(mockTeamMetricRepository.findByTeamIdAndTeamMetricTypeAndDate("team1", TeamMetricType.LEAD_TIME_FOR_CHANGE, now)).thenReturn(Optional.of(metric));
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String formattedString = now.format(formatter);
+
+        mockMvc.perform(post("/metrics/team1/" + formattedString)
+                .content("[{ \"teamMetricType\": \"lead_time\", \"value\":\"12.0\"}]").contentType(MediaType.APPLICATION_JSON_UTF8))
+                //.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isCreated());
+
+        verify(mockTeamMetricRepository, times(1)).findByTeamIdAndTeamMetricTypeAndDate("team1", TeamMetricType.LEAD_TIME_FOR_CHANGE, now);
+        verify(mockTeamMetricRepository, times(1)).deleteById(metric.getId());
+        verify(mockTeamMetricRepository, times(1)).save(metric);
+        verify(mockTeamCollectionReportService, times(1)).updateCollectionStats("team1", now.getYear(), now.getMonth().getValue());
 
         }
     }

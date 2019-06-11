@@ -18,10 +18,10 @@ public enum TeamMetricType
         TEST_TOTAL_EXECUTION_COUNT("total_test_execution_count", "Total Test Execution Count", AggMethod.AVG, Color.LIGHT_CYAN),
         TEST_AUTOMATION_EXECUTION_COUNT("test_automation_execution_count", "Automated Test Execution Count", AggMethod.AVG, Color.LIGHT_CYAN);
 
-    private AggMethod method;
-    private String key;
-    private String name;
-    private Color graphColour;
+    private final AggMethod method;
+    private final String key;
+    private final String name;
+    private final Color graphColour;
 
     TeamMetricType(String key, String name, AggMethod method, Color graphColour)
         {
