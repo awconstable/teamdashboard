@@ -78,13 +78,41 @@ public class TeamMetricsControllerTest
         String formattedString = now.format(formatter);
 
         mockMvc.perform(post("/metrics/team1/" + formattedString)
-                .content("[{ \"teamMetricType\": \"lead_time\", \"value\":\"12.0\"}]").contentType(MediaType.APPLICATION_JSON_UTF8))
-                //.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .content("[{ \"teamMetricType\": \"lead_time\", \"value\":\"12.0\"}]")
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isCreated());
 
         verify(mockTeamMetricRepository, times(1)).findByTeamIdAndTeamMetricTypeAndDate("team1", TeamMetricType.LEAD_TIME_FOR_CHANGE, now);
         verify(mockTeamMetricRepository, times(1)).deleteById(metric.getId());
         verify(mockTeamMetricRepository, times(1)).save(metric);
+        verify(mockTeamCollectionReportService, times(1)).updateCollectionStats("team1", now.getYear(), now.getMonth().getValue());
+
+        }
+
+    @Test
+    public void metricReportCalculateTestCoverageIngest() throws Exception
+        {
+
+        metric = new TeamMetric("team1", TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT, 50d, now);
+        TeamMetric totalExecution = new TeamMetric("team1", TeamMetricType.TEST_TOTAL_EXECUTION_COUNT, 100d, now);
+        TeamMetric coverageMetric = new TeamMetric("team1", TeamMetricType.TEST_AUTOMATION_COVERAGE, 50d, now);
+
+        when(mockTeamMetricRepository.findByTeamIdAndTeamMetricTypeAndDate("team1", TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT, now)).thenReturn(Optional.of(metric));
+        when(mockTeamMetricRepository.findByTeamIdAndTeamMetricTypeAndDate("team1", TeamMetricType.TEST_TOTAL_EXECUTION_COUNT, now)).thenReturn(Optional.of(totalExecution));
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String formattedString = now.format(formatter);
+
+        mockMvc.perform(post("/metrics/team1/" + formattedString)
+                .content("[{ \"teamMetricType\": \"test_automation_execution_count\", \"value\":\"50.0\"}]")
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isCreated());
+
+        verify(mockTeamMetricRepository, times(2)).findByTeamIdAndTeamMetricTypeAndDate("team1", TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT, now);
+        verify(mockTeamMetricRepository, times(1)).findByTeamIdAndTeamMetricTypeAndDate("team1", TeamMetricType.TEST_TOTAL_EXECUTION_COUNT, now);
+        verify(mockTeamMetricRepository, times(1)).deleteById(metric.getId());
+        verify(mockTeamMetricRepository, times(1)).save(metric);
+        verify(mockTeamMetricRepository, times(1)).save(coverageMetric);
         verify(mockTeamCollectionReportService, times(1)).updateCollectionStats("team1", now.getYear(), now.getMonth().getValue());
 
         }
