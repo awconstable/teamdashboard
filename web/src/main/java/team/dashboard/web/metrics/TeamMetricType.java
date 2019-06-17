@@ -1,7 +1,9 @@
 package team.dashboard.web.metrics;
 
 import be.ceau.chart.color.Color;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum TeamMetricType
     {
         LEAD_TIME_FOR_CHANGE("lead_time", "Average Lead Time for Changes", AggMethod.AVG, new Color(0, 123, 255)),

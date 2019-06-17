@@ -1,4 +1,4 @@
-package team.dashboard.web.metrics;
+package team.dashboard.web.metrics.repos;
 
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.After;
@@ -8,6 +8,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import team.dashboard.web.metrics.TeamMetric;
+import team.dashboard.web.metrics.TeamMetricTrend;
+import team.dashboard.web.metrics.TeamMetricType;
 
 import java.time.LocalDate;
 import java.time.Month;

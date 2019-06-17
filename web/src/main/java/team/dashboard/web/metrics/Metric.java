@@ -1,8 +1,12 @@
 package team.dashboard.web.metrics;
 
+import io.swagger.annotations.ApiModelProperty;
+
 public class Metric
     {
+    @ApiModelProperty(notes = "The team metric type")
     private final String teamMetricType;
+    @ApiModelProperty(notes = "The metric value")
     private final Double value;
 
     public Metric(String teamMetricType, Double value)

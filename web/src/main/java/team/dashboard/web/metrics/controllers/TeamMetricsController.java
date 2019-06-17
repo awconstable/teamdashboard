@@ -1,4 +1,4 @@
-package team.dashboard.web.metrics;
+package team.dashboard.web.metrics.controllers;
 
 import be.ceau.chart.color.Color;
 import be.ceau.chart.data.LineData;
@@ -11,7 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import team.dashboard.web.collection.TeamCollectionReportService;
+import springfox.documentation.annotations.ApiIgnore;
+import team.dashboard.web.metrics.TeamMetric;
+import team.dashboard.web.metrics.TeamMetricTrend;
+import team.dashboard.web.metrics.TeamMetricType;
+import team.dashboard.web.metrics.repos.TeamMetricRepository;
+import team.dashboard.web.metrics.services.TeamMetricServiceImpl;
 import team.dashboard.web.team.Team;
 import team.dashboard.web.team.TeamRelation;
 import team.dashboard.web.team.TeamRestRepository;
@@ -28,7 +33,8 @@ import java.util.Optional;
 
 
 @RestController
-@RequestMapping("/metrics")
+@RequestMapping(value = "/metrics", produces = "application/json")
+@ApiIgnore
 public class TeamMetricsController
     {
 
@@ -36,25 +42,14 @@ public class TeamMetricsController
 
     private final TeamRestRepository teamRepository;
 
-    private final TeamCollectionReportService teamCollectionReportService;
+    private final TeamMetricServiceImpl teamMetricServiceImpl;
 
     @Autowired
-    public TeamMetricsController(TeamMetricRepository teamMetricRepository, TeamRestRepository teamRepository, TeamCollectionReportService teamCollectionReportService)
+    public TeamMetricsController(TeamMetricRepository teamMetricRepository, TeamRestRepository teamRepository, TeamMetricServiceImpl teamMetricServiceImpl)
         {
         this.teamMetricRepository = teamMetricRepository;
         this.teamRepository = teamRepository;
-        this.teamCollectionReportService = teamCollectionReportService;
-        }
-
-    @PostMapping("/{teamId}/{reportingDate}")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void metricsingest(@PathVariable String teamId, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate reportingDate, @RequestBody ArrayList<Metric> metrics)
-        {
-        for (Metric metric : metrics)
-            {
-            System.out.println(metric);
-            persistMetric(metric.getTeamMetricType(), teamId, reportingDate, metric.getValue());
-            }
+        this.teamMetricServiceImpl = teamMetricServiceImpl;
         }
 
     public static String createDataPointLabel(int year, int month)
@@ -69,13 +64,13 @@ public class TeamMetricsController
     @GetMapping("/{metricType}/{teamId}/{date}/{value}")
     public TeamMetric metricingest(@PathVariable String metricType, @PathVariable String teamId, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @PathVariable Double value)
         {
-        return persistMetric(metricType, teamId, date, value);
+        return teamMetricServiceImpl.save(metricType, teamId, date, value);
         }
 
-    @GetMapping("/{metricType}/{teamId}/{date}")
-    public TeamMetric getmetric(@PathVariable String metricType, @PathVariable String teamId, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date)
+    @GetMapping("/{metricType}/{teamId}/{reportingDate}")
+    @ResponseStatus(HttpStatus.OK)
+    public TeamMetric getmetric(@PathVariable String metricType, @PathVariable String teamId, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate reportingDate)
         {
-
         TeamMetricType type = TeamMetricType.get(metricType);
 
         if (type == null)
@@ -84,12 +79,10 @@ public class TeamMetricsController
             return null;
             }
 
-        Optional<TeamMetric> metric = teamMetricRepository.findByTeamIdAndTeamMetricTypeAndDate(teamId, type, date);
+        Optional<TeamMetric> metric = teamMetricRepository.findByTeamIdAndTeamMetricTypeAndDate(teamId, type, reportingDate);
 
         return metric.orElse(null);
-
         }
-
 
     @GetMapping("/{metricType}/{teamId}/")
     public String chartMetricTrend(@PathVariable String metricType, @PathVariable String teamId) throws Exception
@@ -181,38 +174,5 @@ public class TeamMetricsController
             }
         }
 
-    private TeamMetric persistMetric(String metricType, String teamId, LocalDate date, Double value)
-        {
-        TeamMetricType type = TeamMetricType.get(metricType);
-
-        if (type == null)
-            {
-            System.out.println("Unknown metric type: " + metricType);
-            return null;
-            }
-
-        Optional<TeamMetric> metric = teamMetricRepository.findByTeamIdAndTeamMetricTypeAndDate(teamId, type, date);
-
-        metric.ifPresent(teamMetric -> teamMetricRepository.deleteById(teamMetric.getId()));
-
-        TeamMetric newMetric = new TeamMetric(teamId, type, value, date);
-        teamMetricRepository.save(newMetric);
-
-        if (TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT.equals(type) || TeamMetricType.TEST_TOTAL_EXECUTION_COUNT.equals(type))
-            {
-            Optional<TeamMetric> totalTestExecution = teamMetricRepository.findByTeamIdAndTeamMetricTypeAndDate(teamId, TeamMetricType.TEST_TOTAL_EXECUTION_COUNT, date);
-            Optional<TeamMetric> totalAutomationExecution = teamMetricRepository.findByTeamIdAndTeamMetricTypeAndDate(teamId, TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT, date);
-            if (totalTestExecution.isPresent() && totalAutomationExecution.isPresent())
-                {
-                Double testCoverage = totalAutomationExecution.get().getValue() / totalTestExecution.get().getValue() * 100;
-                TeamMetric testCoverageMetric = new TeamMetric(teamId, TeamMetricType.TEST_AUTOMATION_COVERAGE, testCoverage, date);
-                teamMetricRepository.save(testCoverageMetric);
-                }
-            }
-
-        teamCollectionReportService.updateCollectionStats(teamId, date.getYear(), date.getMonth().getValue());
-
-        return newMetric;
-        }
 
     }

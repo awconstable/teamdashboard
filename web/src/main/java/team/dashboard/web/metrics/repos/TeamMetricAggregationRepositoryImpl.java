@@ -1,10 +1,14 @@
-package team.dashboard.web.metrics;
+package team.dashboard.web.metrics.repos;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
+import team.dashboard.web.metrics.TeamCollectionStat;
+import team.dashboard.web.metrics.TeamMetric;
+import team.dashboard.web.metrics.TeamMetricTrend;
+import team.dashboard.web.metrics.TeamMetricType;
 
 import java.time.LocalDate;
 import java.util.HashSet;

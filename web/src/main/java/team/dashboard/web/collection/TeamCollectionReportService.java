@@ -3,7 +3,7 @@ package team.dashboard.web.collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team.dashboard.web.metrics.TeamCollectionStat;
-import team.dashboard.web.metrics.TeamMetricRepository;
+import team.dashboard.web.metrics.repos.TeamMetricRepository;
 import team.dashboard.web.team.Team;
 import team.dashboard.web.team.TeamRelation;
 import team.dashboard.web.team.TeamRestRepository;

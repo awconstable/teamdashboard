@@ -1,5 +1,6 @@
 package team.dashboard.web.metrics;
 
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.data.annotation.Id;
 
 import java.time.LocalDate;
@@ -7,11 +8,16 @@ import java.util.Objects;
 
 public class TeamMetric
     {
+    @ApiModelProperty(notes = "The team ID")
     private final String teamId;
+    @ApiModelProperty(notes = "The team metric type")
     private final TeamMetricType teamMetricType;
+    @ApiModelProperty(notes = "The metric value")
     private final Double value;
+    @ApiModelProperty(notes = "The metric reporting date")
     private final LocalDate date;
     @Id
+    @ApiModelProperty(notes = "The database generated metric ID")
     private String id;
 
     public TeamMetric(String teamId, TeamMetricType teamMetricType, Double value, LocalDate date)
