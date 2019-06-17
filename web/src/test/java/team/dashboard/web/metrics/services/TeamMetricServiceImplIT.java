@@ -6,7 +6,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
+import team.dashboard.web.collection.TeamCollectionReportService;
 import team.dashboard.web.metrics.TeamMetric;
 import team.dashboard.web.metrics.TeamMetricType;
 import team.dashboard.web.metrics.repos.TeamMetricRepository;
@@ -30,6 +32,9 @@ public class TeamMetricServiceImplIT
 
     @Autowired
     private TeamMetricService teamMetricService;
+
+    @MockBean
+    private TeamCollectionReportService teamCollectionReportService;
 
     @Before
     public void setUp()
