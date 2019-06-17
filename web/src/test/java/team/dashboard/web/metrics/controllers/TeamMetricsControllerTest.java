@@ -18,6 +18,7 @@ import team.dashboard.web.team.TeamRestRepository;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -45,8 +46,6 @@ public class TeamMetricsControllerTest
 
     private LocalDate now;
 
-    private TeamMetric metric;
-
     @Before
     public void init()
         {
@@ -54,20 +53,19 @@ public class TeamMetricsControllerTest
         }
 
     @Test
-    public void metricIngest() throws Exception
+    public void getMetric() throws Exception
         {
-        metric = new TeamMetric("team1", TeamMetricType.CYCLE_TIME, 12d, now);
-        when(teamMetricServiceImpl.save(TeamMetricType.CYCLE_TIME.getKey(), "team1", now, 12d)).thenReturn(metric);
-
+        TeamMetric metric = new TeamMetric("team1", TeamMetricType.CYCLE_TIME, 12d, now);
+        when(mockTeamMetricRepository.findByTeamIdAndTeamMetricTypeAndDate("team1", TeamMetricType.CYCLE_TIME, now)).thenReturn(Optional.of(metric));
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String formattedString = now.format(formatter);
 
-        mockMvc.perform(get("/metrics/" + TeamMetricType.CYCLE_TIME.getKey() + "/team1/" + formattedString + "/12").contentType(MediaType.APPLICATION_JSON_UTF8))
-
+        mockMvc.perform(get("/metrics/" + TeamMetricType.CYCLE_TIME.getKey() + "/team1/" + formattedString).contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
-        verify(teamMetricServiceImpl, times(1)).save(TeamMetricType.CYCLE_TIME.getKey(), "team1", now, 12d);
+
+        verify(mockTeamMetricRepository, times(1)).findByTeamIdAndTeamMetricTypeAndDate("team1", TeamMetricType.CYCLE_TIME, now);
 
         }
 

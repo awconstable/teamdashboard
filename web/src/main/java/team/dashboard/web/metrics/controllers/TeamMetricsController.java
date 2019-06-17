@@ -16,7 +16,6 @@ import team.dashboard.web.metrics.TeamMetric;
 import team.dashboard.web.metrics.TeamMetricTrend;
 import team.dashboard.web.metrics.TeamMetricType;
 import team.dashboard.web.metrics.repos.TeamMetricRepository;
-import team.dashboard.web.metrics.services.TeamMetricServiceImpl;
 import team.dashboard.web.team.Team;
 import team.dashboard.web.team.TeamRelation;
 import team.dashboard.web.team.TeamRestRepository;
@@ -42,14 +41,11 @@ public class TeamMetricsController
 
     private final TeamRestRepository teamRepository;
 
-    private final TeamMetricServiceImpl teamMetricServiceImpl;
-
     @Autowired
-    public TeamMetricsController(TeamMetricRepository teamMetricRepository, TeamRestRepository teamRepository, TeamMetricServiceImpl teamMetricServiceImpl)
+    public TeamMetricsController(TeamMetricRepository teamMetricRepository, TeamRestRepository teamRepository)
         {
         this.teamMetricRepository = teamMetricRepository;
         this.teamRepository = teamRepository;
-        this.teamMetricServiceImpl = teamMetricServiceImpl;
         }
 
     public static String createDataPointLabel(int year, int month)
@@ -59,12 +55,6 @@ public class TeamMetricsController
 
         return ZonedDateTime.of(dateTime, ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT);
 
-        }
-
-    @GetMapping("/{metricType}/{teamId}/{date}/{value}")
-    public TeamMetric metricingest(@PathVariable String metricType, @PathVariable String teamId, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @PathVariable Double value)
-        {
-        return teamMetricServiceImpl.save(metricType, teamId, date, value);
         }
 
     @GetMapping("/{metricType}/{teamId}/{reportingDate}")

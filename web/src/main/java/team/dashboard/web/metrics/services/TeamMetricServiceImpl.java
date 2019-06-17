@@ -51,7 +51,6 @@ public class TeamMetricServiceImpl implements TeamMetricService
                 Double testCoverage = totalAutomationExecution.get().getValue() / totalTestExecution.get().getValue() * 100;
                 TeamMetric testCoverageMetric = new TeamMetric(teamId, TeamMetricType.TEST_AUTOMATION_COVERAGE, testCoverage, date);
 
-                //TODO this causes a race condition when used with the individual metric api - need to switch to the bulk save.
                 Optional<TeamMetric> existingTestCoverage = teamMetricRepository.findByTeamIdAndTeamMetricTypeAndDate(teamId, TeamMetricType.TEST_AUTOMATION_COVERAGE, date);
                 existingTestCoverage.ifPresent(teamMetricRepository::delete);
                 teamMetricRepository.save(testCoverageMetric);

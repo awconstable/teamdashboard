@@ -147,22 +147,35 @@ frm.submit(function (e) {
 
     e.preventDefault();
 
+    var requestBody = [];
+
     $("#metric_capture input[type=text]").each(function () {
         if (this.name === 'date' || this.value === "") {
             console.log(this.name + ': skip field');
             return;
         }
-        $.ajax({
-            method: "GET",
-            url: "/metrics/" + this.name + "/" + team + "/" + $("#date").val() + "/" + this.value,
-            success: function (url) {
-                console.log(url + ': Submission was successful.');
-            },
-            error: function (url) {
-                console.log(url + ': An error occurred.');
-            }
+        requestBody.push({
+            "teamMetricType": this.name,
+            "value": this.value
         });
     });
+
+    console.log(requestBody);
+
+    $.ajax({
+        method: "POST",
+        url: "/api/metrics/" + team + "/" + $("#date").val() + "/",
+        data: JSON.stringify(requestBody),
+        processData: false,
+        contentType: "application/json",
+        success: function () {
+            console.log('Submission was successful');
+        },
+        error: function () {
+            console.log('An error occurred');
+        }
+    });
+    
     submissionMessage();
     return false;
 
