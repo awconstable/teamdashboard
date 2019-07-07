@@ -3,6 +3,8 @@ A proof of concept team dashboard
 
 Visibility over team health is important, this application provides a simple method of capturing and visualising team metrics over time
 
+[![CircleCI](https://circleci.com/gh/awconstable/teamdashboard.svg?style=shield)](https://circleci.com/gh/awconstable/teamdashboard)
+
 ## Limitations
 
 This application is a proof of concept, it is **not** production ready.
