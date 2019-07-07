@@ -8,6 +8,8 @@ Visibility over team health is important, this application provides a simple met
 [![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/awconstable/teamdashboard.svg)](https://libraries.io/github/awconstable/teamdashboard)
 [![dockerhub](https://img.shields.io/docker/pulls/awconstable/teamdashboard.svg)](https://cloud.docker.com/repository/docker/awconstable/teamdashboard)
 
+![Dashboard Screenshot](/.github/screenshot.png?raw=true "Team Dashboard")
+
 ## Limitations
 
 This application is a proof of concept, it is **not** production ready.
