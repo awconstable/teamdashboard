@@ -20,6 +20,7 @@ A non-exhaustive list of known limitations:
 ## Dependencies
 
 1. MongoDB
+2. [Team Service](https://github.com/awconstable/teamservice)
 
 ## Quick start guide
 
@@ -52,16 +53,9 @@ mvn clean install
 
 ### Run in development
 
-*Might be **-Drun.arguments** - see: https://stackoverflow.com/questions/23316843/get-command-line-arguments-from-spring-bootrun*
-
 ```
-mvn spring-boot:run -Dspring-boot.run.arguments="--spring.data.mongodb.host=<mogo host>,--spring.data.mongodb.port=<mongo port>,--spring-data.mongodb.database=<mongo db>"
-```
-
-### Create Docker image
-
-```
-mvn dockerfile:build dockerfile:tag
+docker-compose up
+mvn spring-boot:run -Dspring-boot.run.arguments="--spring.data.mongodb.host=<mogo host>,--spring.data.mongodb.port=<mongo port>,--spring-data.mongodb.database=<mongo db> --team.service.url=http://localhost:8082"
 ```
 
 ### Run app as a Docker container
@@ -71,6 +65,7 @@ mvn dockerfile:build dockerfile:tag
 ```
 docker stop dashboard_app
 docker rm dashboard_app
-docker run --name dashboard_app -d -p 8080:8080 --network <mongo network> -e spring_data_mongodb_host=<mongo host> -e spring_data_mongodb_port=<mongo port> -e spring_data_mongodb_database=<mondo db> team/dashboard:0.0.1-SNAPSHOT
+docker pull awconstable/teamdashboard
+docker run --name dashboard_app -d -p 8080:8080 --network <mongo network> -e spring_data_mongodb_host=<mongo host> -e spring_data_mongodb_port=<mongo port> -e spring_data_mongodb_database=<mondo db> awconstable/teamdashboard:latest
 ```
 
