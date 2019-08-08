@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import team.dashboard.web.metrics.TeamCollectionStat;
 import team.dashboard.web.metrics.TeamMetric;
 import team.dashboard.web.metrics.TeamMetricTrend;
 import team.dashboard.web.metrics.TeamMetricType;
@@ -16,6 +17,11 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 
 @RunWith(SpringRunner.class)
@@ -48,7 +54,12 @@ public class TeamMetricRepositoryIT
             createDate(2019, Month.JANUARY, 12)));
     ratings.add(new TeamMetric("team3", TeamMetricType.CYCLE_TIME, Double.valueOf("5.0"),
             createDate(2019, Month.JANUARY, 15)));
-
+    ratings.add(new TeamMetric("team4", TeamMetricType.TEST_AUTOMATION_COVERAGE, Double.valueOf("10.0"),
+            createDate(2019, Month.MARCH, 1)));
+    ratings.add(new TeamMetric("team4", TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT, Double.valueOf("100"),
+            createDate(2019, Month.MARCH, 1)));
+    ratings.add(new TeamMetric("team4", TeamMetricType.TEST_TOTAL_EXECUTION_COUNT, Double.valueOf("1000"),
+            createDate(2019, Month.MARCH, 1)));
         repository.saveAll(ratings);
     }
 
@@ -76,7 +87,7 @@ public class TeamMetricRepositoryIT
 
         List<TeamMetric> times = repository.findAll();
 
-        AssertionsForClassTypes.assertThat(times.size()).isEqualTo(9);
+        AssertionsForClassTypes.assertThat(times.size()).isEqualTo(12);
     }
 
     @Test
@@ -126,5 +137,16 @@ public class TeamMetricRepositoryIT
 
         //TODO check calculated values
         AssertionsForClassTypes.assertThat(metrics.size()).isEqualTo(4);
+        }
+
+    //Make sure TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT and
+    // TeamMetricType.TEST_TOTAL_EXECUTION_COUNT are excluded from the collection count
+    @Test
+    public void getTeamCollectionStatsTestAutomationExcluded()
+        {
+        Set<TeamCollectionStat> stats = repository.getCollectionStats(new String[]{"team4"}, 2019, Month.MARCH.getValue());
+
+        assertThat(stats.size(), is(equalTo(1)));
+        assertThat(stats.iterator().next().getCount(), is(equalTo(1)));
         }
 }

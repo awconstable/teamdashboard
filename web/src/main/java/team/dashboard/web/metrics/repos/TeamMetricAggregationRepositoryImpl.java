@@ -70,7 +70,7 @@ public class TeamMetricAggregationRepositoryImpl implements TeamMetricAggregatio
                 .count().as("count");
 
         TypedAggregation<TeamMetric> agg = Aggregation.newAggregation(TeamMetric.class,
-                match(Criteria.where("teamId").in((Object[]) slugs).and("teamMetricType").is(metricType)),
+                match(Criteria.where("teamId").in(slugs).and("teamMetricType").is(metricType)),
                 dateProjection,
                 groupBy,
                 sort(Sort.Direction.ASC, "year", "month"));
@@ -92,7 +92,7 @@ public class TeamMetricAggregationRepositoryImpl implements TeamMetricAggregatio
                 .count().as("count");
 
         TypedAggregation<TeamMetric> agg = Aggregation.newAggregation(TeamMetric.class,
-                match(Criteria.where("teamId").in((Object[]) slugs)),
+                match(Criteria.where("teamId").in(slugs)),
                 dateProjection,
                 groupBy,
                 sort(Sort.Direction.ASC, "year", "month", "teamId"));
@@ -117,8 +117,9 @@ public class TeamMetricAggregationRepositoryImpl implements TeamMetricAggregatio
         LocalDate endDate = LocalDate.of(year, month, 1).plusMonths(1).minusDays(1);
 
         TypedAggregation<TeamMetric> agg = Aggregation.newAggregation(TeamMetric.class,
-                match(Criteria.where("teamId").in((Object[]) slugs)
-                        .and("date").gte(startDate).lte(endDate)),
+                match(Criteria.where("teamId").in(slugs)
+                        .and("date").gte(startDate).lte(endDate)
+                        .and("teamMetricType").nin(TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT, TeamMetricType.TEST_TOTAL_EXECUTION_COUNT)),
                 dateProjection,
                 groupBy,
                 sort(Sort.Direction.ASC, "year", "month", "teamId"));
