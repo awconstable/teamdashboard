@@ -91,8 +91,12 @@ public class TeamCollectionReportServiceTest
     ArgumentCaptor<String[]> teamIdCaptor;
 
     @Test
-    public void ensureParentTeamIsntCountedInStats()
+    public void ensureParentTeamIsCountedInStats()
         {
+        when(mockTeamRepository.findByTeamSlug(team0.getSlug())).thenReturn(team0);
+        when(mockTeamRepository.findByTeamSlug(team1.getSlug())).thenReturn(team1);
+        when(mockTeamRepository.findByTeamSlug(team2.getSlug())).thenReturn(team2);
+
         when(mockTeamRepository.findByTeamSlug("team-no-ancestors"))
                 .thenReturn(new Team("team-no-ancestors", "Team No Ancestors", null,
                         Collections.emptyList(), Collections.emptyList(), null, null));
@@ -101,7 +105,7 @@ public class TeamCollectionReportServiceTest
 
         verify(mockTeamMetricRepository, times(1)).getCollectionStats(teamIdCaptor.capture(), eq(2019), eq(Month.APRIL.getValue()));
 
-        assertThat(teamIdCaptor.getValue(), IsArrayWithSize.arrayWithSize(1));
+        assertThat(teamIdCaptor.getValue(), IsArrayWithSize.emptyArray());
         }
 
     @TestConfiguration

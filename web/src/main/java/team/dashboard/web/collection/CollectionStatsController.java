@@ -7,11 +7,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import team.dashboard.web.metrics.controllers.TeamMetricsController;
 import team.dashboard.web.team.TeamRelation;
 import team.dashboard.web.team.TeamRestRepository;
@@ -22,8 +21,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-@Controller
-@RequestMapping("/collection-stats")
+@RestController
+@RequestMapping(value = "/collection-stats", produces = "application/json")
 public class CollectionStatsController
     {
 
@@ -42,7 +41,6 @@ public class CollectionStatsController
         }
 
     @GetMapping("/generate")
-    @ResponseBody
     public String generateLast12MonthsCollectionReporting()
         {
 
@@ -51,9 +49,7 @@ public class CollectionStatsController
         return "OK";
         }
 
-
-    @GetMapping("/{teamId}/")
-    @ResponseBody
+    @GetMapping("/{teamId}")
     public String chartCollectionStats(@PathVariable String teamId)
         {
         LinkedHashSet<String> labels = new LinkedHashSet<>();
