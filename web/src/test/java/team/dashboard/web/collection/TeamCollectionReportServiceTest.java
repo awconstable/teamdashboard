@@ -105,7 +105,7 @@ public class TeamCollectionReportServiceTest
 
         verify(mockTeamMetricRepository, times(1)).getCollectionStats(teamIdCaptor.capture(), eq(2019), eq(Month.APRIL.getValue()));
 
-        assertThat(teamIdCaptor.getValue(), IsArrayWithSize.emptyArray());
+        assertThat(teamIdCaptor.getValue(), IsArrayWithSize.arrayWithSize(1));
         }
 
     @TestConfiguration
