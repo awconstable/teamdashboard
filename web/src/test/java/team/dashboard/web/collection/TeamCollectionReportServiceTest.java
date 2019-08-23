@@ -1,8 +1,11 @@
 package team.dashboard.web.collection;
 
+import org.hamcrest.collection.IsArrayWithSize;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -18,6 +21,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.*;
 
+import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -81,6 +85,23 @@ public class TeamCollectionReportServiceTest
 
         verify(mockTeamCollectionReportRepository, times(3))
                 .save(any());
+        }
+
+    @Captor
+    ArgumentCaptor<String[]> teamIdCaptor;
+
+    @Test
+    public void ensureParentTeamIsntCountedInStats()
+        {
+        when(mockTeamRepository.findByTeamSlug("team-no-ancestors"))
+                .thenReturn(new Team("team-no-ancestors", "Team No Ancestors", null,
+                        Collections.emptyList(), Collections.emptyList(), null, null));
+
+        teamCollectionReportService.updateCollectionStats("team-no-ancestors", 2019, Month.APRIL.getValue());
+
+        verify(mockTeamMetricRepository, times(1)).getCollectionStats(teamIdCaptor.capture(), eq(2019), eq(Month.APRIL.getValue()));
+
+        assertThat(teamIdCaptor.getValue(), IsArrayWithSize.arrayWithSize(1));
         }
 
     @TestConfiguration
