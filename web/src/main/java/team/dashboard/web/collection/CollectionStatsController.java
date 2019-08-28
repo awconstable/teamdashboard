@@ -81,13 +81,13 @@ public class CollectionStatsController
             teamCountStats.put(report.getTeamId() + label, report.getChildTeamCount());
             teamCollectionCountStats.put(report.getTeamId() + label, report.getChildTeamsCollectingMetrics());
             }
-
+        int i = 0;
         for (TeamRelation teamId2 : teams)
             {
-            Color barColor = Color.random();
+            Color barColor = ColorHelper.generateSteppedColor(i, new Color(71, 143, 255));
             BarDataset dataset = new BarDataset().setLabel(teamId2.getName());
             dataset.setBackgroundColor(barColor);
-            dataset.setBorderColor(barColor);
+            dataset.setBorderColor(Color.LIGHT_CYAN);
             dataset.setBorderWidth(1);
             dataset.setYAxisID("y-axis-1");
 
@@ -97,6 +97,7 @@ public class CollectionStatsController
                 dataset.addData(teamCollectionStats.getOrDefault(teamId2.getSlug() + label, 0.0));
                 }
             datasets.add(dataset);
+            i++;
             }
 
         Color lineColour = Color.BLACK;
