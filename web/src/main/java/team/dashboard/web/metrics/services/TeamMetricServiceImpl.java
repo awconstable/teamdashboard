@@ -48,7 +48,7 @@ public class TeamMetricServiceImpl implements TeamMetricService
             Optional<TeamMetric> totalAutomationExecution = teamMetricRepository.findByTeamIdAndTeamMetricTypeAndDate(teamId, TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT, date);
             if (totalTestExecution.isPresent() && totalAutomationExecution.isPresent())
                 {
-                Double testCoverage = totalAutomationExecution.get().getValue() / totalTestExecution.get().getValue() * 100;
+                Double testCoverage = calculateTotalTestCoverage(totalAutomationExecution.get().getValue(), totalTestExecution.get().getValue());
                 TeamMetric testCoverageMetric = new TeamMetric(teamId, TeamMetricType.TEST_AUTOMATION_COVERAGE, testCoverage, date);
 
                 Optional<TeamMetric> existingTestCoverage = teamMetricRepository.findByTeamIdAndTeamMetricTypeAndDate(teamId, TeamMetricType.TEST_AUTOMATION_COVERAGE, date);
@@ -60,6 +60,18 @@ public class TeamMetricServiceImpl implements TeamMetricService
         teamCollectionReportService.updateCollectionStats(teamId, date.getYear(), date.getMonth().getValue());
 
         return newMetric;
+        }
+
+    Double calculateTotalTestCoverage(Double automationExecutionCount, Double testExecutionCount)
+        {
+
+        if (automationExecutionCount.isNaN() || automationExecutionCount.equals(0.0)
+                || testExecutionCount.isNaN() || testExecutionCount.equals(0.0))
+            {
+            return 0.0;
+            }
+
+        return automationExecutionCount / testExecutionCount * 100;
         }
 
     @Override
