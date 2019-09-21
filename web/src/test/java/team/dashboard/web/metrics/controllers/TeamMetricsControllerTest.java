@@ -55,7 +55,7 @@ public class TeamMetricsControllerTest
     @Test
     public void getMetric() throws Exception
         {
-        TeamMetric metric = new TeamMetric("team1", TeamMetricType.CYCLE_TIME, 12d, now);
+        TeamMetric metric = new TeamMetric("team1", TeamMetricType.CYCLE_TIME, 12d, 5d, now);
         when(mockTeamMetricRepository.findByTeamIdAndTeamMetricTypeAndDate("team1", TeamMetricType.CYCLE_TIME, now)).thenReturn(Optional.of(metric));
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");

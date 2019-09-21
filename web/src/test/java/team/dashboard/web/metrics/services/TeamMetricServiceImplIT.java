@@ -41,10 +41,8 @@ public class TeamMetricServiceImplIT
         {
 
         List<TeamMetric> ratings = new ArrayList<>();
-        ratings.add(new TeamMetric("team1", TeamMetricType.TEST_TOTAL_EXECUTION_COUNT, 100d,
+        ratings.add(new TeamMetric("team1", TeamMetricType.TEST_TOTAL_EXECUTION_COUNT, 100d, 10d,
                 LocalDate.of(2018, Month.JANUARY, 5)));
-        //ratings.add(new TeamMetric("team1", TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT, 50d,
-        //        LocalDate.of(2018, Month.JANUARY, 5)));
 
         repository.saveAll(ratings);
         }
@@ -59,7 +57,7 @@ public class TeamMetricServiceImplIT
     public void checkTestCoverageStorage()
         {
 
-        teamMetricService.save(TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT.getKey(), "team1", LocalDate.of(2018, Month.JANUARY, 5), 50d);
+        teamMetricService.save(TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT.getKey(), "team1", LocalDate.of(2018, Month.JANUARY, 5), 50d, 10d);
 
         List<TeamMetric> all = repository.findAll();
 
@@ -68,14 +66,15 @@ public class TeamMetricServiceImplIT
         Optional<TeamMetric> metric = repository.findByTeamIdAndTeamMetricTypeAndDate("team1", TeamMetricType.TEST_AUTOMATION_COVERAGE, LocalDate.of(2018, Month.JANUARY, 5));
 
         assertThat(metric.get().getValue(), is(equalTo(50d)));
+        assertThat(metric.get().getTarget(), is(equalTo(100d)));
         }
 
     @Test
     public void checkTestCoverageStorageWhenExists()
         {
-        repository.save(new TeamMetric("team1", TeamMetricType.TEST_AUTOMATION_COVERAGE, 50d, LocalDate.of(2018, Month.JANUARY, 5)));
+        repository.save(new TeamMetric("team1", TeamMetricType.TEST_AUTOMATION_COVERAGE, 50d, 10d, LocalDate.of(2018, Month.JANUARY, 5)));
 
-        teamMetricService.save(TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT.getKey(), "team1", LocalDate.of(2018, Month.JANUARY, 5), 50d);
+        teamMetricService.save(TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT.getKey(), "team1", LocalDate.of(2018, Month.JANUARY, 5), 50d, 10d);
 
         List<TeamMetric> all = repository.findAll();
 
@@ -84,5 +83,6 @@ public class TeamMetricServiceImplIT
         Optional<TeamMetric> metric = repository.findByTeamIdAndTeamMetricTypeAndDate("team1", TeamMetricType.TEST_AUTOMATION_COVERAGE, LocalDate.of(2018, Month.JANUARY, 5));
 
         assertThat(metric.get().getValue(), is(equalTo(50d)));
+        assertThat(metric.get().getTarget(), is(equalTo(100d)));
         }
     }

@@ -27,7 +27,7 @@ public class TeamMetricServiceImpl implements TeamMetricService
         }
 
     @Override
-    public TeamMetric save(String metricType, String teamId, LocalDate date, Double value)
+    public TeamMetric save(String metricType, String teamId, LocalDate date, Double value, Double target)
         {
         TeamMetricType type = TeamMetricType.get(metricType);
 
@@ -39,7 +39,7 @@ public class TeamMetricServiceImpl implements TeamMetricService
 
         delete(metricType, teamId, date);
 
-        TeamMetric newMetric = new TeamMetric(teamId, type, value, date);
+        TeamMetric newMetric = new TeamMetric(teamId, type, value, target, date);
         teamMetricRepository.save(newMetric);
 
         if (TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT.equals(type) || TeamMetricType.TEST_TOTAL_EXECUTION_COUNT.equals(type))
@@ -49,7 +49,8 @@ public class TeamMetricServiceImpl implements TeamMetricService
             if (totalTestExecution.isPresent() && totalAutomationExecution.isPresent())
                 {
                 Double testCoverage = calculateTotalTestCoverage(totalAutomationExecution.get().getValue(), totalTestExecution.get().getValue());
-                TeamMetric testCoverageMetric = new TeamMetric(teamId, TeamMetricType.TEST_AUTOMATION_COVERAGE, testCoverage, date);
+                Double targetCoverage = calculateTotalTestCoverage(totalAutomationExecution.get().getTarget(), totalTestExecution.get().getTarget());
+                TeamMetric testCoverageMetric = new TeamMetric(teamId, TeamMetricType.TEST_AUTOMATION_COVERAGE, testCoverage, targetCoverage, date);
 
                 Optional<TeamMetric> existingTestCoverage = teamMetricRepository.findByTeamIdAndTeamMetricTypeAndDate(teamId, TeamMetricType.TEST_AUTOMATION_COVERAGE, date);
                 existingTestCoverage.ifPresent(teamMetricRepository::delete);

@@ -95,19 +95,19 @@ public class TeamMetricsApiControllerTest
     public void metricIngest() throws Exception
         {
 
-        metric = new TeamMetric("team1", TeamMetricType.LEAD_TIME_FOR_CHANGE, 12d, now);
+        metric = new TeamMetric("team1", TeamMetricType.LEAD_TIME_FOR_CHANGE, 12d, 1d, now);
         when(mockTeamMetricRepository.findByTeamIdAndTeamMetricTypeAndDate("team1", TeamMetricType.LEAD_TIME_FOR_CHANGE, now)).thenReturn(Optional.of(metric));
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String formattedString = now.format(formatter);
 
         mockMvc.perform(post("/api/metrics/team1/" + formattedString)
-                .content("[{ \"teamMetricType\": \"lead_time\", \"value\":\"12.0\"},{ \"teamMetricType\": \"cycletime\", \"value\":\"6.3\"}]")
+                .content("[{ \"teamMetricType\": \"lead_time\", \"value\":\"12.0\"},{ \"teamMetricType\": \"cycletime\", \"value\":\"6.3\", \"target\":\"5d\"}]")
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isCreated());
 
-        verify(teamMetricServiceImpl, times(1)).save(TeamMetricType.LEAD_TIME_FOR_CHANGE.getKey(), "team1", now, 12d);
-        verify(teamMetricServiceImpl, times(1)).save(TeamMetricType.CYCLE_TIME.getKey(), "team1", now, 6.3d);
+        verify(teamMetricServiceImpl, times(1)).save(TeamMetricType.LEAD_TIME_FOR_CHANGE.getKey(), "team1", now, 12d, null);
+        verify(teamMetricServiceImpl, times(1)).save(TeamMetricType.CYCLE_TIME.getKey(), "team1", now, 6.3d, 5d);
 
         }
     }

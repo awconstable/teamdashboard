@@ -36,29 +36,29 @@ public class TeamMetricRepositoryIT
     public void setUp() {
 
     List<TeamMetric> ratings = new ArrayList<>();
-    ratings.add(new TeamMetric("team1", TeamMetricType.CYCLE_TIME, Double.valueOf("3.0"),
+    ratings.add(new TeamMetric("team1", TeamMetricType.CYCLE_TIME, Double.valueOf("3.0"), Double.valueOf("1.0"),
             createDate(2018, Month.JANUARY, 5)));
-    ratings.add(new TeamMetric("team1", TeamMetricType.CYCLE_TIME, Double.valueOf("5"),
+    ratings.add(new TeamMetric("team1", TeamMetricType.CYCLE_TIME, Double.valueOf("5"), Double.valueOf("1.0"),
                 createDate(2018, Month.JANUARY, 29)));
-    ratings.add(new TeamMetric("team2", TeamMetricType.CYCLE_TIME, Double.valueOf("1"),
+    ratings.add(new TeamMetric("team2", TeamMetricType.CYCLE_TIME, Double.valueOf("1"), Double.valueOf("1.0"),
                 createDate(2018, Month.FEBRUARY, 18)));
-    ratings.add(new TeamMetric("team2", TeamMetricType.CYCLE_TIME, Double.valueOf("3.0"),
+    ratings.add(new TeamMetric("team2", TeamMetricType.CYCLE_TIME, Double.valueOf("3.0"), Double.valueOf("1.0"),
             createDate(2018, Month.MARCH, 5)));
-    ratings.add(new TeamMetric("team2", TeamMetricType.CYCLE_TIME, Double.valueOf("4.0"),
+    ratings.add(new TeamMetric("team2", TeamMetricType.CYCLE_TIME, Double.valueOf("4.0"), Double.valueOf("1.0"),
             createDate(2019, Month.JANUARY, 12)));
-    ratings.add(new TeamMetric("team3", TeamMetricType.CYCLE_TIME, Double.valueOf("4.0"),
+    ratings.add(new TeamMetric("team3", TeamMetricType.CYCLE_TIME, Double.valueOf("4.0"), Double.valueOf("1.0"),
             createDate(2019, Month.JANUARY, 1)));
-    ratings.add(new TeamMetric("team3", TeamMetricType.CYCLE_TIME, Double.valueOf("2.0"),
+    ratings.add(new TeamMetric("team3", TeamMetricType.CYCLE_TIME, Double.valueOf("2.0"), Double.valueOf("1.0"),
             createDate(2019, Month.JANUARY, 5)));
-    ratings.add(new TeamMetric("team3", TeamMetricType.CYCLE_TIME, Double.valueOf("1.0"),
+    ratings.add(new TeamMetric("team3", TeamMetricType.CYCLE_TIME, Double.valueOf("1.0"), Double.valueOf("1.0"),
             createDate(2019, Month.JANUARY, 12)));
-    ratings.add(new TeamMetric("team3", TeamMetricType.CYCLE_TIME, Double.valueOf("5.0"),
+    ratings.add(new TeamMetric("team3", TeamMetricType.CYCLE_TIME, Double.valueOf("5.0"), Double.valueOf("1.0"),
             createDate(2019, Month.JANUARY, 15)));
-    ratings.add(new TeamMetric("team4", TeamMetricType.TEST_AUTOMATION_COVERAGE, Double.valueOf("10.0"),
+    ratings.add(new TeamMetric("team4", TeamMetricType.TEST_AUTOMATION_COVERAGE, Double.valueOf("10.0"), Double.valueOf("1.0"),
             createDate(2019, Month.MARCH, 1)));
-    ratings.add(new TeamMetric("team4", TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT, Double.valueOf("100"),
+    ratings.add(new TeamMetric("team4", TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT, Double.valueOf("100"), Double.valueOf("1.0"),
             createDate(2019, Month.MARCH, 1)));
-    ratings.add(new TeamMetric("team4", TeamMetricType.TEST_TOTAL_EXECUTION_COUNT, Double.valueOf("1000"),
+    ratings.add(new TeamMetric("team4", TeamMetricType.TEST_TOTAL_EXECUTION_COUNT, Double.valueOf("1000"), Double.valueOf("1.0"),
             createDate(2019, Month.MARCH, 1)));
         repository.saveAll(ratings);
     }

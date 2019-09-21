@@ -35,12 +35,12 @@ public class TeamMetricsApiController
     @PostMapping("/{teamId}/{reportingDate}")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "Submit a list of team metrics", notes = "Multiple team metrics can be submitted for a single team and reporting date", response = TeamMetric.class, responseContainer = "List")
-    public List<TeamMetric> metricsingest(@ApiParam(value = "The team ID", required = true) @PathVariable String teamId, @ApiParam(value = "The reporting date in ISO Date format YYYY-MM-dd", required = true) @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate reportingDate, @ApiParam(value = "A list of metrics to submit. {teamMetricType = '<key>', value = '<value>'}", required = true) @RequestBody ArrayList<Metric> metrics)
+    public List<TeamMetric> metricsingest(@ApiParam(value = "The team ID", required = true) @PathVariable String teamId, @ApiParam(value = "The reporting date in ISO Date format YYYY-MM-dd", required = true) @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate reportingDate, @ApiParam(value = "A list of metrics to submit. {teamMetricType = '<key>', value = '<value>', target = '<target>'}", required = true) @RequestBody ArrayList<Metric> metrics)
         {
         ArrayList<TeamMetric> output = new ArrayList<>();
         for (Metric metric : metrics)
             {
-            TeamMetric persistedMetric = teamMetricServiceImpl.save(metric.getTeamMetricType(), teamId, reportingDate, metric.getValue());
+            TeamMetric persistedMetric = teamMetricServiceImpl.save(metric.getTeamMetricType(), teamId, reportingDate, metric.getValue(), metric.getTarget());
             output.add(persistedMetric);
             }
         return output;

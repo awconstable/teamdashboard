@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface TeamMetricService
     {
-    TeamMetric save(String metricType, String teamId, LocalDate reportingDate, Double value);
+    TeamMetric save(String metricType, String teamId, LocalDate reportingDate, Double value, Double target);
 
     void delete(String metricType, String teamId, LocalDate reportingDate);
 

@@ -14,17 +14,20 @@ public class TeamMetric
     private final TeamMetricType teamMetricType;
     @ApiModelProperty(notes = "The metric value")
     private final Double value;
+    @ApiModelProperty(notes = "The metric target")
+    private final Double target;
     @ApiModelProperty(notes = "The metric reporting date")
     private final LocalDate date;
     @Id
     @ApiModelProperty(notes = "The database generated metric ID")
     private String id;
 
-    public TeamMetric(String teamId, TeamMetricType teamMetricType, Double value, LocalDate date)
+    public TeamMetric(String teamId, TeamMetricType teamMetricType, Double value, Double target, LocalDate date)
         {
         this.teamId = teamId;
         this.teamMetricType = teamMetricType;
         this.value = value;
+        this.target = target;
         this.date = date;
         }
 
@@ -41,6 +44,11 @@ public class TeamMetric
     public Double getValue()
         {
         return value;
+        }
+
+    public Double getTarget()
+        {
+        return target;
         }
 
     public LocalDate getDate()
@@ -60,6 +68,7 @@ public class TeamMetric
                 "teamId='" + teamId + '\'' +
                 ", teamMetricType=" + teamMetricType +
                 ", value=" + value +
+                ", target=" + target +
                 ", date=" + date +
                 ", id='" + id + '\'' +
                 '}';
@@ -74,6 +83,7 @@ public class TeamMetric
         return Objects.equals(teamId, that.teamId) &&
                 teamMetricType == that.teamMetricType &&
                 Objects.equals(value, that.value) &&
+                Objects.equals(target, that.target) &&
                 Objects.equals(date, that.date) &&
                 Objects.equals(id, that.id);
         }
@@ -81,6 +91,6 @@ public class TeamMetric
     @Override
     public int hashCode()
         {
-        return Objects.hash(teamId, teamMetricType, value, date, id);
+        return Objects.hash(teamId, teamMetricType, value, target, date, id);
         }
     }

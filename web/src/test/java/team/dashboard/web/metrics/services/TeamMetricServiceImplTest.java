@@ -44,14 +44,14 @@ public class TeamMetricServiceImplTest
     public void metricReportCalculateTestCoverageIngest()
         {
 
-        metric = new TeamMetric("team1", TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT, 50d, now);
-        TeamMetric totalExecution = new TeamMetric("team1", TeamMetricType.TEST_TOTAL_EXECUTION_COUNT, 100d, now);
-        TeamMetric coverageMetric = new TeamMetric("team1", TeamMetricType.TEST_AUTOMATION_COVERAGE, 50d, now);
+        metric = new TeamMetric("team1", TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT, 50d, 10d, now);
+        TeamMetric totalExecution = new TeamMetric("team1", TeamMetricType.TEST_TOTAL_EXECUTION_COUNT, 100d, 100d, now);
+        TeamMetric coverageMetric = new TeamMetric("team1", TeamMetricType.TEST_AUTOMATION_COVERAGE, 50d, 10d, now);
 
         when(mockTeamMetricRepository.findByTeamIdAndTeamMetricTypeAndDate("team1", TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT, now)).thenReturn(Optional.of(metric));
         when(mockTeamMetricRepository.findByTeamIdAndTeamMetricTypeAndDate("team1", TeamMetricType.TEST_TOTAL_EXECUTION_COUNT, now)).thenReturn(Optional.of(totalExecution));
 
-        teamMetricServiceImpl.save(TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT.getKey(), "team1", now, 50d);
+        teamMetricServiceImpl.save(TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT.getKey(), "team1", now, 50d, 10d);
 
         verify(mockTeamMetricRepository, times(2)).findByTeamIdAndTeamMetricTypeAndDate("team1", TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT, now);
         verify(mockTeamMetricRepository, times(1)).findByTeamIdAndTeamMetricTypeAndDate("team1", TeamMetricType.TEST_TOTAL_EXECUTION_COUNT, now);
@@ -66,14 +66,14 @@ public class TeamMetricServiceImplTest
     public void metricReportCalculateTestCoverageIngestZeros()
         {
 
-        metric = new TeamMetric("team1", TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT, 0.0, now);
-        TeamMetric totalExecution = new TeamMetric("team1", TeamMetricType.TEST_TOTAL_EXECUTION_COUNT, 0.0, now);
-        TeamMetric coverageMetric = new TeamMetric("team1", TeamMetricType.TEST_AUTOMATION_COVERAGE, 0.0, now);
+        metric = new TeamMetric("team1", TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT, 0.0, 10.0, now);
+        TeamMetric totalExecution = new TeamMetric("team1", TeamMetricType.TEST_TOTAL_EXECUTION_COUNT, 0.0, 100.0, now);
+        TeamMetric coverageMetric = new TeamMetric("team1", TeamMetricType.TEST_AUTOMATION_COVERAGE, 0.0, 10.0, now);
 
         when(mockTeamMetricRepository.findByTeamIdAndTeamMetricTypeAndDate("team1", TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT, now)).thenReturn(Optional.of(metric));
         when(mockTeamMetricRepository.findByTeamIdAndTeamMetricTypeAndDate("team1", TeamMetricType.TEST_TOTAL_EXECUTION_COUNT, now)).thenReturn(Optional.of(totalExecution));
 
-        teamMetricServiceImpl.save(TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT.getKey(), "team1", now, 0.0);
+        teamMetricServiceImpl.save(TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT.getKey(), "team1", now, 0.0, 10.0);
 
         verify(mockTeamMetricRepository, times(2)).findByTeamIdAndTeamMetricTypeAndDate("team1", TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT, now);
         verify(mockTeamMetricRepository, times(1)).findByTeamIdAndTeamMetricTypeAndDate("team1", TeamMetricType.TEST_TOTAL_EXECUTION_COUNT, now);

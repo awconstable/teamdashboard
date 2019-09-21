@@ -8,11 +8,14 @@ public class Metric
     private final String teamMetricType;
     @ApiModelProperty(notes = "The metric value")
     private final Double value;
+    @ApiModelProperty(notes = "The metric target")
+    private final Double target;
 
-    public Metric(String teamMetricType, Double value)
+    public Metric(String teamMetricType, Double value, Double target)
         {
         this.teamMetricType = teamMetricType;
         this.value = value;
+        this.target = target;
         }
 
     public String getTeamMetricType()
@@ -25,12 +28,18 @@ public class Metric
         return value;
         }
 
+    public Double getTarget()
+        {
+        return target;
+        }
+
     @Override
     public String toString()
         {
         return "Metric{" +
                 "teamMetricType='" + teamMetricType + '\'' +
                 ", value=" + value +
+                ", target=" + target +
                 '}';
         }
     }
