@@ -460,7 +460,7 @@ function getBarChartConfig(data, title, yAxisLabel1, yAxisLabel2) {
                         if (label) {
                             label += ': ';
                         }
-                        label += Math.round(tooltipItem.yLabel * 100) / 100;
+                        label += Math.round(tooltipItem.yLabel);
                         return label;
                     }
                 }
