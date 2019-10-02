@@ -46,7 +46,7 @@ public class HierarchyRestRepository
     public List<Relation> findCompleteHierarchy()
         {
 
-        ResponseEntity<List<Relation>> response = restTemplate.exchange(teamServiceUrl + "/v2/hierarchy/all",
+        ResponseEntity<List<Relation>> response = restTemplate.exchange(teamServiceUrl + "/v2/hierarchy/complete",
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<List<Relation>>()
@@ -58,7 +58,7 @@ public class HierarchyRestRepository
 
     public Relation findHierarchyBySlug(String slug)
         {
-        ResponseEntity<List<Relation>> response = restTemplate.exchange(teamServiceUrl + "/v2/hierarchy/" + slug,
+        ResponseEntity<List<Relation>> response = restTemplate.exchange(teamServiceUrl + "/v2/hierarchy/complete/" + slug,
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<List<Relation>>()
