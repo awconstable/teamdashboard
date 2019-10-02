@@ -16,10 +16,7 @@ import team.dashboard.web.hierarchy.Relation;
 import team.dashboard.web.metrics.controllers.TeamMetricsController;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping(value = "/collection-stats", produces = "application/json")
@@ -125,6 +122,8 @@ public class CollectionStatsController
             teamCollectionCountDataSet.addData(teamCollectionCountStats.getOrDefault(teamId + label, 0));
             }
         datasets.add(teamCollectionCountDataSet);
+
+        Collections.reverse(datasets);
 
         BarData data = new BarData()
                 .addLabels(labels.toArray(new String[]{}));
