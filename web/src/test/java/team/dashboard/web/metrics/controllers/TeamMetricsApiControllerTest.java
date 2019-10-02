@@ -10,11 +10,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import team.dashboard.web.collection.TeamCollectionReportService;
+import team.dashboard.web.hierarchy.HierarchyRestRepository;
 import team.dashboard.web.metrics.TeamMetric;
 import team.dashboard.web.metrics.TeamMetricType;
 import team.dashboard.web.metrics.repos.TeamMetricRepository;
 import team.dashboard.web.metrics.services.TeamMetricServiceImpl;
-import team.dashboard.web.team.TeamRestRepository;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -36,7 +36,7 @@ public class TeamMetricsApiControllerTest
     private TeamMetricRepository mockTeamMetricRepository;
 
     @MockBean
-    private TeamRestRepository teamRestRepository;
+    private HierarchyRestRepository hierarchyRestRepository;
 
     @MockBean
     private TeamCollectionReportService mockTeamCollectionReportService;

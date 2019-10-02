@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import team.dashboard.web.hierarchy.HierarchyRestRepository;
+import team.dashboard.web.hierarchy.Relation;
 import team.dashboard.web.metrics.controllers.TeamMetricsController;
-import team.dashboard.web.team.TeamRelation;
-import team.dashboard.web.team.TeamRestRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -26,16 +26,16 @@ import java.util.List;
 public class CollectionStatsController
     {
 
-    private final TeamRestRepository teamRepository;
+    private final HierarchyRestRepository hierarchyRestRepository;
 
     private final TeamCollectionReportRepository teamCollectionReportRepository;
 
     private final TeamCollectionReportService teamCollectionReportService;
 
     @Autowired
-    public CollectionStatsController(TeamRestRepository teamRepository, TeamCollectionReportRepository teamCollectionReportRepository, TeamCollectionReportService teamCollectionReportService)
+    public CollectionStatsController(HierarchyRestRepository hierarchyRestRepository, TeamCollectionReportRepository teamCollectionReportRepository, TeamCollectionReportService teamCollectionReportService)
         {
-        this.teamRepository = teamRepository;
+        this.hierarchyRestRepository = hierarchyRestRepository;
         this.teamCollectionReportRepository = teamCollectionReportRepository;
         this.teamCollectionReportService = teamCollectionReportService;
         }
@@ -58,15 +58,15 @@ public class CollectionStatsController
         LinkedHashMap<String, Integer> teamCollectionCountStats = new LinkedHashMap<>();
         ArrayList<BarDataset> datasets = new ArrayList<>();
 
-        TeamRelation team = teamRepository.findTeamHierarchyBySlug(teamId);
+        Relation team = hierarchyRestRepository.findHierarchyBySlug(teamId);
 
-        LinkedHashSet<TeamRelation> teams = new LinkedHashSet<>();
+        LinkedHashSet<Relation> teams = new LinkedHashSet<>();
         teams.add(team);
 
         teams.addAll(team.getChildren());
 
         ArrayList<String> teamIdList = new ArrayList<>();
-        for (TeamRelation teamIdForQuery : teams)
+        for (Relation teamIdForQuery : teams)
             {
             teamIdList.add(teamIdForQuery.getSlug());
             }
@@ -82,7 +82,7 @@ public class CollectionStatsController
             teamCollectionCountStats.put(report.getTeamId() + label, report.getChildTeamsCollectingMetrics());
             }
         int i = 0;
-        for (TeamRelation teamId2 : teams)
+        for (Relation teamId2 : teams)
             {
             Color barColor = ColorHelper.generateSteppedColor(i, new Color(71, 143, 255));
             BarDataset dataset = new BarDataset().setLabel(teamId2.getName());

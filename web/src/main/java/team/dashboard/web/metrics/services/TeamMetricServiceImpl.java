@@ -65,6 +65,10 @@ public class TeamMetricServiceImpl implements TeamMetricService
 
     Double calculateTotalTestCoverage(Double automationExecutionCount, Double testExecutionCount)
         {
+        if (automationExecutionCount == null || testExecutionCount == null)
+            {
+            return null;
+            }
 
         if (automationExecutionCount.isNaN() || automationExecutionCount.equals(0.0)
                 || testExecutionCount.isNaN() || testExecutionCount.equals(0.0))

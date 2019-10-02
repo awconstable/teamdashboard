@@ -85,6 +85,28 @@ public class TeamMetricServiceImplTest
         }
 
     @Test
+    public void metricReportCalculateTestCoverageNullTargets()
+        {
+
+        metric = new TeamMetric("team1", TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT, 0.0, null, now);
+        TeamMetric totalExecution = new TeamMetric("team1", TeamMetricType.TEST_TOTAL_EXECUTION_COUNT, 0.0, null, now);
+        TeamMetric coverageMetric = new TeamMetric("team1", TeamMetricType.TEST_AUTOMATION_COVERAGE, 0.0, null, now);
+
+        when(mockTeamMetricRepository.findByTeamIdAndTeamMetricTypeAndDate("team1", TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT, now)).thenReturn(Optional.of(metric));
+        when(mockTeamMetricRepository.findByTeamIdAndTeamMetricTypeAndDate("team1", TeamMetricType.TEST_TOTAL_EXECUTION_COUNT, now)).thenReturn(Optional.of(totalExecution));
+
+        teamMetricServiceImpl.save(TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT.getKey(), "team1", now, 0.0, null);
+
+        verify(mockTeamMetricRepository, times(2)).findByTeamIdAndTeamMetricTypeAndDate("team1", TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT, now);
+        verify(mockTeamMetricRepository, times(1)).findByTeamIdAndTeamMetricTypeAndDate("team1", TeamMetricType.TEST_TOTAL_EXECUTION_COUNT, now);
+        verify(mockTeamMetricRepository, times(1)).deleteById(metric.getId());
+        verify(mockTeamMetricRepository, times(1)).save(metric);
+        verify(mockTeamMetricRepository, times(1)).save(coverageMetric);
+        verify(mockTeamCollectionReportService, times(1)).updateCollectionStats("team1", now.getYear(), now.getMonth().getValue());
+
+        }
+
+    @Test
     public void testTotalTestCoverageCalculation()
         {
         Double totalCoveragePercentage = teamMetricServiceImpl.calculateTotalTestCoverage(20.0, 100.0);
@@ -96,6 +118,13 @@ public class TeamMetricServiceImplTest
         {
         Double totalCoveragePercentage = teamMetricServiceImpl.calculateTotalTestCoverage(0.0, 0.0);
         assertThat(totalCoveragePercentage, is(equalTo(0.0)));
+        }
+
+    @Test
+    public void testTotalTestCoverageCalculationNulls()
+        {
+        Double totalCoveragePercentage = teamMetricServiceImpl.calculateTotalTestCoverage(null, null);
+        assertThat(totalCoveragePercentage, is(equalTo(null)));
         }
 
     @Test

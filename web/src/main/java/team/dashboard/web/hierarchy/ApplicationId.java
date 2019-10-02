@@ -1,11 +1,11 @@
-package team.dashboard.web.team;
+package team.dashboard.web.hierarchy;
 
-public class Application
+public class ApplicationId
     {
     private final String applicationId;
     private final String applicationName;
 
-    public Application(String applicationId, String applicationName)
+    public ApplicationId(String applicationId, String applicationName)
         {
         this.applicationId = applicationId;
         this.applicationName = applicationName;
@@ -24,7 +24,7 @@ public class Application
     @Override
     public String toString()
         {
-        return "Application{" +
+        return "ApplicationId{" +
                 "applicationId='" + applicationId + '\'' +
                 ", applicationName='" + applicationName + '\'' +
                 '}';

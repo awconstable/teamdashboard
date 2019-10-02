@@ -12,9 +12,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import team.dashboard.web.hierarchy.EntityType;
+import team.dashboard.web.hierarchy.HierarchyRestRepository;
+import team.dashboard.web.hierarchy.Relation;
 import team.dashboard.web.metrics.repos.TeamMetricRepository;
-import team.dashboard.web.team.TeamRelation;
-import team.dashboard.web.team.TeamRestRepository;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -36,7 +37,7 @@ public class CollectionStatsControllerTest
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private TeamRestRepository mockTeamRepository;
+    private HierarchyRestRepository mockHierarchyRepository;
     @MockBean
     private TeamCollectionReportRepository teamCollectionReportRepository;
     @MockBean
@@ -47,11 +48,11 @@ public class CollectionStatsControllerTest
     @Test
     public void checkChartCollectionGraphsIncludeChildrenAndParent() throws Exception
         {
-        TeamRelation team = new TeamRelation("team1", "Team 1", null,
-                Collections.singletonList(new TeamRelation("team2", "Team 2", "team1",
-                        Collections.singletonList(new TeamRelation("team3", "Team 3", "team2", Collections.emptyList())))));
+        Relation team = new Relation("team1", EntityType.TEAM, "Team 1", null,
+                Collections.singletonList(new Relation("team2", EntityType.TEAM, "Team 2", "team1",
+                        Collections.singletonList(new Relation("team3", EntityType.TEAM, "Team 3", "team2", Collections.emptyList())))));
 
-        when(mockTeamRepository.findTeamHierarchyBySlug("team1")).thenReturn(team);
+        when(mockHierarchyRepository.findHierarchyBySlug("team1")).thenReturn(team);
 
         mockMvc.perform(get("/collection-stats/team1/").contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))

@@ -1,18 +1,20 @@
-package team.dashboard.web.team;
+package team.dashboard.web.hierarchy;
 
 import java.util.Collection;
 
-public class TeamRelation
+public class Relation
     {
 
     private final String slug;
+    private final EntityType entityType;
     private final String name;
     private final String parentSlug;
-    private final Collection<TeamRelation> children;
+    private final Collection<Relation> children;
 
-    public TeamRelation(String slug, String name, String parentSlug, Collection<TeamRelation> children)
+    public Relation(String slug, EntityType entityType, String name, String parentSlug, Collection<Relation> children)
         {
         this.slug = slug;
+        this.entityType = entityType;
         this.name = name;
         this.parentSlug = parentSlug;
         this.children = children;
@@ -23,6 +25,11 @@ public class TeamRelation
         return slug;
         }
 
+    public EntityType getEntityType()
+        {
+        return entityType;
+        }
+    
     public String getName()
         {
         return name;
@@ -33,7 +40,7 @@ public class TeamRelation
         return parentSlug;
         }
 
-    public Collection<TeamRelation> getChildren()
+    public Collection<Relation> getChildren()
         {
         return children;
         }
@@ -41,11 +48,13 @@ public class TeamRelation
     @Override
     public String toString()
         {
-        return "TeamRelation{" +
+        return "Relation{" +
                 "slug='" + slug + '\'' +
                 ", name='" + name + '\'' +
                 ", parentSlug='" + parentSlug + '\'' +
                 ", children=" + children +
                 '}';
         }
+
+
     }

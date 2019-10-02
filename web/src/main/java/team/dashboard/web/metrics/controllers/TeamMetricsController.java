@@ -12,13 +12,13 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
+import team.dashboard.web.hierarchy.HierarchyEntity;
+import team.dashboard.web.hierarchy.HierarchyRestRepository;
+import team.dashboard.web.hierarchy.Relation;
 import team.dashboard.web.metrics.TeamMetric;
 import team.dashboard.web.metrics.TeamMetricTrend;
 import team.dashboard.web.metrics.TeamMetricType;
 import team.dashboard.web.metrics.repos.TeamMetricRepository;
-import team.dashboard.web.team.Team;
-import team.dashboard.web.team.TeamRelation;
-import team.dashboard.web.team.TeamRestRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -39,13 +39,13 @@ public class TeamMetricsController
 
     private final TeamMetricRepository teamMetricRepository;
 
-    private final TeamRestRepository teamRepository;
+    private final HierarchyRestRepository hierarchyRestRepository;
 
     @Autowired
-    public TeamMetricsController(TeamMetricRepository teamMetricRepository, TeamRestRepository teamRepository)
+    public TeamMetricsController(TeamMetricRepository teamMetricRepository, HierarchyRestRepository hierarchyRestRepository)
         {
         this.teamMetricRepository = teamMetricRepository;
-        this.teamRepository = teamRepository;
+        this.hierarchyRestRepository = hierarchyRestRepository;
         }
 
     public static String createDataPointLabel(int year, int month)
@@ -83,12 +83,12 @@ public class TeamMetricsController
         ArrayList<Double> metricData = new ArrayList<>();
         ArrayList<Integer> metricCount = new ArrayList<>();
 
-        Team team = teamRepository.findByTeamSlug(teamId);
+        HierarchyEntity team = hierarchyRestRepository.findEntityBySlug(teamId);
 
         ArrayList<String> teams = new ArrayList<>();
         teams.add(teamId);
 
-        for (TeamRelation child : team.getChildren())
+        for (Relation child : team.getChildren())
             {
             teams.add(child.getSlug());
             }

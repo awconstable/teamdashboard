@@ -11,11 +11,12 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
+import team.dashboard.web.hierarchy.EntityType;
+import team.dashboard.web.hierarchy.HierarchyEntity;
+import team.dashboard.web.hierarchy.HierarchyRestRepository;
+import team.dashboard.web.hierarchy.Relation;
 import team.dashboard.web.metrics.TeamCollectionStat;
 import team.dashboard.web.metrics.repos.TeamMetricRepository;
-import team.dashboard.web.team.Team;
-import team.dashboard.web.team.TeamRelation;
-import team.dashboard.web.team.TeamRestRepository;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -30,32 +31,32 @@ public class TeamCollectionReportServiceTest
     {
 
     @Autowired
-    private TeamRestRepository mockTeamRepository;
+    private HierarchyRestRepository mockHierarchyRestRepository;
     @Autowired
     private TeamMetricRepository mockTeamMetricRepository;
     @Autowired
     private TeamCollectionReportService teamCollectionReportService;
     @Autowired
     private TeamCollectionReportRepository mockTeamCollectionReportRepository;
-    private Team team0;
-    private Team team1;
-    private Team team2;
+    private HierarchyEntity team0;
+    private HierarchyEntity team1;
+    private HierarchyEntity team2;
 
     @Before
     public void setUp()
         {
-        team0 = new Team("team0", "Team 0", null,
+        team0 = new HierarchyEntity("team0", EntityType.TEAM, "Team 0", null,
                 null,
-                Arrays.asList(new TeamRelation("team1", "Team 1", "team0", Collections.emptyList()),
-                        new TeamRelation("team2", "Team 2", "team1", Collections.emptyList()))
+                Arrays.asList(new Relation("team1", EntityType.TEAM, "Team 1", "team0", Collections.emptyList()),
+                        new Relation("team2", EntityType.TEAM, "Team 2", "team1", Collections.emptyList()))
                 , null, null);
-        team1 = new Team("team1", "Team 1", "team0",
-                Collections.singletonList(new TeamRelation("team0", "Team 0", null, Collections.emptyList())),
-                Collections.singletonList(new TeamRelation("team2", "Team 2", "team1", Collections.emptyList()))
+        team1 = new HierarchyEntity("team1", EntityType.TEAM, "Team 1", "team0",
+                Collections.singletonList(new Relation("team0", EntityType.TEAM, "Team 0", null, Collections.emptyList())),
+                Collections.singletonList(new Relation("team2", EntityType.TEAM, "Team 2", "team1", Collections.emptyList()))
                 , null, null);
-        team2 = new Team("team2", "Team 2", "team1",
-                Arrays.asList(new TeamRelation("team0", "Team 0", null, Collections.emptyList()),
-                        new TeamRelation("team1", "Team 1", "team0", Collections.emptyList())),
+        team2 = new HierarchyEntity("team2", EntityType.TEAM, "Team 2", "team1",
+                Arrays.asList(new Relation("team0", EntityType.TEAM, "Team 0", null, Collections.emptyList()),
+                        new Relation("team1", EntityType.TEAM, "Team 1", "team0", Collections.emptyList())),
                 Collections.emptyList()
                 , null, null);
 
@@ -65,9 +66,9 @@ public class TeamCollectionReportServiceTest
     public void updateCollectionStats()
         {
         TeamCollectionId teamCollectionId = new TeamCollectionId("team1", LocalDate.of(2019, Month.APRIL.getValue(), 1), ReportingPeriod.MONTH);
-        when(mockTeamRepository.findByTeamSlug(team0.getSlug())).thenReturn(team0);
-        when(mockTeamRepository.findByTeamSlug(team1.getSlug())).thenReturn(team1);
-        when(mockTeamRepository.findByTeamSlug(team2.getSlug())).thenReturn(team2);
+        when(mockHierarchyRestRepository.findEntityBySlug(team0.getSlug())).thenReturn(team0);
+        when(mockHierarchyRestRepository.findEntityBySlug(team1.getSlug())).thenReturn(team1);
+        when(mockHierarchyRestRepository.findEntityBySlug(team2.getSlug())).thenReturn(team2);
         Set<TeamCollectionStat> stats = new HashSet<>();
         stats.add(new TeamCollectionStat("team0", 3, 2019, Month.APRIL.getValue()));
         stats.add(new TeamCollectionStat("team1", 2, 2019, Month.APRIL.getValue()));
@@ -93,12 +94,12 @@ public class TeamCollectionReportServiceTest
     @Test
     public void ensureParentTeamIsCountedInStats()
         {
-        when(mockTeamRepository.findByTeamSlug(team0.getSlug())).thenReturn(team0);
-        when(mockTeamRepository.findByTeamSlug(team1.getSlug())).thenReturn(team1);
-        when(mockTeamRepository.findByTeamSlug(team2.getSlug())).thenReturn(team2);
+        when(mockHierarchyRestRepository.findEntityBySlug(team0.getSlug())).thenReturn(team0);
+        when(mockHierarchyRestRepository.findEntityBySlug(team1.getSlug())).thenReturn(team1);
+        when(mockHierarchyRestRepository.findEntityBySlug(team2.getSlug())).thenReturn(team2);
 
-        when(mockTeamRepository.findByTeamSlug("team-no-ancestors"))
-                .thenReturn(new Team("team-no-ancestors", "Team No Ancestors", null,
+        when(mockHierarchyRestRepository.findEntityBySlug("team-no-ancestors"))
+                .thenReturn(new HierarchyEntity("team-no-ancestors", EntityType.TEAM, "Team No Ancestors", null,
                         Collections.emptyList(), Collections.emptyList(), null, null));
 
         teamCollectionReportService.updateCollectionStats("team-no-ancestors", 2019, Month.APRIL.getValue());
@@ -116,7 +117,7 @@ public class TeamCollectionReportServiceTest
         private TeamMetricRepository mockTeamMetricRepository;
 
         @MockBean
-        private TeamRestRepository mockTeamRepository;
+        private HierarchyRestRepository mockHierarchyRestRepository;
 
         @MockBean
         private TeamCollectionReportRepository mockTeamCollectionReportRepository;
@@ -124,7 +125,7 @@ public class TeamCollectionReportServiceTest
         @Bean
         public TeamCollectionReportService teamCollectionReportService()
             {
-            return new TeamCollectionReportService(mockTeamMetricRepository, mockTeamRepository, mockTeamCollectionReportRepository);
+            return new TeamCollectionReportService(mockTeamMetricRepository, mockHierarchyRestRepository, mockTeamCollectionReportRepository);
             }
 
         }

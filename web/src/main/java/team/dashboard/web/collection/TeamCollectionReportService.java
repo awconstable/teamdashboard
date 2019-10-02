@@ -2,11 +2,11 @@ package team.dashboard.web.collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import team.dashboard.web.hierarchy.HierarchyEntity;
+import team.dashboard.web.hierarchy.HierarchyRestRepository;
+import team.dashboard.web.hierarchy.Relation;
 import team.dashboard.web.metrics.TeamCollectionStat;
 import team.dashboard.web.metrics.repos.TeamMetricRepository;
-import team.dashboard.web.team.Team;
-import team.dashboard.web.team.TeamRelation;
-import team.dashboard.web.team.TeamRestRepository;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -20,15 +20,15 @@ public class TeamCollectionReportService
 
     private final TeamMetricRepository teamMetricRepository;
 
-    private final TeamRestRepository teamRepository;
+    private final HierarchyRestRepository hierarchyRestRepository;
 
     private final TeamCollectionReportRepository teamCollectionReportRepository;
 
     @Autowired
-    public TeamCollectionReportService(TeamMetricRepository teamMetricRepository, TeamRestRepository teamRepository, TeamCollectionReportRepository teamCollectionReportRepository)
+    public TeamCollectionReportService(TeamMetricRepository teamMetricRepository, HierarchyRestRepository hierarchyRestRepository, TeamCollectionReportRepository teamCollectionReportRepository)
         {
         this.teamMetricRepository = teamMetricRepository;
-        this.teamRepository = teamRepository;
+        this.hierarchyRestRepository = hierarchyRestRepository;
         this.teamCollectionReportRepository = teamCollectionReportRepository;
         }
 
@@ -46,15 +46,15 @@ public class TeamCollectionReportService
     public void updateCollectionStats(String teamId, Integer year, Integer month)
         {
         Set<String> teamids = new HashSet<>();
-        Team team = teamRepository.findByTeamSlug(teamId);
+        HierarchyEntity team = hierarchyRestRepository.findEntityBySlug(teamId);
 
         teamids.add(teamId);
 
-        for (TeamRelation child : team.getChildren())
+        for (Relation child : team.getChildren())
             {
             teamids.add(child.getSlug());
             }
-        for (TeamRelation ancestor : team.getAncestors())
+        for (Relation ancestor : team.getAncestors())
             {
             teamids.add(ancestor.getSlug());
             }
@@ -68,9 +68,9 @@ public class TeamCollectionReportService
     void generateLast12MonthsCollectionReporting()
         {
 
-        List<Team> teams = teamRepository.findAllTeams();
+        List<HierarchyEntity> teams = hierarchyRestRepository.findAll();
 
-        for (Team team : teams)
+        for (HierarchyEntity team : teams)
             {
             int m = 0;
             while (m < 12)
@@ -89,12 +89,12 @@ public class TeamCollectionReportService
         int collectingTeamCount;
         double percentageTeamsCollectingMetrics;
 
-        Team team = teamRepository.findByTeamSlug(teamId);
+        HierarchyEntity team = hierarchyRestRepository.findEntityBySlug(teamId);
 
         Set<String> teams = new HashSet<>();
         teams.add(teamId);
 
-        for (TeamRelation child : team.getChildren())
+        for (Relation child : team.getChildren())
             {
             teams.add(child.getSlug());
             }

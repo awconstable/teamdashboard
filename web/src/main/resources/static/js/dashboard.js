@@ -333,14 +333,14 @@ $("#collection-refresh-button").click(function () {
 
 function loadTeamHierarchy() {
     return $.ajax({
-        url: "/teams",
+        url: "/hierarchy",
         dataType: "json"
     });
 }
 
 function loadTeam(slug) {
     return $.ajax({
-        url: "/teams/" + slug,
+        url: "/hierarchy/" + slug,
         dataType: "json"
     });
 }
