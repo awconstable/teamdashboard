@@ -452,7 +452,18 @@ function getBarChartConfig(data, title, yAxisLabel1, yAxisLabel2) {
             responsive: true,
             tooltips: {
                 mode: 'index',
-                intersect: false
+                intersect: false,
+                callbacks: {
+                    label: function (tooltipItem, data) {
+                        var label = data.datasets[tooltipItem.datasetIndex].label || '';
+
+                        if (label) {
+                            label += ': ';
+                        }
+                        label += Math.round(tooltipItem.yLabel * 100) / 100;
+                        return label;
+                    }
+                }
             },
             scales: {
                 yAxes: [{
@@ -514,6 +525,19 @@ function getChartConfig(data, title, yAxisLabel1, yAxisLabel2) {
             },
             legend: {
                 display: false
+            },
+            tooltips: {
+                callbacks: {
+                    label: function (tooltipItem, data) {
+                        var label = data.datasets[tooltipItem.datasetIndex].label || '';
+
+                        if (label) {
+                            label += ': ';
+                        }
+                        label += Math.round(tooltipItem.yLabel * 100) / 100;
+                        return label;
+                    }
+                }
             },
             scales: {
                 yAxes: [{
