@@ -17,6 +17,7 @@ subprojects {
     apply plugin: 'maven-publish'
 
     repositories {
+        jcenter()
         mavenCentral()
     }
 
