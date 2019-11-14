@@ -50,7 +50,6 @@ Vagrant.configure(2) do |config|
 
   SHELL
 
-  config.vm.network "forwarded_port", guest: 80, host: 80, host_ip: "0.0.0.0", id: "nginx"
   config.vm.network "forwarded_port", guest: 8080, host: 8080, host_ip: "0.0.0.0", id: "spring_boot"
   config.vm.network "forwarded_port", guest: 8081, host: 8081, host_ip: "0.0.0.0", id: "spring_boot_2"
   config.vm.network "forwarded_port", guest: 8082, host: 8082, host_ip: "0.0.0.0", id: "spring_boot_3"

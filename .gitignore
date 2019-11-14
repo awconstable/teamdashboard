@@ -9,3 +9,12 @@ data
 .vagrant
 
 *.log
+
+# Gradle
+.gradle
+
+# MS Code
+*.settings
+.project
+.classpath
+build
