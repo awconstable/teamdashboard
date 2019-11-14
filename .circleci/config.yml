@@ -72,7 +72,6 @@ jobs:
       - restore_cache:
           key: v1-gradle-jib-cache-{{ checksum "build.gradle" }}-{{ checksum "web/build.gradle" }}
 
-      - run: echo "<settingsSecurity><master>${maven_security_master}</master></settingsSecurity>" > ~/.m2/settings-security.xml
       - run:
           name: If we're building a tag, set the version to that of the tag
           command: |
