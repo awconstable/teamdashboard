@@ -63,6 +63,10 @@ jobs:
     docker:
       - image: circleci/openjdk:11-jdk-stretch-browsers
     working_directory: ~/repo
+    environment:
+      # Customize the JVM maximum heap limit
+      _JAVA_OPTIONS: "-Xmx3g"
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
     steps:
       - checkout
       - restore_cache:
@@ -87,8 +91,8 @@ jobs:
                 LATEST_DOCKER_TAG=-Djib.to.tags=latest; \
             fi; \
             ./gradlew jib \
-              -Djib.to.auth.username=${DOCKER_HUB_USERNAME} \
-              -Djib.to.auth.password=${DOCKER_HUB_PASSWORD} \
+              -Djib.to.auth.username=$DOCKER_HUB_USERNAME \
+              -Djib.to.auth.password=$DOCKER_HUB_PASSWORD \
                $LATEST_DOCKER_TAG
       - save_cache:
           paths:
