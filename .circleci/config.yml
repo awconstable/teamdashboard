@@ -28,44 +28,36 @@ jobs:
 
     environment:
       # Customize the JVM maximum heap limit
-      MAVEN_OPTS: -Xmx3200m
-
+      _JAVA_OPTIONS: "-Xmx3g"
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
     steps:
       - checkout
 
       # Download and cache dependencies
       - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "pom.xml" }}-{{ checksum "web/pom.xml" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
+          key: v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+      - restore_cache:
+          key: v1-gradle-cache-{{ checksum "build.gradle" }}-{{ checksum "web/build.gradle" }}
 
-      - run: mvn dependency:resolve-plugins dependency:go-offline
-
+      - run: ./gradlew test jacocoTestReport
+      
       - save_cache:
           paths:
-            - ~/.m2
-          key: v1-dependencies-{{ checksum "pom.xml" }}-{{ checksum "web/pom.xml" }}
-
-      # run tests!
-      - run: mvn test integration-test verify
-      - run:
-          name: Save test results
-          command: |
-            mkdir -p ~/test-results/junit/
-            find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/junit/ \;
-            find . -type f -regex ".*/target/failsafe-reports/.*xml" -exec cp {} ~/test-results/junit/ \;
-            mkdir -p ~/test-results/jacoco/
-            find . -type f -regex ".*/target/jacoco-reports/.*xml" -exec cp {} ~/test-results/jacoco/ \;
-          when: always
+            - ~/.gradle/wrapper
+          key: v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+      - save_cache:
+          paths:
+            - ~/.gradle/caches
+          key: v1-gradle-cache-{{ checksum "build.gradle" }}-{{ checksum "web/build.gradle" }}
       - store_test_results:
-          path: ~/test-results
+          path: web/build/test-results/test
       - store_artifacts:
-          path: ~/test-results
+          path: web/build/test-results/test
+          when: always
       - store_artifacts:
-          path: web/target/jacoco-reports
+          path: web/build/reports/jacoco
       - codecov/upload:
-          file: ~/test-results/jacoco/jacoco.xml
+          file: web/build/reports/jacoco/test/jacocoTestReport.xml
 
   publish-docker:
     docker:
@@ -74,13 +66,11 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "pom.xml" }}-{{ checksum "web/pom.xml" }}
-            - v1-dependencies-
-
-      - run: mvn dependency:go-offline
-
-      - run: cp .mvn/wrapper/settings.xml ~/.m2/settings.xml
+          key: v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+      - restore_cache:
+          key: v1-gradle-cache-{{ checksum "build.gradle" }}-{{ checksum "web/build.gradle" }}
+      - restore_cache:
+          key: v1-gradle-jib-cache-{{ checksum "build.gradle" }}-{{ checksum "web/build.gradle" }}
 
       - run: echo "<settingsSecurity><master>${maven_security_master}</master></settingsSecurity>" > ~/.m2/settings-security.xml
       - run:
@@ -88,19 +78,13 @@ jobs:
           command: |
             if [ -n "$CIRCLE_TAG" ]; \
             then \
-              mvn versions:set -DnewVersion=${CIRCLE_TAG}; \
+              ./gradlew final \
             fi
       - deploy:
           name: Publish Docker image with Jib
           command: |
-            if [ -n "$CIRCLE_TAG" ]; \
-            then \
-                LATEST_DOCKER_TAG=-Djib.to.tags=latest; \
-            fi; \
-            mvn compile jib:build -B -DskipTests=true \
-              -Dbuild.number=${CIRCLE_BUILD_NUM} \
-              -Dcommit.hash=${CIRCLE_SHA1} \
-              -Dcircle.workflow.guid=${CIRCLE_WORKFLOW_ID} \
-              -Dbuild.user=${CIRCLE_PROJECT_USERNAME} \
-              -Dbuild.repo=${CIRCLE_PROJECT_REPONAME} \
-              $LATEST_DOCKER_TAG
+            ./gradlew jib
+      - save_cache:
+          paths:
+            - web/build/jib-cache
+          key: v1-gradle-jib-cache-{{ checksum "build.gradle" }}-{{ checksum "web/build.gradle" }}
