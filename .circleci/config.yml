@@ -82,7 +82,14 @@ jobs:
       - deploy:
           name: Publish Docker image with Jib
           command: |
-            ./gradlew jib
+            if [ -n "$CIRCLE_TAG" ]; \
+            then \
+                LATEST_DOCKER_TAG=-Djib.to.tags=latest; \
+            fi; \
+            ./gradlew jib \
+              -Djib.to.auth.username=${DOCKER_HUB_USERNAME} \
+              -Djib.to.auth.password=${DOCKER_HUB_PASSWORD} \
+               $LATEST_DOCKER_TAG
       - save_cache:
           paths:
             - web/build/jib-cache
