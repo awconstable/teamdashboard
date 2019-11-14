@@ -12,6 +12,7 @@ data
 
 # Gradle
 .gradle
+gradle-enterprise-workspace-id
 
 # MS Code
 *.settings
