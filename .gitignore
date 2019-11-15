@@ -13,6 +13,7 @@ data
 # Gradle
 .gradle
 gradle-enterprise-workspace-id
+.mvn/extensions.xml
 
 # MS Code
 *.settings
