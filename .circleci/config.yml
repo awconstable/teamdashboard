@@ -22,7 +22,7 @@ workflows:
 jobs:
   unit-test:
     docker:
-      - image: circleci/openjdk:11-jdk-stretch-browsers
+      - image: circleci/openjdk:11-jdk-stretch
 
     working_directory: ~/repo
 
@@ -61,7 +61,7 @@ jobs:
 
   publish-docker:
     docker:
-      - image: circleci/openjdk:11-jdk-stretch-browsers
+      - image: circleci/openjdk:11-jdk-stretch
     working_directory: ~/repo
     environment:
       # Customize the JVM maximum heap limit
