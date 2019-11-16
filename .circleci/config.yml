@@ -94,7 +94,7 @@ jobs:
             then \
                 LATEST_DOCKER_TAG=-Djib.to.tags=latest; \
             fi; \
-            ./gradlew jib --info\
+            ./gradlew jib --debug\
                $LATEST_DOCKER_TAG
       - save_cache:
           paths:
