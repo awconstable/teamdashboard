@@ -13,6 +13,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb:2.1.8.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-data-rest:2.1.8.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:2.1.8.RELEASE'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.10.1'
     implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:2.3.0'
     implementation 'org.apache.logging.log4j:log4j-to-slf4j:2.11.1'
     implementation 'org.springframework.boot:spring-boot-devtools:2.1.8.RELEASE'
