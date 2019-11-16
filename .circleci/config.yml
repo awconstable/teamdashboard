@@ -85,7 +85,7 @@ jobs:
           command: |
             if [ -n "$CIRCLE_TAG" ]; \
             then \
-              sed -i "" "s/0-SNAPSHOT/$CIRCLE_TAG/g" version.gradle
+              sed -i "" "s/0-SNAPSHOT/$CIRCLE_TAG/g" version.gradle; \
             fi
       - deploy:
           name: Publish Docker image with Jib
