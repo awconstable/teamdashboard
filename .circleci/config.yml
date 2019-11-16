@@ -86,6 +86,8 @@ jobs:
             if [ -n "$CIRCLE_TAG" ]; \
             then \
               ./gradlew -Prelease.version=$CIRCLE_TAG final; \
+            else
+              ./gradlew -Prelease.version=0-SNAPSHOT final; \
             fi
       - deploy:
           name: Publish Docker image with Jib
