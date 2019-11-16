@@ -46,6 +46,6 @@ jib {
     image = 'gcr.io/distroless/java:11'
   }
   to {
-    image = 'registry.hub.docker.com/awconstable/teamdashboard'
+    image = 'registry.hub.docker.com/awconstable/teamdashboard:' + version
   }
 }
