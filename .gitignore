@@ -20,3 +20,4 @@ gradle-enterprise-workspace-id
 .project
 .classpath
 build
+.vscode
