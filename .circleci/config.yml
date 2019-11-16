@@ -78,7 +78,7 @@ jobs:
       - run:
           name: Setup Docker Hub Credentials
           command: |
-            mkdir ~/.docker \
+            mkdir ~/.docker; \
             cat config.json | sed 's/_AUTH_TOKEN_/$DOCKER_HUB_TOKEN/g' > ~/.docker/config.json
       - run:
           name: If we're building a tag, set the version to that of the tag
