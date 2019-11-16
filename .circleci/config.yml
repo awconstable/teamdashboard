@@ -75,7 +75,11 @@ jobs:
           key: v1-gradle-cache-{{ checksum "build.gradle" }}-{{ checksum "web/build.gradle" }}
       - restore_cache:
           key: v1-gradle-jib-cache-{{ checksum "build.gradle" }}-{{ checksum "web/build.gradle" }}
-
+      - run:
+          name: Setup Docker Hub Credentials
+          command: |
+            mkdir ~/.docker \
+            cat config.json | sed 's/_AUTH_TOKEN_/$DOCKER_HUB_TOKEN/g' > ~/.docker/config.json
       - run:
           name: If we're building a tag, set the version to that of the tag
           command: |
@@ -91,8 +95,6 @@ jobs:
                 LATEST_DOCKER_TAG=-Djib.to.tags=latest; \
             fi; \
             ./gradlew jib \
-              -Djib.to.auth.username=<( mySecret='$DOCKER_HUB_USERNAME' printenv mySecret ) \
-              -Djib.to.auth.password=<( mySecret='$DOCKER_HUB_PASSWORD' printenv mySecret ) \
                $LATEST_DOCKER_TAG
       - save_cache:
           paths:
