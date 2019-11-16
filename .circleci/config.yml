@@ -85,7 +85,7 @@ jobs:
           command: |
             if [ -n "$CIRCLE_TAG" ]; \
             then \
-              ./gradlew final; \
+              ./gradlew -Prelease.useLastTag=true final; \
             fi
       - deploy:
           name: Publish Docker image with Jib
