@@ -22,70 +22,73 @@ workflows:
 jobs:
   unit-test:
     docker:
-      - image: circleci/openjdk:11-jdk-stretch
+      - image: circleci/openjdk:11-jdk
 
     working_directory: ~/repo
 
     environment:
       # Customize the JVM maximum heap limit
-      _JAVA_OPTIONS: "-Xmx3g"
-      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
+      MAVEN_OPTS: -Xmx3200m
+
     steps:
       - checkout
 
       # Download and cache dependencies
       - restore_cache:
-          key: v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
-      - restore_cache:
-          key: v1-gradle-cache-{{ checksum "build.gradle" }}-{{ checksum "web/build.gradle" }}
+          keys:
+            - v1-dependencies-{{ checksum "pom.xml" }}-{{ checksum "web/pom.xml" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
 
-      - run: ./gradlew test jacocoTestReport
-      
+      - run: mvn dependency:resolve-plugins dependency:go-offline
+
       - save_cache:
           paths:
-            - ~/.gradle/wrapper
-          key: v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
-      - save_cache:
-          paths:
-            - ~/.gradle/caches
-          key: v1-gradle-cache-{{ checksum "build.gradle" }}-{{ checksum "web/build.gradle" }}
-      - store_test_results:
-          path: web/build/test-results/test
-      - store_artifacts:
-          path: web/build/test-results/test
+            - ~/.m2
+          key: v1-dependencies-{{ checksum "pom.xml" }}-{{ checksum "web/pom.xml" }}
+
+      # run tests!
+      - run: mvn test integration-test verify
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/test-results/junit/
+            find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} ~/test-results/junit/ \;
+            find . -type f -regex ".*/target/failsafe-reports/.*xml" -exec cp {} ~/test-results/junit/ \;
+            mkdir -p ~/test-results/jacoco/
+            find . -type f -regex ".*/target/jacoco-reports/.*xml" -exec cp {} ~/test-results/jacoco/ \;
           when: always
+      - store_test_results:
+          path: ~/test-results
       - store_artifacts:
-          path: web/build/reports/jacoco
+          path: ~/test-results
+      - store_artifacts:
+          path: web/target/jacoco-reports
       - codecov/upload:
-          file: web/build/reports/jacoco/test/jacocoTestReport.xml
+          file: ~/test-results/jacoco/jacoco.xml
 
   publish-docker:
     docker:
-      - image: circleci/openjdk:11-jdk-stretch
+      - image: circleci/openjdk:11-jdk-browsers
     working_directory: ~/repo
-    environment:
-      # Customize the JVM maximum heap limit
-      _JAVA_OPTIONS: "-Xmx3g"
-      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
     steps:
       - checkout
       - restore_cache:
-          key: v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
-      - restore_cache:
-          key: v1-gradle-cache-{{ checksum "build.gradle" }}-{{ checksum "web/build.gradle" }}
-      - restore_cache:
-          key: v1-gradle-jib-cache-{{ checksum "build.gradle" }}-{{ checksum "web/build.gradle" }}
-      - run:
-          name: Setup Docker Hub Credentials
-          command: |
-            mkdir ~/.docker; \
-            cat config.json | sed "s/_AUTH_TOKEN_/$DOCKER_HUB_TOKEN/g" > ~/.docker/config.json
+          keys:
+            - v1-dependencies-{{ checksum "pom.xml" }}-{{ checksum "web/pom.xml" }}
+            - v1-dependencies-
+
+      - run: mvn dependency:go-offline
+
+      - run: cp .mvn/wrapper/settings.xml ~/.m2/settings.xml
+
+      - run: echo "<settingsSecurity><master>${maven_security_master}</master></settingsSecurity>" > ~/.m2/settings-security.xml
       - run:
           name: If we're building a tag, set the version to that of the tag
           command: |
             if [ -n "$CIRCLE_TAG" ]; \
             then \
-              sed -i -e "s/0-SNAPSHOT/$CIRCLE_TAG/g" version.gradle; \
+              mvn versions:set -DnewVersion=${CIRCLE_TAG}; \
             fi
       - deploy:
           name: Publish Docker image with Jib
@@ -94,9 +97,10 @@ jobs:
             then \
                 LATEST_DOCKER_TAG=-Djib.to.tags=latest; \
             fi; \
-            ./gradlew jib \
-               $LATEST_DOCKER_TAG
-      - save_cache:
-          paths:
-            - web/build/jib-cache
-          key: v1-gradle-jib-cache-{{ checksum "build.gradle" }}-{{ checksum "web/build.gradle" }}
+            mvn compile jib:build -B -DskipTests=true \
+              -Dbuild.number=${CIRCLE_BUILD_NUM} \
+              -Dcommit.hash=${CIRCLE_SHA1} \
+              -Dcircle.workflow.guid=${CIRCLE_WORKFLOW_ID} \
+              -Dbuild.user=${CIRCLE_PROJECT_USERNAME} \
+              -Dbuild.repo=${CIRCLE_PROJECT_REPONAME} \
+              $LATEST_DOCKER_TAG
