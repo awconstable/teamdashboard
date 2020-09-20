@@ -1,7 +1,7 @@
 package team.dashboard.web.collection;
 
 import be.ceau.chart.color.Color;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;

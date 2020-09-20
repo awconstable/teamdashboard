@@ -1,16 +1,16 @@
 package team.dashboard.web.collection;
 
 import org.hamcrest.collection.IsArrayWithSize;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import team.dashboard.web.hierarchy.EntityType;
 import team.dashboard.web.hierarchy.HierarchyEntity;
 import team.dashboard.web.hierarchy.HierarchyRestRepository;
@@ -22,11 +22,11 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.*;
 
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class TeamCollectionReportServiceTest
     {
 
@@ -42,7 +42,7 @@ public class TeamCollectionReportServiceTest
     private HierarchyEntity team1;
     private HierarchyEntity team2;
 
-    @Before
+    @BeforeEach
     public void setUp()
         {
         team0 = new HierarchyEntity("team0", EntityType.TEAM, "Team 0", null,

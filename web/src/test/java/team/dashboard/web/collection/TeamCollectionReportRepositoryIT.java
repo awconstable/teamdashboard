@@ -1,11 +1,11 @@
 package team.dashboard.web.collection;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import team.dashboard.web.metrics.TeamCollectionStat;
 
 import java.time.LocalDate;
@@ -18,7 +18,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @DataMongoTest
 public class TeamCollectionReportRepositoryIT
     {
@@ -26,7 +26,7 @@ public class TeamCollectionReportRepositoryIT
     @Autowired
     private TeamCollectionReportRepository repository;
 
-    @Before
+    @BeforeEach
     public void setUp()
         {
         String teamId = "team1";

@@ -1,13 +1,13 @@
 package team.dashboard.web.metrics.services;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import team.dashboard.web.collection.TeamCollectionReportService;
 import team.dashboard.web.metrics.TeamMetric;
 import team.dashboard.web.metrics.TeamMetricType;
@@ -23,7 +23,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 public class TeamMetricServiceImplIT
     {
@@ -36,7 +36,7 @@ public class TeamMetricServiceImplIT
     @MockBean
     private TeamCollectionReportService teamCollectionReportService;
 
-    @Before
+    @BeforeEach
     public void setUp()
         {
 
@@ -47,7 +47,7 @@ public class TeamMetricServiceImplIT
         repository.saveAll(ratings);
         }
 
-    @After
+    @AfterEach
     public void clearDown()
         {
         repository.deleteAll();
@@ -65,6 +65,7 @@ public class TeamMetricServiceImplIT
 
         Optional<TeamMetric> metric = repository.findByTeamIdAndTeamMetricTypeAndDate("team1", TeamMetricType.TEST_AUTOMATION_COVERAGE, LocalDate.of(2018, Month.JANUARY, 5));
 
+        assertThat(metric.isPresent(), is(true));
         assertThat(metric.get().getValue(), is(equalTo(50d)));
         assertThat(metric.get().getTarget(), is(equalTo(100d)));
         }
@@ -82,6 +83,7 @@ public class TeamMetricServiceImplIT
 
         Optional<TeamMetric> metric = repository.findByTeamIdAndTeamMetricTypeAndDate("team1", TeamMetricType.TEST_AUTOMATION_COVERAGE, LocalDate.of(2018, Month.JANUARY, 5));
 
+        assertThat(metric.isPresent(), is(true));
         assertThat(metric.get().getValue(), is(equalTo(50d)));
         assertThat(metric.get().getTarget(), is(equalTo(100d)));
         }

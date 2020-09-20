@@ -1,13 +1,13 @@
 package team.dashboard.web.metrics.repos;
 
 import org.assertj.core.api.AssertionsForClassTypes;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import team.dashboard.web.metrics.TeamCollectionStat;
 import team.dashboard.web.metrics.TeamMetric;
 import team.dashboard.web.metrics.TeamMetricTrend;
@@ -24,7 +24,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @DataMongoTest
 public class TeamMetricRepositoryIT
     {
@@ -32,7 +32,7 @@ public class TeamMetricRepositoryIT
     @Autowired
     private TeamMetricRepository repository;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
     List<TeamMetric> ratings = new ArrayList<>();
@@ -63,7 +63,7 @@ public class TeamMetricRepositoryIT
         repository.saveAll(ratings);
     }
 
-    @After
+    @AfterEach
     public void clearDown() {
         repository.deleteAll();
     }
