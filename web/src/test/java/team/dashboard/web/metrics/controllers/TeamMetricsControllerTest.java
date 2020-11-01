@@ -11,7 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import team.dashboard.web.collection.TeamCollectionReportService;
-import team.dashboard.web.hierarchy.HierarchyRestRepository;
+import team.dashboard.web.hierarchy.HierarchyClient;
 import team.dashboard.web.metrics.TeamMetric;
 import team.dashboard.web.metrics.TeamMetricType;
 import team.dashboard.web.metrics.repos.TeamMetricRepository;
@@ -37,7 +37,7 @@ public class TeamMetricsControllerTest
     private TeamMetricRepository mockTeamMetricRepository;
 
     @MockBean
-    private HierarchyRestRepository hierarchyRestRepository;
+    private HierarchyClient hierarchyRestRepository;
 
     @MockBean
     private TeamCollectionReportService mockTeamCollectionReportService;

@@ -12,8 +12,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
+import team.dashboard.web.hierarchy.HierarchyClient;
 import team.dashboard.web.hierarchy.HierarchyEntity;
-import team.dashboard.web.hierarchy.HierarchyRestRepository;
 import team.dashboard.web.hierarchy.Relation;
 import team.dashboard.web.metrics.TeamMetric;
 import team.dashboard.web.metrics.TeamMetricTrend;
@@ -39,10 +39,10 @@ public class TeamMetricsController
 
     private final TeamMetricRepository teamMetricRepository;
 
-    private final HierarchyRestRepository hierarchyRestRepository;
+    private final HierarchyClient hierarchyRestRepository;
 
     @Autowired
-    public TeamMetricsController(TeamMetricRepository teamMetricRepository, HierarchyRestRepository hierarchyRestRepository)
+    public TeamMetricsController(TeamMetricRepository teamMetricRepository, HierarchyClient hierarchyRestRepository)
         {
         this.teamMetricRepository = teamMetricRepository;
         this.hierarchyRestRepository = hierarchyRestRepository;
@@ -99,17 +99,16 @@ public class TeamMetricsController
 
         for (TeamMetricTrend metric : metrics)
             {
-
-            lineColour = metric.getTeamMetricType().getGraphColour();
+            lineColour = metric.getTeamMetricTrendId().getTeamMetricType().getGraphColour();
 
             metricCount.add(metric.getCount());
 
             Double value;
 
-            if (TeamMetricType.AggMethod.AVG.equals(metric.getTeamMetricType().getMethod()))
+            if (TeamMetricType.AggMethod.AVG.equals(metric.getTeamMetricTrendId().getTeamMetricType().getMethod()))
                 {
                 value = metric.getAvg();
-                } else if (TeamMetricType.AggMethod.SUM.equals(metric.getTeamMetricType().getMethod()))
+                } else if (TeamMetricType.AggMethod.SUM.equals(metric.getTeamMetricTrendId().getTeamMetricType().getMethod()))
                 {
                 value = metric.getSum();
                 } else
@@ -118,7 +117,7 @@ public class TeamMetricsController
                 }
 
             metricData.add(value);
-            labels.add(createDataPointLabel(metric.getYear(), metric.getMonth()));
+            labels.add(createDataPointLabel(metric.getTeamMetricTrendId().getYear(), metric.getTeamMetricTrendId().getMonth()));
             }
 
         //Metric data

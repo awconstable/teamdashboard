@@ -1,35 +1,24 @@
 package team.dashboard.web.metrics;
 
+import org.springframework.data.annotation.Id;
+
 public class TeamMetricTrend
     {
-    private final TeamMetricType teamMetricType;
-    private final String teamId;
+    @Id
+    private final TeamMetricTrendId teamMetricTrendId;
     private final Double avg;
     private final Double sum;
     private final Integer count;
-    private final Integer year;
-    private final Integer month;
-
-    public TeamMetricTrend(TeamMetricType teamMetricType, String teamId, Double avg, Double sum, Integer count, Integer year, Integer month)
+    
+    public TeamMetricTrend(TeamMetricTrendId teamMetricTrendId, Double avg, Double sum, Integer count)
         {
-        this.teamMetricType = teamMetricType;
-        this.teamId = teamId;
+        this.teamMetricTrendId = teamMetricTrendId;
         this.avg = avg;
         this.sum = sum;
         this.count = count;
-        this.year = year;
-        this.month = month;
         }
 
-    public TeamMetricType getTeamMetricType()
-        {
-        return teamMetricType;
-        }
-
-    public String getTeamId()
-        {
-        return teamId;
-        }
+    public TeamMetricTrendId getTeamMetricTrendId() { return teamMetricTrendId; }
 
     public Double getAvg()
         {
@@ -45,28 +34,15 @@ public class TeamMetricTrend
         {
         return count;
         }
-
-    public Integer getYear()
-        {
-        return year;
-        }
-
-    public Integer getMonth()
-        {
-        return month;
-        }
-
+    
     @Override
     public String toString()
         {
         return "TeamMetricTrend{" +
-                "teamMetricType=" + teamMetricType +
-                ", teamId='" + teamId + '\'' +
-                ", avg=" + avg +
-                ", sum=" + sum +
-                ", count=" + count +
-                ", year=" + year +
-                ", month=" + month +
-                '}';
+            "teamMetricTrendId=" + teamMetricTrendId +
+            ", avg=" + avg +
+            ", sum=" + sum +
+            ", count=" + count +
+            '}';
         }
     }

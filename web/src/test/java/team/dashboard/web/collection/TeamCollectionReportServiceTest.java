@@ -12,10 +12,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import team.dashboard.web.hierarchy.EntityType;
+import team.dashboard.web.hierarchy.HierarchyClient;
 import team.dashboard.web.hierarchy.HierarchyEntity;
-import team.dashboard.web.hierarchy.HierarchyRestRepository;
 import team.dashboard.web.hierarchy.Relation;
 import team.dashboard.web.metrics.TeamCollectionStat;
+import team.dashboard.web.metrics.TeamCollectionStatId;
 import team.dashboard.web.metrics.repos.TeamMetricRepository;
 
 import java.time.LocalDate;
@@ -31,7 +32,7 @@ public class TeamCollectionReportServiceTest
     {
 
     @Autowired
-    private HierarchyRestRepository mockHierarchyRestRepository;
+    private HierarchyClient mockHierarchyRestRepository;
     @Autowired
     private TeamMetricRepository mockTeamMetricRepository;
     @Autowired
@@ -70,9 +71,9 @@ public class TeamCollectionReportServiceTest
         when(mockHierarchyRestRepository.findEntityBySlug(team1.getSlug())).thenReturn(team1);
         when(mockHierarchyRestRepository.findEntityBySlug(team2.getSlug())).thenReturn(team2);
         Set<TeamCollectionStat> stats = new HashSet<>();
-        stats.add(new TeamCollectionStat("team0", 3, 2019, Month.APRIL.getValue()));
-        stats.add(new TeamCollectionStat("team1", 2, 2019, Month.APRIL.getValue()));
-        stats.add(new TeamCollectionStat("team2", 1, 2019, Month.APRIL.getValue()));
+        stats.add(new TeamCollectionStat(new TeamCollectionStatId("team0", 2019, Month.APRIL.getValue()), 3));
+        stats.add(new TeamCollectionStat(new TeamCollectionStatId("team1",2019, Month.APRIL.getValue()), 2));
+        stats.add(new TeamCollectionStat(new TeamCollectionStatId("team2", 2019, Month.APRIL.getValue()), 1));
         when(mockTeamMetricRepository.getCollectionStats(any(), eq(2019), eq(Month.APRIL.getValue()))).thenReturn(stats);
 
         //Test that reports get delete if they exist.
@@ -117,7 +118,7 @@ public class TeamCollectionReportServiceTest
         private TeamMetricRepository mockTeamMetricRepository;
 
         @MockBean
-        private HierarchyRestRepository mockHierarchyRestRepository;
+        private HierarchyClient mockHierarchyRestRepository;
 
         @MockBean
         private TeamCollectionReportRepository mockTeamCollectionReportRepository;

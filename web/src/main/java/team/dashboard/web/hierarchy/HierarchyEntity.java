@@ -2,6 +2,7 @@ package team.dashboard.web.hierarchy;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class HierarchyEntity
@@ -56,21 +57,33 @@ public class HierarchyEntity
 
     public Collection<Relation> getAncestors()
         {
+        if(ancestors == null){
+            return new ArrayList<>();
+        }
         return ancestors;
         }
 
     public Collection<Relation> getChildren()
         {
+        if(children == null){
+            return new ArrayList<>();
+        }
         return children;
         }
 
     public Collection<Member> getMembers()
         {
+        if(members == null){
+            return new ArrayList<>();
+        }
         return members;
         }
 
     public Collection<ApplicationId> getApplicationIds()
         {
+        if(applicationIds == null){
+            return new ArrayList<>();
+        }
         return applicationIds;
         }
 

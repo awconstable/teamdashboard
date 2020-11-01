@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import team.dashboard.web.hierarchy.HierarchyRestRepository;
+import team.dashboard.web.hierarchy.HierarchyClient;
 import team.dashboard.web.hierarchy.Relation;
 import team.dashboard.web.metrics.controllers.TeamMetricsController;
 
@@ -23,14 +23,14 @@ import java.util.*;
 public class CollectionStatsController
     {
 
-    private final HierarchyRestRepository hierarchyRestRepository;
+    private final HierarchyClient hierarchyRestRepository;
 
     private final TeamCollectionReportRepository teamCollectionReportRepository;
 
     private final TeamCollectionReportService teamCollectionReportService;
 
     @Autowired
-    public CollectionStatsController(HierarchyRestRepository hierarchyRestRepository, TeamCollectionReportRepository teamCollectionReportRepository, TeamCollectionReportService teamCollectionReportService)
+    public CollectionStatsController(HierarchyClient hierarchyRestRepository, TeamCollectionReportRepository teamCollectionReportRepository, TeamCollectionReportService teamCollectionReportService)
         {
         this.hierarchyRestRepository = hierarchyRestRepository;
         this.teamCollectionReportRepository = teamCollectionReportRepository;

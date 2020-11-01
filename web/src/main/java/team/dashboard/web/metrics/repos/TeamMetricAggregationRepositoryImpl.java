@@ -124,8 +124,8 @@ public class TeamMetricAggregationRepositoryImpl implements TeamMetricAggregatio
                 groupBy,
                 sort(Sort.Direction.ASC, "year", "month", "teamId"));
 
-        AggregationResults<TeamCollectionStat> result = mongoTemplate.aggregate(agg, TeamCollectionStat.class);
-
-        return new HashSet<>(result.getMappedResults());
+        AggregationResults<TeamCollectionStat> results = mongoTemplate.aggregate(agg, TeamCollectionStat.class);
+        
+        return new HashSet<>(results.getMappedResults());
         }
     }

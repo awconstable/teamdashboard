@@ -2,10 +2,11 @@ package team.dashboard.web.collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import team.dashboard.web.hierarchy.HierarchyClient;
 import team.dashboard.web.hierarchy.HierarchyEntity;
-import team.dashboard.web.hierarchy.HierarchyRestRepository;
 import team.dashboard.web.hierarchy.Relation;
 import team.dashboard.web.metrics.TeamCollectionStat;
+import team.dashboard.web.metrics.TeamCollectionStatId;
 import team.dashboard.web.metrics.repos.TeamMetricRepository;
 
 import java.time.LocalDate;
@@ -20,12 +21,12 @@ public class TeamCollectionReportService
 
     private final TeamMetricRepository teamMetricRepository;
 
-    private final HierarchyRestRepository hierarchyRestRepository;
+    private final HierarchyClient hierarchyRestRepository;
 
     private final TeamCollectionReportRepository teamCollectionReportRepository;
 
     @Autowired
-    public TeamCollectionReportService(TeamMetricRepository teamMetricRepository, HierarchyRestRepository hierarchyRestRepository, TeamCollectionReportRepository teamCollectionReportRepository)
+    public TeamCollectionReportService(TeamMetricRepository teamMetricRepository, HierarchyClient hierarchyRestRepository, TeamCollectionReportRepository teamCollectionReportRepository)
         {
         this.teamMetricRepository = teamMetricRepository;
         this.hierarchyRestRepository = hierarchyRestRepository;
@@ -61,6 +62,7 @@ public class TeamCollectionReportService
 
         for (String teamid : teamids)
             {
+            System.out.println(teamId);
             createCollectionStats(teamid, year, month);
             }
         }
@@ -100,6 +102,8 @@ public class TeamCollectionReportService
             }
 
         teamCount = teams.size();
+        
+        System.out.println(teams);
 
         Set<TeamCollectionStat> stats = teamMetricRepository.getCollectionStats(teams.toArray(new String[]{}), year, month);
 
@@ -109,7 +113,7 @@ public class TeamCollectionReportService
 
         for (String teamStat : teams)
             {
-            TeamCollectionStat stat = new TeamCollectionStat(teamStat, 0, year, month);
+            TeamCollectionStat stat = new TeamCollectionStat(new TeamCollectionStatId(teamStat, year, month), 0);
             stats.add(stat);
             }
 

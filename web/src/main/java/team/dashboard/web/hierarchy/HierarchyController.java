@@ -14,10 +14,10 @@ import java.util.List;
 public class HierarchyController
     {
 
-    private final HierarchyRestRepository hierarchyRestRepository;
+    private final HierarchyClient hierarchyRestRepository;
 
     @Autowired
-    public HierarchyController(HierarchyRestRepository hierarchyRestRepository)
+    public HierarchyController(HierarchyClient hierarchyRestRepository)
         {
         this.hierarchyRestRepository = hierarchyRestRepository;
         }

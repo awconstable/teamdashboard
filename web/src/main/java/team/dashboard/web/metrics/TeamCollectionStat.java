@@ -1,23 +1,24 @@
 package team.dashboard.web.metrics;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.Objects;
 
+@Document
 public class TeamCollectionStat
     {
-    private final String teamId;
+    @Id
+    private final TeamCollectionStatId teamId;
     private final Integer count;
-    private final Integer year;
-    private final Integer month;
 
-    public TeamCollectionStat(String teamId, Integer count, Integer year, Integer month)
+    public TeamCollectionStat(TeamCollectionStatId teamId, Integer count)
         {
         this.teamId = teamId;
         this.count = count;
-        this.year = year;
-        this.month = month;
         }
 
-    public String getTeamId()
+    public TeamCollectionStatId getTeamId()
         {
         return teamId;
         }
@@ -27,25 +28,13 @@ public class TeamCollectionStat
         return count;
         }
 
-    public Integer getYear()
-        {
-        return year;
-        }
-
-    public Integer getMonth()
-        {
-        return month;
-        }
-
     @Override
     public String toString()
         {
         return "TeamCollectionStat{" +
-                "teamId='" + teamId + '\'' +
-                ", count=" + count +
-                ", year=" + year +
-                ", month=" + month +
-                '}';
+            "teamId=" + teamId +
+            ", count=" + count +
+            '}';
         }
 
     @Override
@@ -54,14 +43,13 @@ public class TeamCollectionStat
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TeamCollectionStat that = (TeamCollectionStat) o;
-        return teamId.equals(that.teamId) &&
-                year.equals(that.year) &&
-                month.equals(that.month);
+        return Objects.equals(teamId, that.teamId) &&
+            Objects.equals(count, that.count);
         }
 
     @Override
     public int hashCode()
         {
-        return Objects.hash(teamId, year, month);
+        return Objects.hash(teamId, count);
         }
     }

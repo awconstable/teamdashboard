@@ -1,5 +1,6 @@
 package team.dashboard.web.hierarchy;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class Relation
@@ -42,6 +43,9 @@ public class Relation
 
     public Collection<Relation> getChildren()
         {
+        if(children == null){
+            return new ArrayList<>();
+        }
         return children;
         }
 
