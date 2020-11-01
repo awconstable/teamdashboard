@@ -2,7 +2,7 @@ version: '3'
 services:
   mongo:
     container_name: mongo_container
-    image: "mongo:3.6.20-stretch"
+    image: "mongo:3.6.8-stretch"
     ports:
       - "27017:27017"
     networks:
@@ -14,19 +14,58 @@ services:
       #   hard: 1
     volumes:
       - mongodata:/data/db
-  teamservice:
-    container_name: teamservice
+  teamservice1:
+    container_name: teamservice1
     image: awconstable/teamservice
     depends_on:
       - mongo
+      - consul
     networks:
       - dashboardnetwork
     ports:
-      - "8082:8080"
+      - "8081:8081"
     environment:
+      - server.port=8081
       - spring_data_mongodb_host=mongo_container
       - spring_data_mongodb_port=27017
-      - spring_data_mongodb_database=team
+      - spring_data_mongodb_database=teamservice-test
+      - spring_cloud_discovery_enabled=true
+      - spring_cloud_service-registry_auto-registration_enabled=true
+      - spring_cloud_consul_discovery_enabled=true
+      - spring_cloud_consul_config_enabled=true
+      - spring_cloud_consul_host=consul_container
+      - spring_cloud_consul_port=8500
+      - spring_cloud_consul_discovery_prefer-ip-address=true
+  teamservice2:
+      container_name: teamservice2
+      image: awconstable/teamservice
+      depends_on:
+          - mongo
+          - consul
+      networks:
+          - dashboardnetwork
+      ports:
+          - "8082:8082"
+      environment:
+          - server.port=8082 
+          - spring_data_mongodb_host=mongo_container
+          - spring_data_mongodb_port=27017
+          - spring_data_mongodb_database=teamservice-test
+          - spring_cloud_discovery_enabled=true
+          - spring_cloud_service-registry_auto-registration_enabled=true
+          - spring_cloud_consul_discovery_enabled=true
+          - spring_cloud_consul_config_enabled=true
+          - spring_cloud_consul_host=consul_container
+          - spring_cloud_consul_port=8500
+          - spring_cloud_consul_discovery_prefer-ip-address=true
+  consul:
+    container_name: consul_container
+    image: consul
+    ports:
+        - "8500:8500"
+        - "8600:8600"
+    networks:
+        - dashboardnetwork
 volumes:
   mongodata:
 networks:

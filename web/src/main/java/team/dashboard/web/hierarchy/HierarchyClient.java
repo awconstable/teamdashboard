@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
 
-@FeignClient(value = "hierarchy")
+@FeignClient(value = "team-service")
 public interface HierarchyClient
     {
         @RequestMapping(method = RequestMethod.GET, value = "/v2/hierarchy/relatives/{slug}")
