@@ -62,7 +62,6 @@ public class TeamCollectionReportService
 
         for (String teamid : teamids)
             {
-            System.out.println(teamId);
             createCollectionStats(teamid, year, month);
             }
         }
@@ -102,8 +101,6 @@ public class TeamCollectionReportService
             }
 
         teamCount = teams.size();
-        
-        System.out.println(teams);
 
         Set<TeamCollectionStat> stats = teamMetricRepository.getCollectionStats(teams.toArray(new String[]{}), year, month);
 
