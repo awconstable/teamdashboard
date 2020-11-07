@@ -60,7 +60,7 @@ public class FeignHierarchyClientIT
     @EnableFeignClients(clients = HierarchyClient.class)
     @EnableAutoConfiguration
     @RibbonClient(
-        name = "hierarchy",
+        name = "team-service",
         configuration =
             FeignHierarchyClientIT.FakeRibbonConfiguration.class)
     static class FakeFeignConfiguration
