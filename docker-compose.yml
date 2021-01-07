@@ -2,7 +2,7 @@ version: '3'
 services:
   mongo:
     container_name: mongo_container
-    image: "mongo:3.6.8-stretch"
+    image: "mongo:3.6.21-xenial"
     ports:
       - "27017:27017"
     networks:
