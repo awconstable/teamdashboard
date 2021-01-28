@@ -1,11 +1,14 @@
 package team.dashboard.web.dora.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.data.annotation.Id;
 
 import java.util.Date;
 
 public class DeploymentFrequency
     {
+    @Id
+    private String id;
     private final String applicationId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd", timezone = "UTC")
     private final Date reportingDate;

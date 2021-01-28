@@ -1,9 +1,13 @@
 package team.dashboard.web.dora.domain;
 
+import org.springframework.data.annotation.Id;
+
 import java.util.Date;
 
 public class LeadTime
     {
+    @Id
+    private String id;
     private final String applicationId;
     private final Date reportingDate;
     private final long leadTimeSeconds;
