@@ -87,11 +87,11 @@ function loadGraphs() {
     //throughput metrics
     loadTrendData("/lead_time/", team)
         .done(function (data) {
-            drawChart(data, "#chart1", "Average Lead Time", "Days", "Metric Count");
+            drawChart(data, "#chart1", "Average Lead Time", "Mins", "Metric Count");
         });
     loadTrendData("/deployment_frequency/", team)
         .done(function (data) {
-            drawChart(data, "#chart2", "Deployment Frequency", "Days", "Metric Count");
+            drawChart(data, "#chart2", "Deployment Count", "Deployments", "Metric Count");
         });
     //stability metrics
     loadTrendData("/change_failure_rate/", team)
@@ -570,8 +570,8 @@ function getChartConfig(data, title, yAxisLabel1, yAxisLabel2) {
                 xAxes: [{
                     type: 'time',
                     time: {
-                        unit: 'month',
-                        tooltipFormat: 'MMM YYYY'
+                        unit: 'day',
+                        tooltipFormat: 'DD MMM YYYY'
                     }
                 }]
             }

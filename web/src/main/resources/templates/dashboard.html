@@ -83,13 +83,13 @@
                           <div class="col-xl-5">
                               <canvas class="my-4" id="chart1"></canvas>
                               <small class="form-text text-muted">
-                                  The average time from receiving a customer request to the request being satisfied.
+                                  The average time from code commit to production deployment.
                               </small>
                           </div>
                           <div class="col-xl-5">
                               <canvas class="my-4" id="chart2"></canvas>
                               <small class="form-text text-muted">
-                                  The frequency of production deployments. (A proxy for batch size).
+                                  The number of production deployments per day.
                               </small>
                           </div>
                       </div>
@@ -220,21 +220,20 @@
                               <h3 class="mb-3">Throughput</h3>
                               <div class="row">
                                   <div class="mb-3">
-                                      <label for="lead_time">Lead Time (days)</label>
+                                      <label for="lead_time">Lead Time (mins)</label>
                                       <input class="form-control" id="lead_time" name="lead_time" type="text">
                                       <small class="form-text text-muted">
-                                          The average time from receiving a customer request to the request being
-                                          satisfied.
+                                          The average time from code commit to production deployment.
                                       </small>
                                   </div>
                               </div>
                               <div class="row">
                                   <div class="mb-3">
-                                      <label for="deployment_frequency">Deployment Frequency (days)</label>
+                                      <label for="deployment_frequency">Deployment Count</label>
                                       <input class="form-control" id="deployment_frequency" name="deployment_frequency"
                                              type="text">
                                       <small class="form-text text-muted">
-                                          The frequency of production deployments. (A proxy for batch size).
+                                          The number of production deployments per day.
                                       </small>
                                   </div>
                               </div>
