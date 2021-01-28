@@ -114,7 +114,7 @@ function loadGraphs() {
             clearDownChart(chart1);
             chart1 = drawChart(data, "#chart1", "Average Lead Time", "Mins", "Metric Count");
         });
-    loadTrendData("/deployment_frequency/", team)
+    loadTrendData("/deployment_count/", team)
         .done(function (data) {
             clearDownChart(chart2);
             chart2 = drawChart(data, "#chart2", "Deployment Count", "Deployments", "Metric Count");

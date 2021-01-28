@@ -68,7 +68,7 @@ class DeploymentFrequencyServiceImplTest
         verify(mockDeploymentClient, times(1)).getDeployFrequency("app1", reportingDate);
         verify(mockDoraFreqRepository, times(1)).save(freq);
         verify(mockTeamMetricService, times(1)).save(
-            TeamMetricType.DEPLOYMENT_FREQUENCY.getKey(), 
+            TeamMetricType.DEPLOYMENT_COUNT.getKey(), 
             "app1", LocalDate.ofInstant(reportingDate.toInstant(), ZoneId.of("UTC")),
             10.0, 
             null
@@ -90,7 +90,7 @@ class DeploymentFrequencyServiceImplTest
         verify(mockDeploymentClient, times(1)).getDeployFrequency("app1", reportingDate);
         verify(mockDoraFreqRepository, times(1)).save(freq);
         verify(mockTeamMetricService, times(1)).save(
-            TeamMetricType.DEPLOYMENT_FREQUENCY.getKey(),
+            TeamMetricType.DEPLOYMENT_COUNT.getKey(),
             "app1", 
             LocalDate.ofInstant(reportingDate.toInstant(), ZoneId.of("UTC")),
             10.0,
@@ -151,7 +151,7 @@ class DeploymentFrequencyServiceImplTest
         verify(mockDeploymentClient, times(3)).getDeployFrequency(anyString(), eq(reportingDate));
         verify(mockDoraFreqRepository, times(3)).save(any(DeploymentFrequency.class));
         verify(mockTeamMetricService, times(3)).save(
-            eq(TeamMetricType.DEPLOYMENT_FREQUENCY.getKey()),
+            eq(TeamMetricType.DEPLOYMENT_COUNT.getKey()),
             anyString(),
             eq(LocalDate.ofInstant(reportingDate.toInstant(), ZoneId.of("UTC"))),
             eq(10.0),

@@ -8,7 +8,7 @@ public enum TeamMetricType
     {
         LEAD_TIME_FOR_CHANGE("lead_time", "Average Lead Time for Changes", AggMethod.AVG, new Color(0, 123, 255)),
         CYCLE_TIME("cycletime", "Average Cycle Time", AggMethod.AVG, Color.AQUA),
-        DEPLOYMENT_FREQUENCY("deployment_frequency", "Deployment Frequency", AggMethod.AVG, Color.GOLD),
+        DEPLOYMENT_COUNT("deployment_count", "Deployment Count", AggMethod.AVG, Color.GOLD),
         INCIDENTS_DUE_TO_CHANGE("incidents_due_to_change", "Incidents due to change", AggMethod.SUM, Color.RED),
         PRODUCTION_DEFECTS("production_defects", "Production Defects", AggMethod.SUM, Color.DARK_SALMON),
         TEAM_HAPPINESS("team_happiness", "Team Happiness", AggMethod.AVG, Color.DARK_GREEN),

@@ -40,7 +40,7 @@ public class DeploymentFrequencyServiceImpl implements DeploymentFrequencyServic
         DeploymentFrequency freq = deploymentClient.getDeployFrequency(applicationId, reportingDate);
         doraDeployFreqRepository.save(freq);
         teamMetricService.save(
-            TeamMetricType.DEPLOYMENT_FREQUENCY.getKey(),
+            TeamMetricType.DEPLOYMENT_COUNT.getKey(),
             applicationId,
             LocalDate.ofInstant(reportingDate.toInstant(), ZoneId.of("UTC")),
             freq.getDeploymentCount().doubleValue(), 
