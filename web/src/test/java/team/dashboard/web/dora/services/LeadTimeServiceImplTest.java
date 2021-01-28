@@ -69,7 +69,7 @@ class LeadTimeServiceImplTest
         verify(mockTeamMetricService, times(1)).save(
             TeamMetricType.LEAD_TIME_FOR_CHANGE.getKey(),
             "app1", LocalDate.ofInstant(reportingDate.toInstant(), ZoneId.of("UTC")),
-            1200.0,
+            20.0,
             null
         );
         }
@@ -91,7 +91,7 @@ class LeadTimeServiceImplTest
         verify(mockTeamMetricService, times(1)).save(
             TeamMetricType.LEAD_TIME_FOR_CHANGE.getKey(),
             "app1", LocalDate.ofInstant(reportingDate.toInstant(), ZoneId.of("UTC")),
-            1200.0,
+            20.0,
             null
         );
         }
@@ -152,7 +152,7 @@ class LeadTimeServiceImplTest
             eq(TeamMetricType.LEAD_TIME_FOR_CHANGE.getKey()),
             anyString(),
             eq(LocalDate.ofInstant(reportingDate.toInstant(), ZoneId.of("UTC"))),
-            eq(1200.0),
+            eq(20.0),
             isNull()
         );
         }

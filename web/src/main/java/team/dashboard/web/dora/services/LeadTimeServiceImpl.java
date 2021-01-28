@@ -36,14 +36,16 @@ public class LeadTimeServiceImpl implements LeadTimeService
     @Override
     public void load(String applicationId, Date reportingDate)
         {
+        
         delete(applicationId, reportingDate);
         LeadTime leadTime = deploymentClient.getLeadTime(applicationId, reportingDate);
         doraLeadTimeRepository.save(leadTime);
+        long leadTimeMins =  leadTime.getLeadTimeSeconds() / 60;
         teamMetricService.save(
             TeamMetricType.LEAD_TIME_FOR_CHANGE.getKey(),
             applicationId,
             LocalDate.ofInstant(reportingDate.toInstant(), ZoneId.of("UTC")),
-            Long.valueOf(leadTime.getLeadTimeSeconds()).doubleValue(),
+            Long.valueOf(leadTimeMins).doubleValue(),
             null
         );
         }
