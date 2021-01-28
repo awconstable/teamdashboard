@@ -83,61 +83,95 @@ function loadCollectionGraphs() {
         });
 }
 
+var chart1;
+var chart2;
+var chart3;
+var chart4;
+var chart5;
+var chart6;
+var chart7;
+var chart8;
+var chart9;
+var chart10;
+var chart11;
+var chart12;
+var chart13;
+
+function clearDownChart(chart){
+    if(chart) {
+        console.log("destroy chart id: " + chart.id);
+        chart.destroy();
+    }  
+}
+
 function loadGraphs() {
     //throughput metrics
     loadTrendData("/lead_time/", team)
         .done(function (data) {
-            drawChart(data, "#chart1", "Average Lead Time", "Mins", "Metric Count");
+            clearDownChart(chart1);
+            chart1 = drawChart(data, "#chart1", "Average Lead Time", "Mins", "Metric Count");
         });
     loadTrendData("/deployment_frequency/", team)
         .done(function (data) {
-            drawChart(data, "#chart2", "Deployment Count", "Deployments", "Metric Count");
+            clearDownChart(chart2);
+            chart2 = drawChart(data, "#chart2", "Deployment Count", "Deployments", "Metric Count");
         });
     //stability metrics
     loadTrendData("/change_failure_rate/", team)
         .done(function (data) {
-            drawChart(data, "#chart3", "Change Failure Rate", "%", "Metric Count");
+            clearDownChart(chart3);
+            chart3 = drawChart(data, "#chart3", "Change Failure Rate", "%", "Metric Count");
         });
     loadTrendData("/mttr/", team)
         .done(function (data) {
-            drawChart(data, "#chart4", "Mean Time to Recovery", "Minutes", "Metric Count");
+            clearDownChart(chart4);
+            chart4 = drawChart(data, "#chart4", "Mean Time to Recovery", "Minutes", "Metric Count");
         });
     loadTrendData("/cycletime/", team)
         .done(function (data) {
-            drawChart(data, "#chart5", "Average Cycle Time", "Days", "Metric Count");
+            clearDownChart(chart5);
+            chart5 = drawChart(data, "#chart5", "Average Cycle Time", "Days", "Metric Count");
         });
     loadTrendData("/incidents_due_to_change/", team)
         .done(function (data) {
-            drawChart(data, "#chart6", "Incidents Due To Change", "Incidents", "Metric Count");
+            clearDownChart(chart6);
+            chart6 = drawChart(data, "#chart6", "Incidents Due To Change", "Incidents", "Metric Count");
         });
     loadTrendData("/production_defects/", team)
         .done(function (data) {
-            drawChart(data, "#chart7", "Production Defects", "Defects", "Metric Count");
+            clearDownChart(chart7);
+            chart7 = drawChart(data, "#chart7", "Production Defects", "Defects", "Metric Count");
         });
     //culture
     loadTrendData("/team_happiness/", team)
         .done(function (data) {
-            drawChart(data, "#chart8", "Team Happiness", "Happiness Index", "Metric Count");
+            clearDownChart(chart8);
+            chart8 = drawChart(data, "#chart8", "Team Happiness", "Happiness Index", "Metric Count");
         });
     loadTrendData("/customer_satisfaction/", team)
         .done(function (data) {
-            drawChart(data, "#chart9", "Customer Satisfaction", "CSAT Index", "Metric Count");
+            clearDownChart(chart9);
+            chart9 = drawChart(data, "#chart9", "Customer Satisfaction", "CSAT Index", "Metric Count");
         });
     loadTrendData("/batch_size/", team)
         .done(function (data) {
-            drawChart(data, "#chart10", "Batch Size", "Batch Size", "Metric Count");
+            clearDownChart(chart10);
+            chart10 = drawChart(data, "#chart10", "Batch Size", "Batch Size", "Metric Count");
         });
     loadTrendData("/test_automation_coverage/", team)
         .done(function (data) {
-            drawChart(data, "#chart11", "Test Automation Coverage", "%", "Metric Count");
+            clearDownChart(chart11);
+            chart11 = drawChart(data, "#chart11", "Test Automation Coverage", "%", "Metric Count");
         });
     loadTrendData("/total_test_execution_count/", team)
         .done(function (data) {
-            drawChart(data, "#chart12", "Total Test Execution Count", "#", "Metric Count");
+            clearDownChart(chart12);
+            chart12 = drawChart(data, "#chart12", "Total Test Execution Count", "#", "Metric Count");
         });
     loadTrendData("/test_automation_execution_count/", team)
         .done(function (data) {
-            drawChart(data, "#chart13", "Test Automation Execution Count", "#", "Metric Count");
+            clearDownChart(chart13);
+            chart13 = drawChart(data, "#chart13", "Test Automation Execution Count", "#", "Metric Count");
         });
 }
 
@@ -589,11 +623,11 @@ function drawBarChart(data, chartElemId, title, yAxisLabel1, yAxisLabel2) {
         }
     }
 
-    new Chart(ctx, getBarChartConfig(data, title, yAxisLabel1, yAxisLabel2));
+    return new Chart(ctx, getBarChartConfig(data, title, yAxisLabel1, yAxisLabel2));
 }
 
 function drawChart(data, chartElemId, title, yAxisLabel1, yAxisLabel2) {
     var ctx = $(chartElemId);
 
-    new Chart(ctx, getChartConfig(data, title, yAxisLabel1, yAxisLabel2));
+    return new Chart(ctx, getChartConfig(data, title, yAxisLabel1, yAxisLabel2));
 }
