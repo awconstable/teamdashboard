@@ -56,7 +56,7 @@ mvn clean install
 
 ```
 docker-compose up
-mvn spring-boot:run -Dspring-boot.run.arguments="--spring.data.mongodb.host=<mogo host>,--spring.data.mongodb.port=<mongo port>,--spring-data.mongodb.database=<mongo db> --team.service.url=http://localhost:8082 --spring.cloud.discovery.enabled=true --spring.cloud.service-registry.auto-registration.enabled=true --spring.cloud.consul.config.enabled=true --spring.cloud.consul.host=<consul host> --spring.cloud.consul.port=<consul port>"
+mvn spring-boot:run -Dspring-boot.run.arguments=--spring.data.mongodb.host=<mogo host>,--spring.data.mongodb.port=<mongo port>,--spring-data.mongodb.database=<mongo db> --team.service.url=http://localhost:8082 --spring.cloud.discovery.enabled=true --spring.cloud.service-registry.auto-registration.enabled=true --spring.cloud.consul.config.enabled=true --spring.cloud.consul.host=<consul host> --spring.cloud.consul.port=<consul port>"
 ```
 
 ### Run app as a Docker container

@@ -40,8 +40,7 @@ public class FeignHierarchyClientIT
 
         }
 
-    @Configuration(
-        proxyBeanMethods = false)
+    @Configuration(proxyBeanMethods = false)
     static class FakeRibbonConfiguration
         {
 

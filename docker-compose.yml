@@ -36,6 +36,7 @@ services:
       - spring_cloud_consul_host=consul_container
       - spring_cloud_consul_port=8500
       - spring_cloud_consul_discovery_prefer-ip-address=true
+      - spring_cloud_consul_discovery_scheme=http
   teamservice2:
       container_name: teamservice2
       image: awconstable/teamservice
@@ -58,6 +59,7 @@ services:
           - spring_cloud_consul_host=consul_container
           - spring_cloud_consul_port=8500
           - spring_cloud_consul_discovery_prefer-ip-address=true
+          - spring_cloud_consul_discovery_scheme=http
   consul:
     container_name: consul_container
     image: consul
@@ -66,6 +68,29 @@ services:
         - "8600:8600"
     networks:
         - dashboardnetwork
+  deployservice:
+    container_name: deployservice
+    image: awconstable/deployservice
+    depends_on:
+        - mongo
+        - consul
+    networks:
+        - dashboardnetwork
+    ports:
+        - "8083:8083"
+    environment:
+      - server.port=8083
+      - spring_data_mongodb_host=mongo_container
+      - spring_data_mongodb_port=27017
+      - spring_data_mongodb_database=deployservice-test
+      - spring_cloud_discovery_enabled=true
+      - spring_cloud_service-registry_auto-registration_enabled=true
+      - spring_cloud_consul_discovery_enabled=true
+      - spring_cloud_consul_config_enabled=true
+      - spring_cloud_consul_host=consul_container
+      - spring_cloud_consul_port=8500
+      - spring_cloud_consul_discovery_prefer-ip-address=true
+      - spring_cloud_consul_discovery_scheme=http
 volumes:
   mongodata:
 networks:
