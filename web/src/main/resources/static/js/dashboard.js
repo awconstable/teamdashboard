@@ -76,10 +76,13 @@ function loadTeams() {
     loadTeamHierarchy().done(layoutTeamHierarchy);
 }
 
+var collectionChart;
+
 function loadCollectionGraphs() {
     loadCollectionData(team)
         .done(function (data) {
-            drawBarChart(data, "#collection-chart1", "Collection Report", "% of teams collecting data", "Total Team Count");
+            clearDownChart(collectionChart);
+            collectionChart = drawBarChart(data, "#collection-chart1", "Collection Report", "% of teams collecting data", "Total Team Count");
         });
 }
 
