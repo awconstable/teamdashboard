@@ -7,9 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import team.dashboard.web.metrics.Metric;
-import team.dashboard.web.metrics.TeamMetric;
-import team.dashboard.web.metrics.TeamMetricType;
+import team.dashboard.web.metrics.domain.Metric;
+import team.dashboard.web.metrics.domain.TeamMetric;
+import team.dashboard.web.metrics.domain.TeamMetricType;
 import team.dashboard.web.metrics.services.TeamMetricServiceImpl;
 
 import java.time.LocalDate;

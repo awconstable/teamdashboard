@@ -13,7 +13,7 @@ import team.dashboard.web.dora.repos.DORALeadTimeRepository;
 import team.dashboard.web.dora.repos.DeploymentClient;
 import team.dashboard.web.dora.services.DeploymentFrequencyService;
 import team.dashboard.web.dora.services.LeadTimeService;
-import team.dashboard.web.hierarchy.HierarchyClient;
+import team.dashboard.web.hierarchy.repos.HierarchyClient;
 import team.dashboard.web.metrics.services.TeamMetricService;
 
 import java.sql.Date;

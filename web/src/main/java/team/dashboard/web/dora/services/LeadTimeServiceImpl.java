@@ -5,9 +5,9 @@ import org.springframework.stereotype.Service;
 import team.dashboard.web.dora.domain.LeadTime;
 import team.dashboard.web.dora.repos.DORALeadTimeRepository;
 import team.dashboard.web.dora.repos.DeploymentClient;
-import team.dashboard.web.hierarchy.HierarchyClient;
-import team.dashboard.web.hierarchy.HierarchyEntity;
-import team.dashboard.web.metrics.TeamMetricType;
+import team.dashboard.web.hierarchy.domain.HierarchyEntity;
+import team.dashboard.web.hierarchy.repos.HierarchyClient;
+import team.dashboard.web.metrics.domain.TeamMetricType;
 import team.dashboard.web.metrics.services.TeamMetricService;
 
 import java.time.LocalDate;

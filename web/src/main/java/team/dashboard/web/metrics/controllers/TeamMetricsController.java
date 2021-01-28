@@ -12,12 +12,12 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
-import team.dashboard.web.hierarchy.HierarchyClient;
-import team.dashboard.web.hierarchy.HierarchyEntity;
-import team.dashboard.web.hierarchy.Relation;
-import team.dashboard.web.metrics.TeamMetric;
-import team.dashboard.web.metrics.TeamMetricTrend;
-import team.dashboard.web.metrics.TeamMetricType;
+import team.dashboard.web.hierarchy.domain.HierarchyEntity;
+import team.dashboard.web.hierarchy.domain.Relation;
+import team.dashboard.web.hierarchy.repos.HierarchyClient;
+import team.dashboard.web.metrics.domain.TeamMetric;
+import team.dashboard.web.metrics.domain.TeamMetricTrend;
+import team.dashboard.web.metrics.domain.TeamMetricType;
 import team.dashboard.web.metrics.repos.TeamMetricRepository;
 
 import java.time.LocalDate;

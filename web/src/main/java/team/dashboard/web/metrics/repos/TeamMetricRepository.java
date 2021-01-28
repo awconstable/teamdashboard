@@ -2,8 +2,8 @@ package team.dashboard.web.metrics.repos;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
-import team.dashboard.web.metrics.TeamMetric;
-import team.dashboard.web.metrics.TeamMetricType;
+import team.dashboard.web.metrics.domain.TeamMetric;
+import team.dashboard.web.metrics.domain.TeamMetricType;
 
 import java.time.LocalDate;
 import java.util.List;

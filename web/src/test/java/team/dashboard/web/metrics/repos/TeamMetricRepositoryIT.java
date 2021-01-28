@@ -8,10 +8,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import team.dashboard.web.metrics.TeamCollectionStat;
-import team.dashboard.web.metrics.TeamMetric;
-import team.dashboard.web.metrics.TeamMetricTrend;
-import team.dashboard.web.metrics.TeamMetricType;
+import team.dashboard.web.metrics.domain.TeamCollectionStat;
+import team.dashboard.web.metrics.domain.TeamMetric;
+import team.dashboard.web.metrics.domain.TeamMetricTrend;
+import team.dashboard.web.metrics.domain.TeamMetricType;
 
 import java.time.LocalDate;
 import java.time.Month;

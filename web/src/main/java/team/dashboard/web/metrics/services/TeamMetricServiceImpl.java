@@ -2,9 +2,9 @@ package team.dashboard.web.metrics.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import team.dashboard.web.collection.TeamCollectionReportService;
-import team.dashboard.web.metrics.TeamMetric;
-import team.dashboard.web.metrics.TeamMetricType;
+import team.dashboard.web.collection.services.TeamCollectionReportService;
+import team.dashboard.web.metrics.domain.TeamMetric;
+import team.dashboard.web.metrics.domain.TeamMetricType;
 import team.dashboard.web.metrics.repos.TeamMetricRepository;
 
 import java.time.LocalDate;

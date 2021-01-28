@@ -1,7 +1,7 @@
 package team.dashboard.web.metrics.services;
 
-import team.dashboard.web.metrics.TeamMetric;
-import team.dashboard.web.metrics.TeamMetricType;
+import team.dashboard.web.metrics.domain.TeamMetric;
+import team.dashboard.web.metrics.domain.TeamMetricType;
 
 import java.time.LocalDate;
 import java.util.List;

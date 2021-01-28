@@ -5,10 +5,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
-import team.dashboard.web.metrics.TeamCollectionStat;
-import team.dashboard.web.metrics.TeamMetric;
-import team.dashboard.web.metrics.TeamMetricTrend;
-import team.dashboard.web.metrics.TeamMetricType;
+import team.dashboard.web.metrics.domain.TeamCollectionStat;
+import team.dashboard.web.metrics.domain.TeamMetric;
+import team.dashboard.web.metrics.domain.TeamMetricTrend;
+import team.dashboard.web.metrics.domain.TeamMetricType;
 
 import java.time.LocalDate;
 import java.util.HashSet;
