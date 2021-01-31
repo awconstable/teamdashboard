@@ -86,6 +86,7 @@ function loadCollectionGraphs() {
         });
 }
 
+var chart0;
 var chart1;
 var chart2;
 var chart3;
@@ -107,7 +108,57 @@ function clearDownChart(chart){
     }  
 }
 
+function getRGBColour(colourHex){
+    var color = Chart.helpers.color;
+    return color(colourHex).alpha(0.5).rgbString();
+}
+
+function getRGBColourForPerfLevel(perfLevel){
+    switch(perfLevel){
+        case 0:
+        case 1:
+            return getRGBColour('#FF5733');
+        case 2:
+            return getRGBColour('#ff9233');
+        case 3:
+            return getRGBColour('#ffcc33');
+        case 4:
+            return getRGBColour('#70ff33');
+    } 
+}
+
+function processTeamPerfData () {
+    var dataOut = [];
+    dataOut[0] = 1;
+    dataOut[1] = 4;
+    dataOut[2] = 2;
+    dataOut[3] = 0;
+    var backColour = [];
+    backColour[0] = getRGBColourForPerfLevel(dataOut[0]);
+    backColour[1] = getRGBColourForPerfLevel(dataOut[1]);
+    backColour[2] = getRGBColourForPerfLevel(dataOut[2]);
+    backColour[3] = getRGBColourForPerfLevel(dataOut[3]);
+    return {
+        datasets: [{
+            data: dataOut,
+            backgroundColor: backColour,
+            hoverBorderColor: getRGBColour('#6c6d6e'),
+            borderAlign: "inner"
+        }],
+        labels: [
+            'Deployment frequency',
+            'Lead Time for changes',
+            'Time to restore service',
+            'Change Failure Rate'
+        ]
+    };
+}
+
 function loadGraphs() {
+    //team performance chart
+    clearDownChart(chart0);
+    chart0 = drawPolarChart(processTeamPerfData(), "#chart0", "Team Performance");
+    
     //throughput metrics
     loadTrendData("/lead_time/", team)
         .done(function (data) {
@@ -614,6 +665,64 @@ function getChartConfig(data, title, yAxisLabel1, yAxisLabel2) {
             }
         }
     };
+}
+
+function getPolarChartConfig(data, title) {
+    return {
+        data: data,
+        options: {
+            responsive: true,
+            legend: {
+                position: 'right',
+            },
+            title: {
+                display: false,
+                text: title
+            },
+            scale: {
+                ticks: {
+                    beginAtZero: true,
+                    max: 4,
+                    stepSize: 1,
+                    display:false
+                },
+                reverse: false
+            },
+            startAngle: 90,
+            animation: {
+                animateRotate: false,
+                animateScale: true
+            },
+            tooltips:{
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        var label = data.labels[tooltipItem.index];
+                        var perfLevel = "Unknown";
+                        switch(tooltipItem.value){
+                            case "1":
+                                perfLevel = "Low";
+                                break;
+                            case "2":
+                                perfLevel = "Medium";
+                                break;
+                            case "3":
+                                perfLevel = "High";
+                                break;
+                            case "4":
+                                perfLevel = "Elite";
+                                break;
+                        }
+                        return label + " : " + perfLevel;
+                    }
+                }
+            }
+        }
+    };
+}
+
+function drawPolarChart(data, chartElemId, title) {
+    var ctx = $(chartElemId);
+    return Chart.PolarArea(ctx, getPolarChartConfig(data, title));
 }
 
 function drawBarChart(data, chartElemId, title, yAxisLabel1, yAxisLabel2) {
