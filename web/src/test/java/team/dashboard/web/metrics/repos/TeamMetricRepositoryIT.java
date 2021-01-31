@@ -4,10 +4,8 @@ import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import team.dashboard.web.BaseMongoTest;
 import team.dashboard.web.metrics.domain.TeamCollectionStat;
 import team.dashboard.web.metrics.domain.TeamMetric;
 import team.dashboard.web.metrics.domain.TeamMetricTrend;
@@ -23,10 +21,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-
-@ExtendWith(SpringExtension.class)
-@DataMongoTest
-public class TeamMetricRepositoryIT
+public class TeamMetricRepositoryIT extends BaseMongoTest
     {
 
     @Autowired

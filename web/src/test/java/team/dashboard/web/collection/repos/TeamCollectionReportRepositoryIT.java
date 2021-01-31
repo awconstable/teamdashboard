@@ -2,11 +2,8 @@ package team.dashboard.web.collection.repos;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import team.dashboard.web.BaseMongoTest;
 import team.dashboard.web.collection.domain.ReportingPeriod;
 import team.dashboard.web.collection.domain.TeamCollectionId;
 import team.dashboard.web.collection.domain.TeamCollectionReport;
@@ -22,10 +19,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-@ExtendWith(SpringExtension.class)
-@DataMongoTest
-@TestPropertySource(properties = "app.scheduling.enable=false")
-public class TeamCollectionReportRepositoryIT
+public class TeamCollectionReportRepositoryIT extends BaseMongoTest 
     {
 
     @Autowired
