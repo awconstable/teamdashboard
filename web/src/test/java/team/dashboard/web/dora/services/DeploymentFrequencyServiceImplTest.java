@@ -20,8 +20,12 @@ import team.dashboard.web.metrics.services.TeamMetricService;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
@@ -54,6 +58,21 @@ class DeploymentFrequencyServiceImplTest
     @Autowired private TeamMetricService mockTeamMetricService;
     @Autowired private DORADeployFreqRepository mockDoraFreqRepository;
  
+    @Test
+    void get(){
+        String appId = "app1";
+        ZonedDateTime reportingDate = LocalDate.now().minusDays(1).atStartOfDay(ZoneId.of("UTC"));
+        DeploymentFrequency df = new DeploymentFrequency(appId, java.sql.Date.from(reportingDate.toInstant()), 10, TimePeriod.DAY, DORALevel.ELITE);
+        when(mockDoraFreqRepository.findByApplicationIdAndReportingDate(appId, Date.from(reportingDate.toInstant()))).thenReturn(Optional.of(df));
+        
+        Optional<DeploymentFrequency> fr = deploymentFrequencyService.get(appId, Date.from(reportingDate.toInstant()));
+        
+        verify(mockDoraFreqRepository, times(1)).findByApplicationIdAndReportingDate(appId, Date.from(reportingDate.toInstant()));
+        assertThat(fr.isPresent(), is(equalTo(true)));
+        assertThat(fr.get().getApplicationId(), is(equalTo(appId)));
+        assertThat(fr.get().getReportingDate(), is(equalTo(Date.from(reportingDate.toInstant()))));
+    }
+    
     @Test
     void load()
         {

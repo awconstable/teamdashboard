@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import team.dashboard.web.dora.domain.DeploymentFrequency;
+import team.dashboard.web.dora.domain.LeadTime;
+import team.dashboard.web.dora.domain.TeamPerformance;
 import team.dashboard.web.dora.services.DeploymentFrequencyService;
 import team.dashboard.web.dora.services.LeadTimeService;
 
@@ -14,6 +17,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Optional;
 
 @Controller
 @RequestMapping(value = "/dora", produces = "application/json")
@@ -55,5 +59,14 @@ public class DORAController
     public String loadDeployFreq(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate reportingDate){
         deploymentFrequencyService.loadAll(Date.from(reportingDate.atStartOfDay(ZoneId.of("UTC")).toInstant()));
         return "OK";
+    }
+    
+    @GetMapping("/team/{applicationId}/performance")
+    @ResponseBody
+    public TeamPerformance getTeamPerformance(@PathVariable String applicationId) {
+        ZonedDateTime reportingDate = LocalDate.now().minusDays(1).atStartOfDay(ZoneId.of("UTC"));
+        Optional<DeploymentFrequency> freq = deploymentFrequencyService.get(applicationId, Date.from(reportingDate.toInstant()));
+        Optional<LeadTime> leadTime = leadTimeService.get(applicationId, Date.from(reportingDate.toInstant()));
+        return new TeamPerformance(Date.from(reportingDate.toInstant()), freq.orElse(null), leadTime.orElse(null));
     }
     }

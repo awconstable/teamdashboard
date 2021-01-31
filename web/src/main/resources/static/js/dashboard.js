@@ -127,12 +127,28 @@ function getRGBColourForPerfLevel(perfLevel){
     } 
 }
 
-function processTeamPerfData () {
+function getLevelValue(doraLevel){
+    switch(doraLevel){
+        case "LOW":
+            return 1;
+        case "MEDIUM":
+            return 2;
+        case "HIGH":
+            return 3;
+        case "ELITE":
+            return 4;
+        default:
+            return 0;
+    }
+}
+
+function processTeamPerfData (data) {
+    console.log(data);
     var dataOut = [];
-    dataOut[0] = 1;
-    dataOut[1] = 4;
-    dataOut[2] = 2;
-    dataOut[3] = 0;
+    dataOut[0] = getLevelValue(data.deploymentFrequency ? data.deploymentFrequency.deployFreqLevel : null);  // Deployment frequency
+    dataOut[1] = getLevelValue(data.leadTime ? data.leadTime.leadTimePerfLevel : null);  // Lead Time for changes
+    dataOut[2] = 0;  // Time to restore service - Not implemented yet
+    dataOut[3] = 0;  // Change Failure Rate -  Not implemented yet
     var backColour = [];
     backColour[0] = getRGBColourForPerfLevel(dataOut[0]);
     backColour[1] = getRGBColourForPerfLevel(dataOut[1]);
@@ -156,9 +172,11 @@ function processTeamPerfData () {
 
 function loadGraphs() {
     //team performance chart
-    clearDownChart(chart0);
-    chart0 = drawPolarChart(processTeamPerfData(), "#chart0", "Team Performance");
-    
+    loadTeamPerformanceData(team)
+        .done(function (data) {
+            clearDownChart(chart0);
+            chart0 = drawPolarChart(processTeamPerfData(data), "#chart0", "Team Performance");
+        });
     //throughput metrics
     loadTrendData("/lead_time/", team)
         .done(function (data) {
@@ -524,6 +542,13 @@ function loadCollectionData(slug) {
     });
 }
 
+function loadTeamPerformanceData(slug) {
+    return $.ajax({
+        url: "/dora/team/" + slug + "/performance",
+        dataType: "json"
+    });
+}
+
 function getBarChartConfig(data, title, yAxisLabel1, yAxisLabel2) {
     return {
         type: 'bar',
@@ -697,7 +722,7 @@ function getPolarChartConfig(data, title) {
                 callbacks: {
                     label: function(tooltipItem, data) {
                         var label = data.labels[tooltipItem.index];
-                        var perfLevel = "Unknown";
+                        var perfLevel;
                         switch(tooltipItem.value){
                             case "1":
                                 perfLevel = "Low";
@@ -711,6 +736,8 @@ function getPolarChartConfig(data, title) {
                             case "4":
                                 perfLevel = "Elite";
                                 break;
+                            default:
+                                perfLevel = "Unknown";
                         }
                         return label + " : " + perfLevel;
                     }

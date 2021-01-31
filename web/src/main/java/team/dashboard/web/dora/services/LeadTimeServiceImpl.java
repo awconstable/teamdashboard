@@ -34,6 +34,12 @@ public class LeadTimeServiceImpl implements LeadTimeService
         }
 
     @Override
+    public Optional<LeadTime> get(String applicationId, Date reportingDate)
+        {
+        return doraLeadTimeRepository.findByApplicationIdAndReportingDate(applicationId, reportingDate);
+        }
+
+    @Override
     public void load(String applicationId, Date reportingDate)
         {
         

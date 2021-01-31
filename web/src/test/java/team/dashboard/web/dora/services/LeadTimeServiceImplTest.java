@@ -19,8 +19,12 @@ import team.dashboard.web.metrics.services.TeamMetricService;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
@@ -52,6 +56,21 @@ class LeadTimeServiceImplTest
     @Autowired private HierarchyClient mockHierarchyClient;
     @Autowired private TeamMetricService mockTeamMetricService;
     @Autowired private DORALeadTimeRepository mockDoraLeadTimeRepository;
+    
+    @Test
+    void get() {
+        String appId = "app1";
+        ZonedDateTime reportingDate = LocalDate.now().minusDays(1).atStartOfDay(ZoneId.of("UTC"));
+        LeadTime lt = new LeadTime(appId, java.sql.Date.from(reportingDate.toInstant()), 120, DORALevel.ELITE);
+        when(mockDoraLeadTimeRepository.findByApplicationIdAndReportingDate(appId, Date.from(reportingDate.toInstant()))).thenReturn(Optional.of(lt));
+    
+        Optional<LeadTime> ltr = leadTimeService.get(appId, Date.from(reportingDate.toInstant()));
+    
+        verify(mockDoraLeadTimeRepository, times(1)).findByApplicationIdAndReportingDate(appId, Date.from(reportingDate.toInstant()));
+        assertThat(ltr.isPresent(), is(equalTo(true)));
+        assertThat(ltr.get().getApplicationId(), is(equalTo(appId)));
+        assertThat(ltr.get().getReportingDate(), is(equalTo(Date.from(reportingDate.toInstant()))));
+    }
     
     @Test
     void load()

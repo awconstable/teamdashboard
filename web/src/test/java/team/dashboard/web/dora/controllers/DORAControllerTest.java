@@ -8,6 +8,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import team.dashboard.web.dora.domain.DORALevel;
+import team.dashboard.web.dora.domain.DeploymentFrequency;
+import team.dashboard.web.dora.domain.LeadTime;
+import team.dashboard.web.dora.domain.TimePeriod;
 import team.dashboard.web.dora.repos.DORADeployFreqRepository;
 import team.dashboard.web.dora.repos.DORALeadTimeRepository;
 import team.dashboard.web.dora.repos.DeploymentClient;
@@ -21,9 +26,12 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -94,6 +102,25 @@ class DORAControllerTest
             .andExpect(status().isOk());
 
         verify(deploymentFrequencyService, times(1)).loadAll(Date.from(reportingDate.toInstant()));
+        }
+    
+    @Test
+    void testGetTeamPerformance() throws Exception
+        {
+        String appId = "a1";
+        ZonedDateTime reportingDate = LocalDate.now().minusDays(1).atStartOfDay(ZoneId.of("UTC"));
+        DeploymentFrequency fr = new DeploymentFrequency(appId, Date.from(reportingDate.toInstant()), 10, TimePeriod.DAY, DORALevel.ELITE);
+        when(deploymentFrequencyService.get(appId, Date.from(reportingDate.toInstant()))).thenReturn(Optional.of(fr));
+        LeadTime lt = new LeadTime(appId, Date.from(reportingDate.toInstant()), 120, DORALevel.ELITE);
+        when(leadTimeService.get(appId, Date.from(reportingDate.toInstant()))).thenReturn(Optional.of(lt));
+        
+        MvcResult result = mockMvc.perform(get("/dora/team/" + appId + "/performance").contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk()).andReturn();
 
+        String content = result.getResponse().getContentAsString();
+        String dateOut = DateTimeFormatter.ISO_LOCAL_DATE.format(reportingDate);
+        assertThat(content, is(equalTo("{\"reportingDate\":\"" + dateOut + "\",\"deploymentFrequency\":{\"applicationId\":\"" + appId + "\",\"reportingDate\":\"" + dateOut + "\",\"deploymentCount\":10,\"timePeriod\":\"DAY\",\"deployFreqLevel\":\"ELITE\"},\"leadTime\":{\"applicationId\":\"" + appId + "\",\"reportingDate\":\"" + dateOut + "\",\"leadTimeSeconds\":120,\"leadTimePerfLevel\":\"ELITE\"}}")));
+        verify(deploymentFrequencyService, times(1)).get(appId, Date.from(reportingDate.toInstant()));
         }
     }

@@ -32,7 +32,13 @@ public class DeploymentFrequencyServiceImpl implements DeploymentFrequencyServic
         this.teamMetricService = teamMetricService;
         this.doraDeployFreqRepository = doraDeployFreqRepository;
         }
-    
+
+    @Override
+    public Optional<DeploymentFrequency> get(String applicationId, Date reportingDate)
+        {
+            return doraDeployFreqRepository.findByApplicationIdAndReportingDate(applicationId, reportingDate);
+        }
+
     @Override
     public void load(String applicationId, Date reportingDate)
         {
