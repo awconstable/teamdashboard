@@ -116,6 +116,7 @@ function getRGBColour(colourHex){
 function getRGBColourForPerfLevel(perfLevel){
     switch(perfLevel){
         case 0:
+            return getRGBColour('#9d9d9d');
         case 1:
             return getRGBColour('#FF5733');
         case 2:
