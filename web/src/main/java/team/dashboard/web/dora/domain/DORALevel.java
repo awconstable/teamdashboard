@@ -2,6 +2,7 @@ package team.dashboard.web.dora.domain;
 
 public enum DORALevel
     {
+        UNKNOWN,
         LOW,
         MEDIUM,
         HIGH,

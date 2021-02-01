@@ -2,6 +2,7 @@ package team.dashboard.web.dora.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import team.dashboard.web.dora.domain.DORALevel;
 import team.dashboard.web.dora.domain.DeploymentFrequency;
 import team.dashboard.web.dora.repos.DORADeployFreqRepository;
 import team.dashboard.web.dora.repos.DeploymentClient;
@@ -44,14 +45,22 @@ public class DeploymentFrequencyServiceImpl implements DeploymentFrequencyServic
         {
         delete(applicationId, reportingDate);
         DeploymentFrequency freq = deploymentClient.getDeployFrequency(applicationId, reportingDate);
-        doraDeployFreqRepository.save(freq);
-        teamMetricService.save(
-            TeamMetricType.DEPLOYMENT_COUNT.getKey(),
-            applicationId,
-            LocalDate.ofInstant(reportingDate.toInstant(), ZoneId.of("UTC")),
-            freq.getDeploymentCount().doubleValue(), 
-            null
-        );
+        if(DORALevel.UNKNOWN.equals(freq.getDeployFreqLevel()))
+            {
+            teamMetricService.delete(
+                TeamMetricType.DEPLOYMENT_COUNT.getKey(),
+                applicationId,
+                LocalDate.ofInstant(reportingDate.toInstant(), ZoneId.of("UTC")));
+            } else {
+            doraDeployFreqRepository.save(freq);
+            teamMetricService.save(
+                TeamMetricType.DEPLOYMENT_COUNT.getKey(),
+                applicationId,
+                LocalDate.ofInstant(reportingDate.toInstant(), ZoneId.of("UTC")),
+                freq.getDeploymentCount().doubleValue(),
+                null
+            );
+            }
         }
 
     @Override

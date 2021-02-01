@@ -116,6 +116,34 @@ class LeadTimeServiceImplTest
         }
 
     @Test
+    void loadWithUnknownPerformance()
+        {
+        Date reportingDate = new Date();
+
+        LeadTime lt = new LeadTime("app1", reportingDate, 0, DORALevel.UNKNOWN);
+        when(mockDeploymentClient.getLeadTime("app1", reportingDate)).thenReturn(lt);
+        when(mockDoraLeadTimeRepository.findByApplicationIdAndReportingDate("app1", reportingDate)).thenReturn(Optional.of(lt));
+
+        leadTimeService.load("app1", reportingDate);
+
+        verify(mockDoraLeadTimeRepository, times(1)).delete(any(LeadTime.class));
+        verify(mockDeploymentClient, times(1)).getLeadTime("app1", reportingDate);
+        verify(mockTeamMetricService, times(1)).delete(
+            TeamMetricType.LEAD_TIME_FOR_CHANGE.getKey(),
+            "app1", 
+            LocalDate.ofInstant(reportingDate.toInstant(), ZoneId.of("UTC"))
+        );
+        verify(mockDoraLeadTimeRepository, never()).save(lt);
+        verify(mockTeamMetricService, never()).save(
+            anyString(),
+            anyString(),
+            any(LocalDate.class),
+            anyDouble(),
+            isNull()
+        );
+        }
+
+    @Test
     void loadAll()
         {
         Date reportingDate = new Date();

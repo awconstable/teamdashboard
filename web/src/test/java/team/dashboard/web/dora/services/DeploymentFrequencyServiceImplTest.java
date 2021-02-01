@@ -118,6 +118,34 @@ class DeploymentFrequencyServiceImplTest
         }
 
     @Test
+    void loadWithUnknownPerformance()
+        {
+        Date reportingDate = new Date();
+
+        DeploymentFrequency freq = new DeploymentFrequency("app1", reportingDate, 0, TimePeriod.YEAR, DORALevel.UNKNOWN);
+        when(mockDeploymentClient.getDeployFrequency("app1", reportingDate)).thenReturn(freq);
+        when(mockDoraFreqRepository.findByApplicationIdAndReportingDate("app1", reportingDate)).thenReturn(Optional.of(freq));
+
+        deploymentFrequencyService.load("app1", reportingDate);
+
+        verify(mockDoraFreqRepository, times(1)).delete(any(DeploymentFrequency.class));
+        verify(mockDeploymentClient, times(1)).getDeployFrequency("app1", reportingDate);
+        verify(mockTeamMetricService, times(1)).delete(
+            TeamMetricType.DEPLOYMENT_COUNT.getKey(),
+            "app1",
+            LocalDate.ofInstant(reportingDate.toInstant(), ZoneId.of("UTC"))
+        );
+        verify(mockDoraFreqRepository, never()).save(freq);
+        verify(mockTeamMetricService, never()).save(
+            anyString(),
+            anyString(),
+            any(LocalDate.class),
+            anyDouble(),
+            isNull()
+        );
+        }
+
+    @Test
     void loadAll()
         {
         Date reportingDate = new Date();

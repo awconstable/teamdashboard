@@ -2,6 +2,7 @@ package team.dashboard.web.dora.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import team.dashboard.web.dora.domain.DORALevel;
 import team.dashboard.web.dora.domain.LeadTime;
 import team.dashboard.web.dora.repos.DORALeadTimeRepository;
 import team.dashboard.web.dora.repos.DeploymentClient;
@@ -42,18 +43,24 @@ public class LeadTimeServiceImpl implements LeadTimeService
     @Override
     public void load(String applicationId, Date reportingDate)
         {
-        
         delete(applicationId, reportingDate);
         LeadTime leadTime = deploymentClient.getLeadTime(applicationId, reportingDate);
-        doraLeadTimeRepository.save(leadTime);
-        long leadTimeMins =  leadTime.getLeadTimeSeconds() / 60;
-        teamMetricService.save(
-            TeamMetricType.LEAD_TIME_FOR_CHANGE.getKey(),
-            applicationId,
-            LocalDate.ofInstant(reportingDate.toInstant(), ZoneId.of("UTC")),
-            Long.valueOf(leadTimeMins).doubleValue(),
-            null
-        );
+        if(DORALevel.UNKNOWN.equals(leadTime.getLeadTimePerfLevel())){
+            teamMetricService.delete(
+                TeamMetricType.LEAD_TIME_FOR_CHANGE.getKey(),
+                applicationId,
+                LocalDate.ofInstant(reportingDate.toInstant(), ZoneId.of("UTC")));
+        } else {
+            doraLeadTimeRepository.save(leadTime);
+            long leadTimeMins = leadTime.getLeadTimeSeconds() / 60;
+            teamMetricService.save(
+                TeamMetricType.LEAD_TIME_FOR_CHANGE.getKey(),
+                applicationId,
+                LocalDate.ofInstant(reportingDate.toInstant(), ZoneId.of("UTC")),
+                Long.valueOf(leadTimeMins).doubleValue(),
+                null
+            );
+            }
         }
 
     @Override
