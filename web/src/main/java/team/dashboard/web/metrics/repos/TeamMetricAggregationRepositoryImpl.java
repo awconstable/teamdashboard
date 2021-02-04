@@ -29,42 +29,16 @@ public class TeamMetricAggregationRepositoryImpl implements TeamMetricAggregatio
         }
 
     @Override
-    public List<TeamMetricTrend> getMonthlyMetrics(String slug, TeamMetricType metricType)
-        {
-
-        ProjectionOperation dateProjection = project()
-                .and("teamId").as("teamId")
-                .and("teamMetricType").as("teamMetricType")
-                .and("value").as("value")
-                .and("date").extractYear().as("year")
-                .and("date").extractMonth().as("month");
-
-        GroupOperation groupBy = group("teamId", "teamMetricType", "year", "month")
-                .avg("value").as("avg")
-                .sum("value").as("sum")
-                .count().as("count");
-
-        TypedAggregation<TeamMetric> agg = Aggregation.newAggregation(TeamMetric.class,
-                match(Criteria.where("teamId").is(slug).and("teamMetricType").is(metricType)),
-                dateProjection,
-                groupBy,
-                sort(Sort.Direction.ASC, "year", "month"));
-
-        AggregationResults<TeamMetricTrend> result = mongoTemplate.aggregate(agg, TeamMetricTrend.class);
-
-        return result.getMappedResults();
-        }
-
-    @Override
-    public List<TeamMetricTrend> getMonthlyChildMetrics(String[] slugs, TeamMetricType metricType)
+    public List<TeamMetricTrend> getDailyChildMetrics(String[] slugs, TeamMetricType metricType)
         {
         ProjectionOperation dateProjection = project()
                 .and("teamMetricType").as("teamMetricType")
                 .and("value").as("value")
                 .and("date").extractYear().as("year")
-                .and("date").extractMonth().as("month");
+                .and("date").extractMonth().as("month")
+                .and("date").extractDayOfMonth().as("day");
 
-        GroupOperation groupBy = group("teamMetricType", "year", "month")
+        GroupOperation groupBy = group("teamMetricType", "year", "month", "day")
                 .avg("value").as("avg")
                 .sum("value").as("sum")
                 .count().as("count");
@@ -73,31 +47,9 @@ public class TeamMetricAggregationRepositoryImpl implements TeamMetricAggregatio
                 match(Criteria.where("teamId").in(slugs).and("teamMetricType").is(metricType)),
                 dateProjection,
                 groupBy,
-                sort(Sort.Direction.ASC, "year", "month"));
+                sort(Sort.Direction.ASC, "year", "month", "day"));
 
         AggregationResults<TeamMetricTrend> result = mongoTemplate.aggregate(agg, TeamMetricTrend.class);
-
-        return result.getMappedResults();
-        }
-
-    @Override
-    public List<TeamCollectionStat> getMonthlyCollectionStats(String[] slugs)
-        {
-        ProjectionOperation dateProjection = project()
-                .and("teamId").as("teamId")
-                .and("date").extractYear().as("year")
-                .and("date").extractMonth().as("month");
-
-        GroupOperation groupBy = group("teamId", "year", "month")
-                .count().as("count");
-
-        TypedAggregation<TeamMetric> agg = Aggregation.newAggregation(TeamMetric.class,
-                match(Criteria.where("teamId").in(slugs)),
-                dateProjection,
-                groupBy,
-                sort(Sort.Direction.ASC, "year", "month", "teamId"));
-
-        AggregationResults<TeamCollectionStat> result = mongoTemplate.aggregate(agg, TeamCollectionStat.class);
 
         return result.getMappedResults();
         }

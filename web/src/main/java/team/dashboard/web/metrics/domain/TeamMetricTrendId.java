@@ -5,12 +5,14 @@ public class TeamMetricTrendId
     private final TeamMetricType teamMetricType;
     private final Integer year;
     private final Integer month;
+    private final Integer day;
 
-    public TeamMetricTrendId(TeamMetricType teamMetricType, Integer year, Integer month)
+    public TeamMetricTrendId(TeamMetricType teamMetricType, Integer year, Integer month, Integer day)
         {
         this.teamMetricType = teamMetricType;
         this.year = year;
         this.month = month;
+        this.day = day;
         }
 
     public TeamMetricType getTeamMetricType()
@@ -28,6 +30,8 @@ public class TeamMetricTrendId
         return month;
         }
 
+    public Integer getDay() { return day; }
+
     @Override
     public String toString()
         {
@@ -35,6 +39,7 @@ public class TeamMetricTrendId
             "teamMetricType=" + teamMetricType +
             ", year=" + year +
             ", month=" + month +
+            ", day=" + day +
             '}';
         }
     }

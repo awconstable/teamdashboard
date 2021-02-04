@@ -77,7 +77,7 @@ public class CollectionStatsController
 
         for (TeamCollectionReport report : reports)
             {
-            String label = TeamMetricsController.createDataPointLabel(report.getReportingDate().getYear(), report.getReportingDate().getMonth().getValue());
+            String label = TeamMetricsController.createDataPointLabel(report.getReportingDate().getYear(), report.getReportingDate().getMonth().getValue(), report.getReportingDate().getDayOfMonth());
             labels.add(label);
             teamCollectionStats.put(report.getTeamId() + label, report.getChildPercentageTeamsCollectingMetrics());
             teamCountStats.put(report.getTeamId() + label, report.getChildTeamCount());

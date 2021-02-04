@@ -26,7 +26,6 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,10 +47,10 @@ public class TeamMetricsController
         this.hierarchyRestRepository = hierarchyRestRepository;
         }
 
-    public static String createDataPointLabel(int year, int month)
+    public static String createDataPointLabel(int year, int month, int day)
         {
 
-        LocalDateTime dateTime = LocalDate.of(year, month, 1).atStartOfDay();
+        LocalDateTime dateTime = LocalDate.of(year, month, day).atStartOfDay();
 
         return ZonedDateTime.of(dateTime, ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT);
 
@@ -81,7 +80,6 @@ public class TeamMetricsController
         TeamMetricType type = TeamMetricType.get(metricType);
         ArrayList<String> labels = new ArrayList<>();
         ArrayList<Double> metricData = new ArrayList<>();
-        ArrayList<Integer> metricCount = new ArrayList<>();
 
         HierarchyEntity team = hierarchyRestRepository.findEntityBySlug(teamId);
 
@@ -93,15 +91,13 @@ public class TeamMetricsController
             teams.add(child.getSlug());
             }
 
-        List<TeamMetricTrend> metrics = teamMetricRepository.getMonthlyChildMetrics(teams.toArray(new String[]{}), type);
+        List<TeamMetricTrend> metrics = teamMetricRepository.getDailyChildMetrics(teams.toArray(new String[]{}), type);
 
         Color lineColour = Color.random();
 
         for (TeamMetricTrend metric : metrics)
             {
             lineColour = metric.getTeamMetricTrendId().getTeamMetricType().getGraphColour();
-
-            metricCount.add(metric.getCount());
 
             Double value;
 
@@ -117,7 +113,7 @@ public class TeamMetricsController
                 }
 
             metricData.add(value);
-            labels.add(createDataPointLabel(metric.getTeamMetricTrendId().getYear(), metric.getTeamMetricTrendId().getMonth()));
+            labels.add(createDataPointLabel(metric.getTeamMetricTrendId().getYear(), metric.getTeamMetricTrendId().getMonth(), metric.getTeamMetricTrendId().getDay()));
             }
 
         //Metric data
@@ -132,23 +128,9 @@ public class TeamMetricsController
         dataset.setPointBackgroundColor(pointsColors);
         dataset.setYAxisID("y-axis-1");
 
-        //Count data
-        LineDataset countDataset = new LineDataset().setLabel((type != null ? type.getName() : "") + " Count");
-        metricCount.forEach(countDataset::addData);
-        countDataset.setFill(new Fill(false));
-        countDataset.setBackgroundColor(Color.TRANSPARENT);
-        countDataset.setBorderColor(Color.GRAY);
-        countDataset.setBorderWidth(1);
-        ArrayList<Color> countPointsColors = new ArrayList<>();
-        pointsColors.add(Color.GRAY);
-        countDataset.setPointBackgroundColor(countPointsColors);
-        countDataset.setBorderDash(new ArrayList<>(Arrays.asList(5, 5)));
-        countDataset.setYAxisID("y-axis-2");
-
         LineData data = new LineData()
                 .addLabels(labels.toArray(new String[]{}))
-                .addDataset(dataset)
-                .addDataset(countDataset);
+                .addDataset(dataset);
 
         ObjectWriter writer = new ObjectMapper()
                 .writerWithDefaultPrettyPrinter()

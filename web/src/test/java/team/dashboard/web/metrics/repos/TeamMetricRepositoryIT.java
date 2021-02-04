@@ -110,24 +110,14 @@ public class TeamMetricRepositoryIT extends BaseMongoTest
     }
 
     @Test
-    public void getMonthlyMetricsTest()
+    public void getDailyChildMetricsTest()
         {
 
-        List<TeamMetricTrend> metrics = repository.getMonthlyMetrics("team3", TeamMetricType.CYCLE_TIME);
-
-        //TODO check calculated values
-        AssertionsForClassTypes.assertThat(metrics.size()).isEqualTo(1);
-        }
-
-    @Test
-    public void getMonthlyChildMetricsTest()
-        {
-
-        List<TeamMetricTrend> metrics = repository.getMonthlyChildMetrics(new String[]{"team3", "team2", "team1"}, TeamMetricType.CYCLE_TIME);
+        List<TeamMetricTrend> metrics = repository.getDailyChildMetrics(new String[]{"team3", "team2", "team1"}, TeamMetricType.CYCLE_TIME);
 
         //TODO check calculated values
         //TODO Dates and timezones cause a problem. Need to move away from LocalDate
-        AssertionsForClassTypes.assertThat(metrics.size()).isEqualTo(4);
+        AssertionsForClassTypes.assertThat(metrics.size()).isEqualTo(8);
         }
 
     //Make sure TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT and
