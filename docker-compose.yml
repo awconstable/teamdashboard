@@ -16,7 +16,7 @@ services:
       - mongodata:/data/db
   teamservice1:
     container_name: teamservice1
-    image: awconstable/teamservice
+    image: "awconstable/teamservice"
     depends_on:
       - mongo
       - consul
@@ -39,7 +39,7 @@ services:
       - spring_cloud_consul_discovery_scheme=http
   teamservice2:
       container_name: teamservice2
-      image: awconstable/teamservice
+      image: "awconstable/teamservice"
       depends_on:
           - mongo
           - consul

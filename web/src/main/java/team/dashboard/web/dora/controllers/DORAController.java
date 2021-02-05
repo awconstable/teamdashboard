@@ -1,5 +1,7 @@
 package team.dashboard.web.dora.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -11,24 +13,30 @@ import team.dashboard.web.dora.domain.DeploymentFrequency;
 import team.dashboard.web.dora.domain.LeadTime;
 import team.dashboard.web.dora.domain.TeamPerformance;
 import team.dashboard.web.dora.services.DeploymentFrequencyService;
+import team.dashboard.web.dora.services.DeploymentService;
 import team.dashboard.web.dora.services.LeadTimeService;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Optional;
 
 @Controller
 @RequestMapping(value = "/dora", produces = "application/json")
 public class DORAController
     {
+    private static final Logger log = LoggerFactory.getLogger(DORAController.class);
+    
+    private final DeploymentService deploymentService;
     private final DeploymentFrequencyService deploymentFrequencyService;
     private final LeadTimeService leadTimeService;
 
     @Autowired
-    public DORAController(DeploymentFrequencyService deploymentFrequencyService, LeadTimeService leadTimeService)
+    public DORAController(DeploymentService deploymentService, DeploymentFrequencyService deploymentFrequencyService, LeadTimeService leadTimeService)
         {
+        this.deploymentService = deploymentService;
         this.deploymentFrequencyService = deploymentFrequencyService;
         this.leadTimeService = leadTimeService;
         }
@@ -51,13 +59,18 @@ public class DORAController
     @ResponseBody
     public String loadDeployFreq(){
         ZonedDateTime reportingDate = LocalDate.now().minusDays(1).atStartOfDay(ZoneId.of("UTC"));
+        log.info("Load deployments with date {}", DateTimeFormatter.ISO_LOCAL_DATE.format(reportingDate));
+        deploymentService.loadAll(Date.from(reportingDate.toInstant()));
         deploymentFrequencyService.loadAll(Date.from(reportingDate.toInstant()));
         return "OK";
     }
     @GetMapping("/load/deployment/{reportingDate}")
     @ResponseBody
     public String loadDeployFreq(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate reportingDate){
-        deploymentFrequencyService.loadAll(Date.from(reportingDate.atStartOfDay(ZoneId.of("UTC")).toInstant()));
+        log.info("Load deployments with date {}", DateTimeFormatter.ISO_LOCAL_DATE.format(reportingDate));
+        Date date = Date.from(reportingDate.atStartOfDay(ZoneId.of("UTC")).toInstant());
+        deploymentService.loadAll(date);
+        deploymentFrequencyService.loadAll(date);
         return "OK";
     }
     

@@ -8,11 +8,7 @@ import team.dashboard.web.dora.repos.DORADeployFreqRepository;
 import team.dashboard.web.dora.repos.DeploymentClient;
 import team.dashboard.web.hierarchy.domain.HierarchyEntity;
 import team.dashboard.web.hierarchy.repos.HierarchyClient;
-import team.dashboard.web.metrics.domain.TeamMetricType;
-import team.dashboard.web.metrics.services.TeamMetricService;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -22,15 +18,13 @@ public class DeploymentFrequencyServiceImpl implements DeploymentFrequencyServic
     {
     private final DeploymentClient deploymentClient;
     private final HierarchyClient hierarchyClient;
-    private final TeamMetricService teamMetricService;
     private final DORADeployFreqRepository doraDeployFreqRepository;
 
     @Autowired
-    public DeploymentFrequencyServiceImpl(DeploymentClient deploymentClient, HierarchyClient hierarchyClient, TeamMetricService teamMetricService, DORADeployFreqRepository doraDeployFreqRepository)
+    public DeploymentFrequencyServiceImpl(DeploymentClient deploymentClient, HierarchyClient hierarchyClient, DORADeployFreqRepository doraDeployFreqRepository)
         {
         this.deploymentClient = deploymentClient;
         this.hierarchyClient = hierarchyClient;
-        this.teamMetricService = teamMetricService;
         this.doraDeployFreqRepository = doraDeployFreqRepository;
         }
 
@@ -45,21 +39,9 @@ public class DeploymentFrequencyServiceImpl implements DeploymentFrequencyServic
         {
         delete(applicationId, reportingDate);
         DeploymentFrequency freq = deploymentClient.getDeployFrequency(applicationId, reportingDate);
-        if(DORALevel.UNKNOWN.equals(freq.getDeployFreqLevel()))
+        if(!DORALevel.UNKNOWN.equals(freq.getDeployFreqLevel())) 
             {
-            teamMetricService.delete(
-                TeamMetricType.DEPLOYMENT_COUNT.getKey(),
-                applicationId,
-                LocalDate.ofInstant(reportingDate.toInstant(), ZoneId.of("UTC")));
-            } else {
-            doraDeployFreqRepository.save(freq);
-            teamMetricService.save(
-                TeamMetricType.DEPLOYMENT_COUNT.getKey(),
-                applicationId,
-                LocalDate.ofInstant(reportingDate.toInstant(), ZoneId.of("UTC")),
-                freq.getDeploymentCount().doubleValue(),
-                null
-            );
+                doraDeployFreqRepository.save(freq);
             }
         }
 

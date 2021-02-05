@@ -17,6 +17,7 @@ import team.dashboard.web.dora.repos.DORADeployFreqRepository;
 import team.dashboard.web.dora.repos.DORALeadTimeRepository;
 import team.dashboard.web.dora.repos.DeploymentClient;
 import team.dashboard.web.dora.services.DeploymentFrequencyService;
+import team.dashboard.web.dora.services.DeploymentService;
 import team.dashboard.web.dora.services.LeadTimeService;
 import team.dashboard.web.hierarchy.repos.HierarchyClient;
 import team.dashboard.web.metrics.services.TeamMetricService;
@@ -49,6 +50,7 @@ class DORAControllerTest
     @MockBean private TeamMetricService teamMetricService;
     @MockBean private DORADeployFreqRepository doraDeployFreqRepository;
     @MockBean private DORALeadTimeRepository doraLeadTimeRepository;
+    @MockBean private DeploymentService deploymentService;
 
     @Test
     void testLoadLeadTime() throws Exception
@@ -65,7 +67,7 @@ class DORAControllerTest
     @Test
     void testLoadLeadTimeWithReportingDate() throws Exception
         {
-        ZonedDateTime reportingDate = LocalDate.now().minusDays(1).atStartOfDay(ZoneId.of("UTC"));
+        ZonedDateTime reportingDate = LocalDate.now().minusDays(10).atStartOfDay(ZoneId.of("UTC"));
 
         String reportingDateString = DateTimeFormatter.ISO_LOCAL_DATE.format(reportingDate);
 
@@ -87,13 +89,14 @@ class DORAControllerTest
             .andExpect(status().isOk());
 
         verify(deploymentFrequencyService, times(1)).loadAll(Date.from(reportingDate.toInstant()));
+        verify(deploymentService, times(1)).loadAll(Date.from(reportingDate.toInstant()));
 
         }
 
     @Test
     void testLoadDeployFreqWithReportingDate() throws Exception
         {
-        ZonedDateTime reportingDate = LocalDate.now().minusDays(1).atStartOfDay(ZoneId.of("UTC"));
+        ZonedDateTime reportingDate = LocalDate.now().minusDays(10).atStartOfDay(ZoneId.of("UTC"));
 
         String reportingDateString = DateTimeFormatter.ISO_LOCAL_DATE.format(reportingDate);
 
@@ -102,6 +105,7 @@ class DORAControllerTest
             .andExpect(status().isOk());
 
         verify(deploymentFrequencyService, times(1)).loadAll(Date.from(reportingDate.toInstant()));
+        verify(deploymentService, times(1)).loadAll(Date.from(reportingDate.toInstant()));
         }
     
     @Test
