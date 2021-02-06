@@ -120,12 +120,13 @@ public class TeamMetricsController
         LineDataset dataset = new LineDataset().setLabel(type != null ? type.getName() : "Metric");
         metricData.forEach(dataset::addData);
         dataset.setFill(new Fill(false));
-        dataset.setBackgroundColor(Color.TRANSPARENT);
+        dataset.setBackgroundColor(lineColour);
         dataset.setBorderColor(lineColour);
-        dataset.setBorderWidth(4);
+        dataset.setBorderWidth(2);
         ArrayList<Color> pointsColors = new ArrayList<>();
         pointsColors.add(lineColour);
         dataset.setPointBackgroundColor(pointsColors);
+        dataset.addPointRadius(2);
         dataset.setYAxisID("y-axis-1");
 
         LineData data = new LineData()

@@ -187,7 +187,11 @@ function loadGraphs() {
     loadTrendData("/deployment_count/", team)
         .done(function (data) {
             clearDownChart(chart2);
-            chart2 = drawChart('bar', data, "#chart2", "Deployment Count", "Deployments");
+            
+            data.datasets[0].maxBarThickness = 4;
+            data.datasets[0].minBarLength = 2;
+            
+            chart2 = drawChart( 'bar', data, "#chart2", "Deployment Count", "Deployments");
         });
     //stability metrics
     loadTrendData("/change_failure_rate/", team)
@@ -753,6 +757,11 @@ function drawBarChart(data, chartElemId, title, yAxisLabel1, yAxisLabel2) {
 
 function drawChart(type, data, chartElemId, title, yAxisLabel1) {
     var ctx = $(chartElemId);
+    var config = getChartConfig(type, data, title, yAxisLabel1);
 
-    return new Chart(ctx, getChartConfig(type, data, title, yAxisLabel1));
+    if(type === 'bar'){
+        config.options.scales.xAxes[0].offset = true;
+        config.options.scales.yAxes[0].ticks.stepSize = 1;
+    }
+    return new Chart(ctx, config);
 }
