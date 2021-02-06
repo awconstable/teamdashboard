@@ -32,7 +32,7 @@ public class ScheduledDoraMetricLoad
             this.leadTimeService = leadTimeService;
         }
         
-        @Scheduled(cron = "0 0 3 * * *")
+        @Scheduled(cron = "${cron.schedule}")
         public void loadDoraMetricsDaily() {
         try
             {
