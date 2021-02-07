@@ -14,8 +14,7 @@ import team.dashboard.web.metrics.services.TeamMetricService;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class DeploymentServiceImpl implements DeploymentService
@@ -65,5 +64,21 @@ public class DeploymentServiceImpl implements DeploymentService
         log.info("Loading all deployments with date {}", DateTimeFormatter.ISO_LOCAL_DATE.format(LocalDate.ofInstant(reportingDate.toInstant(), ZoneId.of("UTC"))));
         List<HierarchyEntity> teams = hierarchyClient.findAll();
         teams.forEach(team -> load(team.getSlug(), reportingDate));
+        }
+
+    @Override
+    public List<Deployment> listDeployments(String applicationId)
+        {
+        List<Deployment> deployments = new ArrayList<>();
+        Set<String> teams = new HashSet<>();
+        HierarchyEntity team = hierarchyClient.findEntityBySlug(applicationId);
+        if(team == null){
+            return deployments;
+        }
+        teams.add(team.getSlug());
+        team.getChildren().forEach(child -> teams.add(child.getSlug()));
+        log.info("List all deployments for applications with ids {}", teams);
+        teams.forEach(t -> deployments.addAll(deploymentClient.getDeploymentsForApplication(t)));
+        return deployments;
         }
     }

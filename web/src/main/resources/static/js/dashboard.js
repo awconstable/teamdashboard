@@ -67,6 +67,8 @@ function processPageEntry() {
         selectCollection(false, team);
     } else if (mode && mode === 'capture') {
         selectCapture(false, team);
+    } else if (mode && mode === 'deployments') {
+        selectDeployments(false, team);
     } else {
         selectTeamExplorer(false);
     }
@@ -83,6 +85,13 @@ function loadCollectionGraphs() {
         .done(function (data) {
             clearDownChart(collectionChart);
             collectionChart = drawBarChart(data, "#collection-chart1", "Collection Report", "% of teams collecting data", "Total Team Count");
+        });
+}
+
+function loadDeployments(){
+    loadDeploymentData(team)
+        .done(function (data){
+            drawTable(data);
         });
 }
 
@@ -305,11 +314,13 @@ var teamExplorerLinkElem = $("#teamexplorer-link");
 var dashboardLinkElem = $("#dashboard-link");
 var collectionLinkElem = $("#collection-link");
 var captureLinkElem = $("#capture-link");
+var deploymentLinkElem = $("#deployments-link");
 
 var teamExplorerContentElem = $("#teamexplorer-content");
 var dashboardContentElem = $("#dashboard-content");
 var collectionContentElem = $("#collection-content");
 var captureContentElem = $("#capture-content");
+var deploymentContentElem = $("#deployments-content");
 
 var teamNameElem = $("#team-name");
 
@@ -335,6 +346,12 @@ captureLinkElem.click(function () {
     }
 });
 
+deploymentLinkElem.click(function () {
+    if (team) {
+        selectDeployments(true, team);
+    }
+});
+
 function selectTeamExplorer(updateHistory) {
     if (updateHistory) {
         history.pushState({"pageTitle": 'Team Explorer'}, null, '/teamexplorer/');
@@ -350,11 +367,13 @@ function selectTeamExplorer(updateHistory) {
     dashboardLinkElem.removeClass("active");
     collectionLinkElem.removeClass("active");
     captureLinkElem.removeClass("active");
+    deploymentLinkElem.removeClass("active");
 
     teamExplorerContentElem.removeClass("d-none").addClass("d-block");
     dashboardContentElem.removeClass("d-block").addClass("d-none");
     collectionContentElem.removeClass("d-block").addClass("d-none");
     captureContentElem.removeClass("d-block").addClass("d-none");
+    deploymentContentElem.removeClass("d-block").addClass("d-none");
 }
 
 function selectDashboard(updateHistory, slug) {
@@ -372,11 +391,13 @@ function selectDashboard(updateHistory, slug) {
     dashboardLinkElem.addClass("active");
     collectionLinkElem.removeClass("active");
     captureLinkElem.removeClass("active");
+    deploymentLinkElem.removeClass("active");
 
     teamExplorerContentElem.removeClass("d-block").addClass("d-none");
     dashboardContentElem.removeClass("d-none").addClass("d-block");
     collectionContentElem.removeClass("d-block").addClass("d-none");
     captureContentElem.removeClass("d-block").addClass("d-none");
+    deploymentContentElem.removeClass("d-block").addClass("d-none");
 }
 
 function selectCollection(updateHistory, slug) {
@@ -394,11 +415,13 @@ function selectCollection(updateHistory, slug) {
     dashboardLinkElem.removeClass("active");
     collectionLinkElem.addClass("active");
     captureLinkElem.removeClass("active");
+    deploymentLinkElem.removeClass("active");
 
     teamExplorerContentElem.removeClass("d-block").addClass("d-none");
     dashboardContentElem.removeClass("d-block").addClass("d-none");
     collectionContentElem.removeClass("d-none").addClass("d-block");
     captureContentElem.removeClass("d-block").addClass("d-none");
+    deploymentContentElem.removeClass("d-block").addClass("d-none");
 }
 
 function selectCapture(updateHistory, slug) {
@@ -415,11 +438,37 @@ function selectCapture(updateHistory, slug) {
     dashboardLinkElem.removeClass("active");
     collectionLinkElem.removeClass("active");
     captureLinkElem.addClass("active");
+    deploymentLinkElem.removeClass("active");
 
     teamExplorerContentElem.removeClass("d-block").addClass("d-none");
     dashboardContentElem.removeClass("d-block").addClass("d-none");
     collectionContentElem.removeClass("d-block").addClass("d-none");
     captureContentElem.removeClass("d-none").addClass("d-block");
+    deploymentContentElem.removeClass("d-block").addClass("d-none");
+}
+
+function selectDeployments(updateHistory, slug) {
+
+    if (updateHistory) {
+        history.pushState({"pageTitle": 'Deployments - ' + slug}, null, '/deployments/' + slug);
+    } else {
+        history.replaceState({"pageTitle": 'Deployments - ' + slug}, null, '/deployments/' + slug);
+    }
+
+    loadTeam(slug).done(updateTeamName);
+    loadDeployments();
+
+    teamExplorerLinkElem.removeClass("active");
+    dashboardLinkElem.removeClass("active");
+    collectionLinkElem.removeClass("active");
+    captureLinkElem.removeClass("active");
+    deploymentLinkElem.addClass("active");
+
+    teamExplorerContentElem.removeClass("d-block").addClass("d-none");
+    dashboardContentElem.removeClass("d-block").addClass("d-none");
+    collectionContentElem.removeClass("d-block").addClass("d-none");
+    captureContentElem.removeClass("d-block").addClass("d-none");
+    deploymentContentElem.removeClass("d-none").addClass("d-block");
 }
 
 function updateTeamName(data) {
@@ -440,6 +489,10 @@ $("#dashboard-refresh-button").click(function () {
 
 $("#collection-refresh-button").click(function () {
     loadCollectionGraphs();
+});
+
+$("#deployment-refresh-button").click(function () {
+    loadDeployments();
 });
 
 function loadTeamHierarchy() {
@@ -543,6 +596,13 @@ function loadTrendData(url, slug) {
 function loadCollectionData(slug) {
     return $.ajax({
         url: "/collection-stats/" + slug + "/",
+        dataType: "json"
+    });
+}
+
+function loadDeploymentData(slug) {
+    return $.ajax({
+        url: "/deploys/" + slug + "/",
         dataType: "json"
     });
 }
@@ -764,4 +824,42 @@ function drawChart(type, data, chartElemId, title, yAxisLabel1) {
         config.options.scales.yAxes[0].ticks.stepSize = 1;
     }
     return new Chart(ctx, config);
+}
+
+function drawTable(data){
+    var tableBodyElem = $('#table-body');
+    tableBodyElem.empty();
+    var html = '<thead>' +
+        '<tr>' +
+        '<th scope="col">Application Id</th>' +
+        '<th scope="col">Deployment ID</th>' +
+        '<th scope="col">Description</th>' +
+        '<th scope="col">RFC ID</th>' +
+        '<th scope="col">Deployment Time</th>' +
+        '<th scope="col">Changes</th>' +
+        '<th scope="col">Lead Time</th>' +
+        '<th scope="col">Performance Level</th>' +
+        '</tr>' +
+        '</thead>' +
+        '<tbody>';
+
+    jQuery.each(data, function (j, deployment) {
+        html += '<tr>'
+        + '<td scope="row">' + deployment.applicationId + '</td>'
+        + '<td scope="row">' + deployment.deploymentId + '</td>'
+        + '<td scope="row">' + deployment.deploymentDesc + '</td>'
+        + '<td scope="row">' + deployment.rfcId + '</td>' 
+        + '<td scope="row">' + moment(deployment.created).format('YYYY-MM-DD HH:mm') + ' (' + moment(deployment.created).fromNow() + ')</td>'    
+        + '<td scope="row">' + deployment.changes.length + '</td>' 
+        + '<td scope="row">' + moment.duration(deployment.leadTimeSeconds, 'seconds').humanize() + '</td>'
+        + '<td scope="row">' + deployment.leadTimePerfLevel + '</td>';
+        jQuery.each(deployment.changes, function (k, change) {
+            console.log(change);
+        });
+        html += '</tr>';
+    });
+
+    html += '</tr></tbody>';
+
+    tableBodyElem.append(html);
 }

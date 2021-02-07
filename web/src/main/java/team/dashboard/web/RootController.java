@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class RootController
     {
 
-    @GetMapping({"/", "/teamexplorer/**", "/dashboard/**", "/capture/**", "/collection/**"})
+    @GetMapping({"/", "/teamexplorer/**", "/dashboard/**", "/capture/**", "/collection/**", "/deployments/**"})
     public String index(Model model)
         {
         return "dashboard";

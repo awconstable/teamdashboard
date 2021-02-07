@@ -22,7 +22,7 @@
                   <ul class="nav flex-column">
                       <li class="nav-item">
                           <a class="nav-link" id="teamexplorer-link">
-                              <span data-feather="home"></span>
+                              <span data-feather="compass"></span>
                               Team Explorer
                           </a>
                       </li>
@@ -33,8 +33,14 @@
                           </a>
                       </li>
                       <li class="nav-item">
+                          <a class="nav-link" id="deployments-link">
+                              <span data-feather="truck"></span>
+                              Deployments
+                          </a>
+                      </li>
+                      <li class="nav-item">
                           <a class="nav-link" id="collection-link">
-                              <span data-feather="bar-chart-2"></span>
+                              <span data-feather="trending-up"></span>
                               Collection Report
                           </a>
                       </li>
@@ -185,6 +191,31 @@
                               </small>
                           </div>
                           <div class="w-100"></div>
+                      </div>
+                      <hr class="mb-3">
+                  </div>
+              </div>
+              <div class="d-none" id="deployments-content">
+                  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                      <h1 class="h2">Deployments</h1>
+                      <div class="btn-toolbar mb-2 mb-md-0">
+                          <div class="btn-group mr-2">
+                              <button class="btn btn-sm btn-outline-secondary" id="deployment-refresh-button"
+                                      type="button"><span
+                                  data-feather="refresh-cw"></span></button>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="container">
+                      <div class="row">
+                          <div class="table-responsive">
+                              <table class="table table-striped table-sm" id="table-body">
+
+                              </table>
+                          </div>
+                          <small class="form-text text-muted">
+                              All team deployments.
+                          </small>
                       </div>
                       <hr class="mb-3">
                   </div>
