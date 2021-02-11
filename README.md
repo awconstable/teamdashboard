@@ -11,6 +11,7 @@ The Team Dashboard is here to help by providing a simple set of containerised se
 ---
 
 [![CircleCI](https://circleci.com/gh/awconstable/teamdashboard.svg?style=shield)](https://circleci.com/gh/awconstable/teamdashboard)
+![CodeQL](https://github.com/awconstable/teamdashboard/workflows/CodeQL/badge.svg)
 [![codecov](https://codecov.io/gh/awconstable/teamdashboard/branch/master/graph/badge.svg)](https://codecov.io/gh/awconstable/teamdashboard)
 [![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/awconstable/teamdashboard.svg)](https://libraries.io/github/awconstable/teamdashboard)
 [![dockerhub](https://img.shields.io/docker/pulls/awconstable/teamdashboard.svg)](https://cloud.docker.com/repository/docker/awconstable/teamdashboard)
