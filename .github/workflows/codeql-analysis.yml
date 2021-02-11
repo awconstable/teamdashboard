@@ -59,8 +59,14 @@ jobs:
     #    and modify them (or add more) to build your code if your project
     #    uses a compiled language
 
+    - name: Setup Java JDK
+      uses: actions/setup-java@v1.4.2
+      with:
+        java-version: 11
+        server-id: github
+
     - run: |
-       mvn clean install
+       mvn -B clean compile
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
