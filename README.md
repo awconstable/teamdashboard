@@ -1,20 +1,28 @@
 # Team Dashboard
-A proof of concept team dashboard
+A proof of concept team performance dashboard
 
-Visibility over team health is important, this application provides a simple method of capturing and visualising team metrics over time
+Visibility over team health is important, this application provides a simple method of capturing and visualising team metrics over time.
+DORA and the State of DevOps report has had a massive impact on DevOps transformations around the world providing guidance on what to measure to retain focus on the key DevOps outcomes - continuously improving Value Throughput and Stability.
+Google Cloud's The Four Keys, is a fantastic tool for teams using public cloud - but what if you're on-premise with the path to public cloud still a multi-year journey?
+The Team Dashboard is here to help by providing a simple set of containerised services to help your teams easily measure Lead Time for Change, Deployment Frequency, Change Failure Rate and Mean Time to Recover.
 
 [![CircleCI](https://circleci.com/gh/awconstable/teamdashboard.svg?style=shield)](https://circleci.com/gh/awconstable/teamdashboard)
 [![codecov](https://codecov.io/gh/awconstable/teamdashboard/branch/master/graph/badge.svg)](https://codecov.io/gh/awconstable/teamdashboard)
 [![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/awconstable/teamdashboard.svg)](https://libraries.io/github/awconstable/teamdashboard)
 [![dockerhub](https://img.shields.io/docker/pulls/awconstable/teamdashboard.svg)](https://cloud.docker.com/repository/docker/awconstable/teamdashboard)
 
-![Dashboard Screenshot](https://github.com/awconstable/teamdashboard/raw/master/.github/screenshot.png?raw=true "Team Dashboard")
+![Dashboard Screenshot](https://github.com/awconstable/teamdashboard/raw/master/.github/metrics-screenshot.png?raw=true "Team Dashboard")
+![Team Explorer Screenshot](https://github.com/awconstable/teamdashboard/raw/master/.github/explorer-screenshot.png?raw=true "Team Explorer")
+![Deployments Screenshot](https://github.com/awconstable/teamdashboard/raw/master/.github/deployments-screenshot.png?raw=true "Deployments")
+
+## Current Plans
+The initial focus has been on the Throughput metrics (Lead time for Change and Deployment Frequency), we'll then be moving on to the Stability Measures (Change Failure Rate and Mean Time to Recover).
 
 ## Limitations
 
 This application is a proof of concept, it is **not** production ready.
 A non-exhaustive list of known limitations:
-* Metrics can be submitted multiple times per person within a period allowing the results to be intentionally or unintentionally skewed
+* Metrics can be submitted multiple times within a period allowing the results to be intentionally or unintentionally skewed
 * No security whatsoever - anonymous users can easily delete or alter all data
 
 ## Dependencies
@@ -22,6 +30,8 @@ A non-exhaustive list of known limitations:
 1. Consul
 1. MongoDB
 1. [Team Service](https://github.com/awconstable/teamservice)
+1. [Deployment Service](https://github.com/awconstable/deployservice)
+1. [(Optional) Team Happiness App](https://github.com/awconstable/happiness)
 
 ## Quick start guide
 
