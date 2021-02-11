@@ -2,8 +2,8 @@
 A proof of concept team performance dashboard
 
 Visibility over team health is important, this application provides a simple method of capturing and visualising team metrics over time.
-DORA and the State of DevOps report has had a massive impact on DevOps transformations around the world providing guidance on what to measure to retain focus on the key DevOps outcomes - continuously improving Value Throughput and Stability.
-Google Cloud's The Four Keys, is a fantastic tool for teams using public cloud - but what if you're on-premise with the path to public cloud still a multi-year journey?
+[Accelerate](https://itrevolution.com/book/accelerate/), [DORA and the State of DevOps report](https://www.devops-research.com/research.html) has had a massive impact on DevOps transformations around the world providing guidance on what to measure to retain focus on the key DevOps outcomes - continuously improving Value Throughput and Stability.
+[Google Cloud's The Four Keys](https://cloud.google.com/blog/products/devops-sre/using-the-four-keys-to-measure-your-devops-performance), is a fantastic tool for teams using public cloud - but what if you're on-premise with the path to public cloud still a multi-year journey?
 The Team Dashboard is here to help by providing a simple set of containerised services to help your teams easily measure Lead Time for Change, Deployment Frequency, Change Failure Rate and Mean Time to Recover.
 
 [![CircleCI](https://circleci.com/gh/awconstable/teamdashboard.svg?style=shield)](https://circleci.com/gh/awconstable/teamdashboard)
