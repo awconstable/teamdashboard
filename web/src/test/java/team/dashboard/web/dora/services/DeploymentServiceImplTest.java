@@ -105,9 +105,15 @@ class DeploymentServiceImplTest
     
     private List<Deployment> getDeployments(Date reportingDate)
         {
-        Deployment d1 = new Deployment("id1", "d1","", "app1", "rfc1", reportingDate, "", new HashSet<Change>());
-        Deployment d2 = new Deployment("id1","d2","","app2", "rfc2", reportingDate, "", new HashSet<Change>());
-        Deployment d3 = new Deployment("id1","d3","","app3", "rfc3", reportingDate, "", new HashSet<Change>());
+        Change c1 = new Change("c1", reportingDate, "test", "test");
+        Change c2 = new Change("c2", reportingDate, "test", "test");
+        Change c3 = new Change("c3", reportingDate, "test", "test");
+        Change c4 = new Change("c4", reportingDate, "test", "test");
+        Change c5 = new Change("c5", reportingDate, "test", "test");
+        HashSet<Change> changes = new HashSet<>(Arrays.asList(c1, c2, c3, c4, c5));
+        Deployment d1 = new Deployment("id1", "d1","", "app1", "rfc1", reportingDate, "", changes);
+        Deployment d2 = new Deployment("id1","d2","","app2", "rfc2", reportingDate, "", changes);
+        Deployment d3 = new Deployment("id1","d3","","app3", "rfc3", reportingDate, "", changes);
     
         List<Deployment> deploys = new ArrayList<>();
         deploys.add(d1);
@@ -126,6 +132,7 @@ class DeploymentServiceImplTest
         deploymentService.load("app1", reportingDate);
 
         verify(mockTeamMetricService, times(1)).delete(TeamMetricType.DEPLOYMENT_COUNT.getKey(), "app1", LocalDate.ofInstant(reportingDate.toInstant(), ZoneId.of("UTC")));
+        verify(mockTeamMetricService, times(1)).delete(TeamMetricType.BATCH_SIZE.getKey(), "app1", LocalDate.ofInstant(reportingDate.toInstant(), ZoneId.of("UTC")));
         verify(mockDeploymentClient, times(1)).getDeploymentsForApplicationWithDate(anyString(), eq(reportingDate));
         verify(mockTeamMetricService, never()).save(
             anyString(),
@@ -146,13 +153,21 @@ class DeploymentServiceImplTest
 
         deploymentService.loadAll(reportingDate);
 
-        verify(mockTeamMetricService, times(3)).delete(anyString(), anyString(), any(LocalDate.class));
+        verify(mockTeamMetricService, times(3)).delete(eq(TeamMetricType.DEPLOYMENT_COUNT.getKey()), anyString(), any(LocalDate.class));
+        verify(mockTeamMetricService, times(3)).delete(eq(TeamMetricType.BATCH_SIZE.getKey()), anyString(), any(LocalDate.class));
         verify(mockDeploymentClient, times(3)).getDeploymentsForApplicationWithDate(anyString(), eq(reportingDate));
         verify(mockTeamMetricService, times(3)).save(
             eq(TeamMetricType.DEPLOYMENT_COUNT.getKey()),
             anyString(),
             eq(LocalDate.ofInstant(reportingDate.toInstant(), ZoneId.of("UTC"))),
             eq(3.0),
+            isNull()
+        );
+        verify(mockTeamMetricService, times(3)).save(
+            eq(TeamMetricType.BATCH_SIZE.getKey()),
+            anyString(),
+            eq(LocalDate.ofInstant(reportingDate.toInstant(), ZoneId.of("UTC"))),
+            eq(5.0),
             isNull()
         );
         }

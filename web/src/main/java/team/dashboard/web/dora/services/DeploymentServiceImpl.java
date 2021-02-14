@@ -34,6 +34,10 @@ public class DeploymentServiceImpl implements DeploymentService
         this.teamMetricService = teamMetricService;
         }
 
+    private static long findAverageUsingStream(Long[] array) {
+        return Math.round(Arrays.stream(array).mapToLong(Long::longValue).average().orElse(Double.NaN));
+    }
+    
     @Override
     public void load(String applicationId, Date reportingDate)
         {
@@ -46,6 +50,11 @@ public class DeploymentServiceImpl implements DeploymentService
                 applicationId,
                 LocalDate.ofInstant(reportingDate.toInstant(), ZoneId.of("UTC")));
 
+        teamMetricService.delete(
+            TeamMetricType.BATCH_SIZE.getKey(),
+            applicationId,
+            LocalDate.ofInstant(reportingDate.toInstant(), ZoneId.of("UTC")));
+
         if(deploys.size() > 0)
             {
             teamMetricService.save(
@@ -53,6 +62,15 @@ public class DeploymentServiceImpl implements DeploymentService
                 applicationId,
                 LocalDate.ofInstant(reportingDate.toInstant(), ZoneId.of("UTC")),
                 (double) deploys.size(),
+                null
+            );
+            ArrayList<Long> changes = new ArrayList<>();
+            deploys.forEach(d -> changes.add(Integer.toUnsignedLong(d.getChanges().size())));
+            teamMetricService.save(
+                TeamMetricType.BATCH_SIZE.getKey(),
+                applicationId,
+                LocalDate.ofInstant(reportingDate.toInstant(), ZoneId.of("UTC")),
+                (double) findAverageUsingStream(changes.toArray(new Long[0])),
                 null
             );
             }
