@@ -97,6 +97,7 @@ public class DeploymentServiceImpl implements DeploymentService
         team.getChildren().forEach(child -> teams.add(child.getSlug()));
         log.info("List all deployments for applications with ids {}", teams);
         teams.forEach(t -> deployments.addAll(deploymentClient.getDeploymentsForApplication(t)));
+        deployments.sort(Comparator.comparing(Deployment::getCreated));
         return deployments;
         }
     }
