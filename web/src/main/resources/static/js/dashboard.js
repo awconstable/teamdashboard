@@ -100,9 +100,6 @@ var chart1;
 var chart2;
 var chart3;
 var chart4;
-var chart5;
-var chart6;
-var chart7;
 var chart8;
 var chart9;
 var chart10;
@@ -213,22 +210,6 @@ function loadGraphs() {
             clearDownChart(chart4);
             chart4 = drawChart('line', data, "#chart4", "Mean Time to Recovery", "Minutes");
         });
-    loadTrendData("/cycletime/", team)
-        .done(function (data) {
-            clearDownChart(chart5);
-            chart5 = drawChart('line', data, "#chart5", "Average Cycle Time", "Days");
-        });
-    loadTrendData("/incidents_due_to_change/", team)
-        .done(function (data) {
-            clearDownChart(chart6);
-            chart6 = drawChart('line', data, "#chart6", "Incidents Due To Change", "Incidents");
-        });
-    loadTrendData("/production_defects/", team)
-        .done(function (data) {
-            clearDownChart(chart7);
-            chart7 = drawChart('line', data, "#chart7", "Production Defects", "Defects");
-        });
-    //culture
     loadTrendData("/team_happiness/", team)
         .done(function (data) {
             clearDownChart(chart8);
