@@ -84,7 +84,7 @@ function loadCollectionGraphs() {
     loadCollectionData(team)
         .done(function (data) {
             clearDownChart(collectionChart);
-            collectionChart = drawBarChart(data, "#collection-chart1", "Collection Report", "% of teams collecting data", "Total Team Count");
+            collectionChart = drawBarChart(data, "#collection-chart1", "Collection Report", "Team Count");
         });
 }
 
@@ -614,84 +614,6 @@ function loadTeamPerformanceData(slug) {
     });
 }
 
-function getBarChartConfig(data, title, yAxisLabel1, yAxisLabel2) {
-    return {
-        type: 'bar',
-        data: data,
-        options: {
-            title: {
-                display: true,
-                text: title
-            },
-            legend: {
-                display: true,
-                position: 'right'
-            },
-            responsive: true,
-            tooltips: {
-                mode: 'index',
-                intersect: false,
-                callbacks: {
-                    label: function (tooltipItem, data) {
-                        var label = data.datasets[tooltipItem.datasetIndex].label || '';
-
-                        if (label) {
-                            label += ': ';
-                        }
-                        label += Math.round(tooltipItem.yLabel);
-                        return label;
-                    }
-                }
-            },
-            scales: {
-                yAxes: [{
-                    scaleLabel: {
-                        display: true,
-                        labelString: yAxisLabel1
-                    },
-                    ticks: {
-                        beginAtZero: true,
-                        max: 100,
-                        precision: 1
-                    },
-                    position: "right",
-                    id: "y-axis-1"
-                }, {
-                    scaleLabel: {
-                        display: true,
-                        labelString: yAxisLabel2
-                    },
-                    type: "linear",
-                    ticks: {
-                        beginAtZero: true,
-                        precision: 0
-                    },
-                    position: "left",
-                    id: "y-axis-2",
-                    gridLines: {
-                        drawOnChartArea: false
-                    }
-                }],
-                xAxes: [{
-                    type: 'time',
-                    time: {
-                        unit: 'month',
-                        tooltipFormat: 'MMM YYYY'
-                    },
-                    bounds: "data",
-                    ticks: {
-                        source: 'labels'
-                    },
-                    gridLines: {
-                        offsetGridLines: true
-                    },
-                    offset: true
-                }]
-            }
-        }
-    };
-}
-
 function getChartConfig(type, data, title, yAxisLabel1) {
     return {
         type: type,
@@ -802,17 +724,10 @@ function drawPolarChart(data, chartElemId, title) {
     return Chart.PolarArea(ctx, getPolarChartConfig(data, title));
 }
 
-function drawBarChart(data, chartElemId, title, yAxisLabel1, yAxisLabel2) {
+function drawBarChart(data, chartElemId, title, yAxisLabel1) {
     var ctx = $(chartElemId);
 
-    var i;
-    for (i = 0; i < data.datasets.length; i++) {
-        if (data.datasets[i].yAxisID === 'y-axis-2') {
-            data.datasets[i].type = 'line';
-        }
-    }
-
-    return new Chart(ctx, getBarChartConfig(data, title, yAxisLabel1, yAxisLabel2));
+    return new Chart(ctx, getChartConfig('line', data, title, yAxisLabel1));
 }
 
 function drawChart(type, data, chartElemId, title, yAxisLabel1) {
