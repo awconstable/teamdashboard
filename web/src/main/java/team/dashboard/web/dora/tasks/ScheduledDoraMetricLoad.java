@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import team.dashboard.web.dora.services.DeploymentFrequencyService;
 import team.dashboard.web.dora.services.DeploymentService;
 import team.dashboard.web.dora.services.LeadTimeService;
+import team.dashboard.web.dora.services.MttrService;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -23,13 +24,15 @@ public class ScheduledDoraMetricLoad
         private final DeploymentFrequencyService deploymentFrequencyService;
         private final DeploymentService deploymentService;
         private final LeadTimeService leadTimeService;
+        private final MttrService mttrService;
 
         @Autowired
-        public ScheduledDoraMetricLoad(DeploymentFrequencyService deploymentFrequencyService, DeploymentService deploymentService, LeadTimeService leadTimeService)
+        public ScheduledDoraMetricLoad(DeploymentFrequencyService deploymentFrequencyService, DeploymentService deploymentService, LeadTimeService leadTimeService, MttrService mttrService)
         {
             this.deploymentFrequencyService = deploymentFrequencyService;
             this.deploymentService = deploymentService;
             this.leadTimeService = leadTimeService;
+            this.mttrService = mttrService;
         }
         
         @Scheduled(cron = "${cron.schedule}")
@@ -41,6 +44,7 @@ public class ScheduledDoraMetricLoad
                 deploymentFrequencyService.loadAll(Date.from(reportingDate.toInstant()));
                 deploymentService.loadAll(Date.from(reportingDate.toInstant()));
                 leadTimeService.loadAll(Date.from(reportingDate.toInstant()));
+                mttrService.loadAll(Date.from(reportingDate.toInstant()));
             } catch (Exception e){
                 log.error("Error loading dora metrics", e);
             }

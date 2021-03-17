@@ -154,7 +154,7 @@ function processTeamPerfData (data) {
     var dataOut = [];
     dataOut[0] = getLevelValue(data.deploymentFrequency ? data.deploymentFrequency.deployFreqLevel : null);  // Deployment frequency
     dataOut[1] = getLevelValue(data.leadTime ? data.leadTime.leadTimePerfLevel : null);  // Lead Time for changes
-    dataOut[2] = 0;  // Time to restore service - Not implemented yet
+    dataOut[2] = getLevelValue(data.mttr ? data.mttr.doraLevel : null);  // Time to restore service
     dataOut[3] = 0;  // Change Failure Rate -  Not implemented yet
     var backColour = [];
     backColour[0] = getRGBColourForPerfLevel(dataOut[0]);

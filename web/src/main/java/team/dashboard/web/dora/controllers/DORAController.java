@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import team.dashboard.web.dora.domain.DeploymentFrequency;
 import team.dashboard.web.dora.domain.LeadTime;
+import team.dashboard.web.dora.domain.MTTR;
 import team.dashboard.web.dora.domain.TeamPerformance;
 import team.dashboard.web.dora.services.DeploymentFrequencyService;
 import team.dashboard.web.dora.services.DeploymentService;
 import team.dashboard.web.dora.services.LeadTimeService;
+import team.dashboard.web.dora.services.MttrService;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -32,13 +34,15 @@ public class DORAController
     private final DeploymentService deploymentService;
     private final DeploymentFrequencyService deploymentFrequencyService;
     private final LeadTimeService leadTimeService;
+    private final MttrService mttrService;
 
     @Autowired
-    public DORAController(DeploymentService deploymentService, DeploymentFrequencyService deploymentFrequencyService, LeadTimeService leadTimeService)
+    public DORAController(DeploymentService deploymentService, DeploymentFrequencyService deploymentFrequencyService, LeadTimeService leadTimeService, MttrService mttrService)
         {
         this.deploymentService = deploymentService;
         this.deploymentFrequencyService = deploymentFrequencyService;
         this.leadTimeService = leadTimeService;
+        this.mttrService = mttrService;
         }
     
     @GetMapping("/load/lead_time")
@@ -52,6 +56,21 @@ public class DORAController
     @ResponseBody
     public String loadLeadTime(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate reportingDate){
         leadTimeService.loadAll(Date.from(reportingDate.atStartOfDay(ZoneId.of("UTC")).toInstant()));
+        return "OK";
+    }
+
+    @GetMapping("/load/mttr")
+    @ResponseBody
+    public String loadMttr(){
+        ZonedDateTime reportingDate = LocalDate.now().minusDays(1).atStartOfDay(ZoneId.of("UTC"));
+        mttrService.loadAll(Date.from(reportingDate.toInstant()));
+        return "OK";
+    }
+    
+    @GetMapping("/load/mttr/{reportingDate}")
+    @ResponseBody
+    public String loadMttr(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate reportingDate){
+        mttrService.loadAll(Date.from(reportingDate.atStartOfDay(ZoneId.of("UTC")).toInstant()));
         return "OK";
     }
 
@@ -80,6 +99,7 @@ public class DORAController
         ZonedDateTime reportingDate = LocalDate.now().minusDays(1).atStartOfDay(ZoneId.of("UTC"));
         Optional<DeploymentFrequency> freq = deploymentFrequencyService.get(applicationId, Date.from(reportingDate.toInstant()));
         Optional<LeadTime> leadTime = leadTimeService.get(applicationId, Date.from(reportingDate.toInstant()));
-        return new TeamPerformance(Date.from(reportingDate.toInstant()), freq.orElse(null), leadTime.orElse(null));
+        Optional<MTTR> mttr = mttrService.get(applicationId, Date.from(reportingDate.toInstant()));
+        return new TeamPerformance(Date.from(reportingDate.toInstant()), freq.orElse(null), leadTime.orElse(null), mttr.orElse(null));
     }
     }
