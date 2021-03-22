@@ -114,6 +114,29 @@ services:
           - spring_cloud_consul_port=8500
           - spring_cloud_consul_discovery_prefer-ip-address=true
           - spring_cloud_consul_discovery_scheme=http
+  teamhappiness:
+      container_name: teamhappiness
+      image: awconstable/teamhappiness
+      depends_on:
+          - mongo
+          - consul
+      networks:
+          - dashboardnetwork
+      ports:
+          - "8085:8085"
+      environment:
+          - server.port=8085
+          - spring_data_mongodb_host=mongo_container
+          - spring_data_mongodb_port=27017
+          - spring_data_mongodb_database=teamhappiness-test
+          - spring_cloud_discovery_enabled=true
+          - spring_cloud_service-registry_auto-registration_enabled=true
+          - spring_cloud_consul_discovery_enabled=true
+          - spring_cloud_consul_config_enabled=false
+          - spring_cloud_consul_host=consul_container
+          - spring_cloud_consul_port=8500
+          - spring_cloud_consul_discovery_prefer-ip-address=true
+          - spring_cloud_consul_discovery_scheme=http
 volumes:
   mongodata:
 networks:

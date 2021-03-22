@@ -37,7 +37,7 @@ A non-exhaustive list of known limitations:
 1. [Team Service](https://github.com/awconstable/teamservice)
 1. [Deployment Service](https://github.com/awconstable/deployservice)
 1. [Incident Service](https://github.com/awconstable/incidentservice)
-1. [(Optional) Team Happiness App](https://github.com/awconstable/happiness)
+1. [Team Happiness App](https://github.com/awconstable/happiness)
 
 ## Quick start guide
 
