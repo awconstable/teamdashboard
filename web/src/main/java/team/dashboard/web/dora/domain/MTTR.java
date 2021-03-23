@@ -1,12 +1,15 @@
 package team.dashboard.web.dora.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.data.annotation.Id;
 
 import java.util.Date;
 import java.util.Objects;
 
 public class MTTR
     {
+    @Id
+    private String id;
     private final String applicationId;
     @JsonFormat(pattern="yyyy-MM-dd")
     private final Date reportingDate;

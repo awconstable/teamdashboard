@@ -62,4 +62,14 @@ class DORAMttrRepositoryTest extends BaseMongoTest
         assertThat(mttr.isPresent(), is(true));
         assertThat(mttr.get().getApplicationId(), is(equalTo("app1")));
         }
+
+    @Test
+    void deleteExistingData()
+        {
+        ZonedDateTime reportingDate = LocalDate.now().atStartOfDay(ZoneId.of("UTC"));
+        Optional<MTTR> mttr = repo.findByApplicationIdAndReportingDate("app1", Date.from(reportingDate.toInstant()));
+        mttr.ifPresent(mttrObj -> repo.delete(mttrObj));
+        assertThat(mttr.isPresent(), is(true));
+        assertThat(mttr.get().getApplicationId(), is(equalTo("app1")));
+        }
     }
