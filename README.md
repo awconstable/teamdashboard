@@ -1,12 +1,12 @@
 # Team Dashboard
-A proof of concept team health dashboard
+A proof of concept DevOps Performance dashboard
 
-Awareness of team health is important.
+Awareness of team performance is important to enable data-driven continuous improvement.
 [Accelerate](https://itrevolution.com/book/accelerate/), [DORA and the State of DevOps report](https://www.devops-research.com/research.html) has had a massive impact on DevOps transformations around the world providing guidance on what to measure to retain focus on the key DevOps outcomes - continuously improving Value Throughput and Stability.
 
-[Google Cloud's The Four Keys](https://cloud.google.com/blog/products/devops-sre/using-the-four-keys-to-measure-your-devops-performance), is a fantastic tool for teams using public cloud - but what if you're on-premise with the path to public cloud still a multi-year journey away?
+[Google Cloud's The Four Keys](https://cloud.google.com/blog/products/devops-sre/using-the-four-keys-to-measure-your-devops-performance), is a fantastic tool for teams using GCP - but what if you're on-premise, or have many teams or use another cloud provider?
 
-The Team Dashboard is here to help by providing a simple set of containerised services to enable your teams to easily measure Lead Time for Change, Deployment Frequency, Change Failure Rate and Mean Time to Recover.
+The Team Dashboard is here to help by providing a simple set of containerised services to enable your teams to easily measure and visualise Lead Time for Change, Deployment Frequency, Change Failure Rate and Mean Time to Recover.
 
 ---
 
@@ -19,9 +19,6 @@ The Team Dashboard is here to help by providing a simple set of containerised se
 ![Dashboard Screenshot](https://github.com/awconstable/teamdashboard/raw/master/.github/metrics-screenshot.png?raw=true "Team Dashboard")
 ![Team Explorer Screenshot](https://github.com/awconstable/teamdashboard/raw/master/.github/explorer-screenshot.png?raw=true "Team Explorer")
 ![Deployments Screenshot](https://github.com/awconstable/teamdashboard/raw/master/.github/deployments-screenshot.png?raw=true "Deployments")
-
-## Current Plans
-The initial focus has been on the Throughput metrics (Lead time for Change and Deployment Frequency), we'll then be moving on to the Stability Measures (Change Failure Rate and Mean Time to Recover).
 
 ## Limitations
 
@@ -37,15 +34,10 @@ A non-exhaustive list of known limitations:
 1. [Team Service](https://github.com/awconstable/teamservice)
 1. [Deployment Service](https://github.com/awconstable/deployservice)
 1. [Incident Service](https://github.com/awconstable/incidentservice)
+1. [Change Service](https://github.com/awconstable/changeservice)
 1. [Team Happiness App](https://github.com/awconstable/happiness)
 
 ## Quick start guide
-
-### Add a team
-
-```
- curl -H "Content-Type: application/json" -X POST -d '{"teamId": "esrp", "teamName": "Team Name", "platformName": "Platform Name", "domainName": "Domain Name"}' http://localhost:8080/team
-```
 
 ### Add some metrics
 
@@ -55,7 +47,7 @@ A non-exhaustive list of known limitations:
 
 ### View team dashboard
 
-<http://localhost:8080/dashboard/{teamId}>
+<http://localhost:8080/>
 
 
 ---
@@ -65,14 +57,14 @@ A non-exhaustive list of known limitations:
 ### Compile
 
 ```
-mvn clean install
+./mvnw clean install
 ```
 
 ### Run in development
 
 ```
 docker-compose up
-mvn spring-boot:run -Dspring-boot.run.arguments=--spring.data.mongodb.host=<mogo host>,--spring.data.mongodb.port=<mongo port>,--spring-data.mongodb.database=<mongo db> --team.service.url=http://localhost:8082 --spring.cloud.discovery.enabled=true --spring.cloud.service-registry.auto-registration.enabled=true --spring.cloud.consul.config.enabled=true --spring.cloud.consul.host=<consul host> --spring.cloud.consul.port=<consul port>"
+./mvnw spring-boot:run -Dspring-boot.run.arguments=--spring.data.mongodb.host=<mogo host>,--spring.data.mongodb.port=<mongo port>,--spring-data.mongodb.database=<mongo db> --team.service.url=http://localhost:8082 --spring.cloud.discovery.enabled=true --spring.cloud.service-registry.auto-registration.enabled=true --spring.cloud.consul.config.enabled=true --spring.cloud.consul.host=<consul host> --spring.cloud.consul.port=<consul port>"
 ```
 
 ### Run app as a Docker container

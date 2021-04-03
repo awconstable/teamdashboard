@@ -21,6 +21,7 @@ Vagrant.configure(2) do |config|
   config.vm.network "forwarded_port", guest: 8083, host: 8083, host_ip: "0.0.0.0", id: "spring_boot_4"
   config.vm.network "forwarded_port", guest: 8084, host: 8084, host_ip: "0.0.0.0", id: "spring_boot_5"
   config.vm.network "forwarded_port", guest: 8085, host: 8085, host_ip: "0.0.0.0", id: "spring_boot_6"
+  config.vm.network "forwarded_port", guest: 8086, host: 8086, host_ip: "0.0.0.0", id: "spring_boot_7"
   config.vm.network "forwarded_port", guest: 8500, host: 8500, host_ip: "0.0.0.0", id: "consul_http"
   config.vm.network "forwarded_port", guest: 8600, host: 8600, host_ip: "0.0.0.0", id: "consul_dns"
   config.vm.network "forwarded_port", guest: 27017, host: 27017, host_ip: "0.0.0.0", id: "mongo_db"

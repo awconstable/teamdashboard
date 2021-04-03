@@ -11,13 +11,15 @@ public class TeamPerformance
     private final DeploymentFrequency deploymentFrequency;
     private final LeadTime leadTime;
     private final MTTR mttr;
+    private final ChangeFailureRate changeFailureRate;
 
-    public TeamPerformance(Date reportingDate, DeploymentFrequency deploymentFrequency, LeadTime leadTime, MTTR mttr)
+    public TeamPerformance(Date reportingDate, DeploymentFrequency deploymentFrequency, LeadTime leadTime, MTTR mttr, ChangeFailureRate changeFailureRate)
         {
         this.reportingDate = reportingDate;
         this.deploymentFrequency = deploymentFrequency;
         this.leadTime = leadTime;
         this.mttr = mttr;
+        this.changeFailureRate = changeFailureRate;
         }
 
     public Date getReportingDate()
@@ -37,6 +39,8 @@ public class TeamPerformance
 
     public MTTR getMttr() { return mttr; }
 
+    public ChangeFailureRate getChangeFailureRate(){ return changeFailureRate; }
+
     @Override
     public String toString()
         {
@@ -45,6 +49,7 @@ public class TeamPerformance
             ", deploymentFrequency=" + deploymentFrequency +
             ", leadTime=" + leadTime +
             ", mttr=" + mttr +
+            ", changeFailureRate=" + changeFailureRate +
             '}';
         }
     }

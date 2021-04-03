@@ -13,10 +13,7 @@ import team.dashboard.web.dora.domain.*;
 import team.dashboard.web.dora.repos.DORADeployFreqRepository;
 import team.dashboard.web.dora.repos.DORALeadTimeRepository;
 import team.dashboard.web.dora.repos.DeploymentClient;
-import team.dashboard.web.dora.services.DeploymentFrequencyService;
-import team.dashboard.web.dora.services.DeploymentService;
-import team.dashboard.web.dora.services.LeadTimeService;
-import team.dashboard.web.dora.services.MttrService;
+import team.dashboard.web.dora.services.*;
 import team.dashboard.web.hierarchy.repos.HierarchyClient;
 import team.dashboard.web.metrics.services.TeamMetricService;
 
@@ -50,6 +47,7 @@ class DORAControllerTest
     @MockBean private DORALeadTimeRepository doraLeadTimeRepository;
     @MockBean private DeploymentService deploymentService;
     @MockBean private MttrService mttrService;
+    @MockBean private ChangeFailureRateService changeFailureRateService;
 
     @Test
     void testLoadLeadTime() throws Exception
@@ -134,6 +132,34 @@ class DORAControllerTest
         }
     
     @Test
+    void testLoadChangeFailureRate() throws Exception
+        {
+        ZonedDateTime reportingDate = LocalDate.now().minusDays(1).atStartOfDay(ZoneId.of("UTC"));
+
+        String reportingDateString = DateTimeFormatter.ISO_LOCAL_DATE.format(reportingDate);
+
+        mockMvc.perform(get("/dora/load/cfr/" + reportingDateString).contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+
+        verify(changeFailureRateService, times(1)).loadAll(Date.from(reportingDate.toInstant()));
+        }
+    
+    @Test
+    void testLoadChangeFailureRateWithReportingDate() throws Exception
+        {
+        ZonedDateTime reportingDate = LocalDate.now().minusDays(10).atStartOfDay(ZoneId.of("UTC"));
+
+        String reportingDateString = DateTimeFormatter.ISO_LOCAL_DATE.format(reportingDate);
+        
+        mockMvc.perform(get("/dora/load/cfr/" + reportingDateString).contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+
+        verify(changeFailureRateService, times(1)).loadAll(Date.from(reportingDate.toInstant()));
+        }
+    
+    @Test
     void testGetTeamPerformance() throws Exception
         {
         String appId = "a1";
@@ -144,6 +170,8 @@ class DORAControllerTest
         when(leadTimeService.get(appId, Date.from(reportingDate.toInstant()))).thenReturn(Optional.of(lt));
         MTTR mttr = new MTTR(appId, java.util.Date.from(reportingDate.toInstant()), 1200, 4, DORALevel.ELITE);
         when(mttrService.get(appId, Date.from(reportingDate.toInstant()))).thenReturn(Optional.of(mttr));
+        ChangeFailureRate cfr = new ChangeFailureRate(appId, Date.from(reportingDate.toInstant()), 0.12, 3, DORALevel.ELITE);
+        when(changeFailureRateService.get(appId, Date.from(reportingDate.toInstant()))).thenReturn(Optional.of(cfr));
         
         MvcResult result = mockMvc.perform(get("/dora/team/" + appId + "/performance").contentType(MediaType.APPLICATION_JSON))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -151,9 +179,10 @@ class DORAControllerTest
 
         String content = result.getResponse().getContentAsString();
         String dateOut = DateTimeFormatter.ISO_LOCAL_DATE.format(reportingDate);
-        assertThat(content, is(equalTo("{\"reportingDate\":\"" + dateOut + "\",\"deploymentFrequency\":{\"applicationId\":\"" + appId + "\",\"reportingDate\":\"" + dateOut + "\",\"deploymentCount\":10,\"timePeriod\":\"DAY\",\"deployFreqLevel\":\"ELITE\"},\"leadTime\":{\"applicationId\":\"" + appId + "\",\"reportingDate\":\"" + dateOut + "\",\"leadTimeSeconds\":120,\"leadTimePerfLevel\":\"ELITE\"},\"mttr\":{\"applicationId\":\"" + appId + "\",\"reportingDate\":\"" + dateOut + "\",\"meanTimeToRecoverSeconds\":1200,\"incidentCount\":4,\"doraLevel\":\"ELITE\"}}")));
+        assertThat(content, is(equalTo("{\"reportingDate\":\"" + dateOut + "\",\"deploymentFrequency\":{\"applicationId\":\"" + appId + "\",\"reportingDate\":\"" + dateOut + "\",\"deploymentCount\":10,\"timePeriod\":\"DAY\",\"deployFreqLevel\":\"ELITE\"},\"leadTime\":{\"applicationId\":\"" + appId + "\",\"reportingDate\":\"" + dateOut + "\",\"leadTimeSeconds\":120,\"leadTimePerfLevel\":\"ELITE\"},\"mttr\":{\"applicationId\":\"" + appId + "\",\"reportingDate\":\"" + dateOut + "\",\"meanTimeToRecoverSeconds\":1200,\"incidentCount\":4,\"doraLevel\":\"ELITE\"},\"changeFailureRate\":{\"applicationId\":\"" + appId + "\",\"reportingDate\":\"" + dateOut + "\",\"changeFailureRatePercent\":0.12,\"changeRequestCount\":3,\"doraLevel\":\"ELITE\"}}")));
         verify(deploymentFrequencyService, times(1)).get(appId, Date.from(reportingDate.toInstant()));
         verify(leadTimeService, times(1)).get(appId, Date.from(reportingDate.toInstant()));
         verify(mttrService, times(1)).get(appId, Date.from(reportingDate.toInstant()));
+        verify(changeFailureRateService, times(1)).get(appId, Date.from(reportingDate.toInstant()));
         }
     }

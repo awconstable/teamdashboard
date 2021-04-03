@@ -71,6 +71,8 @@ function processPageEntry() {
         selectDeployments(false, team);
     } else if (mode && mode === 'incidents') {
         selectIncidents(false, team);
+    } else if (mode && mode === 'changerequests') {
+        selectChangeRequests(false, team);
     } else {
         selectTeamExplorer(false);
     }
@@ -101,6 +103,13 @@ function loadIncidents(){
     loadIncidentData(team)
         .done(function (data){
             drawIncidentTable(data);
+        });
+}
+
+function loadChangeRequests(){
+    loadChangeRequestData(team)
+        .done(function (data){
+            drawChangeRequestTable(data);
         });
 }
 
@@ -164,7 +173,7 @@ function processTeamPerfData (data) {
     dataOut[0] = getLevelValue(data.deploymentFrequency ? data.deploymentFrequency.deployFreqLevel : null);  // Deployment frequency
     dataOut[1] = getLevelValue(data.leadTime ? data.leadTime.leadTimePerfLevel : null);  // Lead Time for changes
     dataOut[2] = getLevelValue(data.mttr ? data.mttr.doraLevel : null);  // Time to restore service
-    dataOut[3] = 0;  // Change Failure Rate -  Not implemented yet
+    dataOut[3] = getLevelValue(data.changeFailureRate ? data.changeFailureRate.doraLevel : null);  // Change Failure Rate
     var backColour = [];
     backColour[0] = getRGBColourForPerfLevel(dataOut[0]);
     backColour[1] = getRGBColourForPerfLevel(dataOut[1]);
@@ -306,6 +315,7 @@ var collectionLinkElem = $("#collection-link");
 var captureLinkElem = $("#capture-link");
 var deploymentLinkElem = $("#deployments-link");
 var incidentLinkElem = $("#incidents-link");
+var changeRequestLinkElem = $("#change-requests-link");
 
 var teamExplorerContentElem = $("#teamexplorer-content");
 var dashboardContentElem = $("#dashboard-content");
@@ -313,6 +323,7 @@ var collectionContentElem = $("#collection-content");
 var captureContentElem = $("#capture-content");
 var deploymentContentElem = $("#deployments-content");
 var incidentContentElem = $("#incidents-content");
+var changeRequestContentElem = $("#change-requests-content");
 
 var teamNameElem = $("#team-name");
 
@@ -350,6 +361,12 @@ incidentLinkElem.click(function () {
     }
 });
 
+changeRequestLinkElem.click(function () {
+    if (team) {
+        selectChangeRequests(true, team);
+    }
+});
+
 function selectTeamExplorer(updateHistory) {
     if (updateHistory) {
         history.pushState({"pageTitle": 'Team Explorer'}, null, '/teamexplorer/');
@@ -367,6 +384,7 @@ function selectTeamExplorer(updateHistory) {
     captureLinkElem.removeClass("active");
     deploymentLinkElem.removeClass("active");
     incidentLinkElem.removeClass("active");
+    changeRequestLinkElem.removeClass("active");
 
     teamExplorerContentElem.removeClass("d-none").addClass("d-block");
     dashboardContentElem.removeClass("d-block").addClass("d-none");
@@ -374,6 +392,7 @@ function selectTeamExplorer(updateHistory) {
     captureContentElem.removeClass("d-block").addClass("d-none");
     deploymentContentElem.removeClass("d-block").addClass("d-none");
     incidentContentElem.removeClass("d-block").addClass("d-none");
+    changeRequestContentElem.removeClass("d-block").addClass("d-none");
 }
 
 function selectDashboard(updateHistory, slug) {
@@ -393,6 +412,7 @@ function selectDashboard(updateHistory, slug) {
     captureLinkElem.removeClass("active");
     deploymentLinkElem.removeClass("active");
     incidentLinkElem.removeClass("active");
+    changeRequestLinkElem.removeClass("active");
 
     teamExplorerContentElem.removeClass("d-block").addClass("d-none");
     dashboardContentElem.removeClass("d-none").addClass("d-block");
@@ -400,6 +420,7 @@ function selectDashboard(updateHistory, slug) {
     captureContentElem.removeClass("d-block").addClass("d-none");
     deploymentContentElem.removeClass("d-block").addClass("d-none");
     incidentContentElem.removeClass("d-block").addClass("d-none");
+    changeRequestContentElem.removeClass("d-block").addClass("d-none");
 }
 
 function selectCollection(updateHistory, slug) {
@@ -419,6 +440,7 @@ function selectCollection(updateHistory, slug) {
     captureLinkElem.removeClass("active");
     deploymentLinkElem.removeClass("active");
     incidentLinkElem.removeClass("active");
+    changeRequestLinkElem.removeClass("active");
 
     teamExplorerContentElem.removeClass("d-block").addClass("d-none");
     dashboardContentElem.removeClass("d-block").addClass("d-none");
@@ -426,6 +448,7 @@ function selectCollection(updateHistory, slug) {
     captureContentElem.removeClass("d-block").addClass("d-none");
     deploymentContentElem.removeClass("d-block").addClass("d-none");
     incidentContentElem.removeClass("d-block").addClass("d-none");
+    changeRequestContentElem.removeClass("d-block").addClass("d-none");
 }
 
 function selectCapture(updateHistory, slug) {
@@ -444,6 +467,7 @@ function selectCapture(updateHistory, slug) {
     captureLinkElem.addClass("active");
     deploymentLinkElem.removeClass("active");
     incidentLinkElem.removeClass("active");
+    changeRequestLinkElem.removeClass("active");
 
     teamExplorerContentElem.removeClass("d-block").addClass("d-none");
     dashboardContentElem.removeClass("d-block").addClass("d-none");
@@ -451,6 +475,7 @@ function selectCapture(updateHistory, slug) {
     captureContentElem.removeClass("d-none").addClass("d-block");
     deploymentContentElem.removeClass("d-block").addClass("d-none");
     incidentContentElem.removeClass("d-block").addClass("d-none");
+    changeRequestContentElem.removeClass("d-block").addClass("d-none");
 }
 
 function selectDeployments(updateHistory, slug) {
@@ -470,6 +495,7 @@ function selectDeployments(updateHistory, slug) {
     captureLinkElem.removeClass("active");
     deploymentLinkElem.addClass("active");
     incidentLinkElem.removeClass("active");
+    changeRequestLinkElem.removeClass("active");
 
     teamExplorerContentElem.removeClass("d-block").addClass("d-none");
     dashboardContentElem.removeClass("d-block").addClass("d-none");
@@ -477,6 +503,7 @@ function selectDeployments(updateHistory, slug) {
     captureContentElem.removeClass("d-block").addClass("d-none");
     deploymentContentElem.removeClass("d-none").addClass("d-block");
     incidentContentElem.removeClass("d-block").addClass("d-none");
+    changeRequestContentElem.removeClass("d-block").addClass("d-none");
 }
 
 function selectIncidents(updateHistory, slug) {
@@ -496,6 +523,7 @@ function selectIncidents(updateHistory, slug) {
     captureLinkElem.removeClass("active");
     deploymentLinkElem.removeClass("active");
     incidentLinkElem.addClass("active");
+    changeRequestLinkElem.removeClass("active");
 
     teamExplorerContentElem.removeClass("d-block").addClass("d-none");
     dashboardContentElem.removeClass("d-block").addClass("d-none");
@@ -503,6 +531,35 @@ function selectIncidents(updateHistory, slug) {
     captureContentElem.removeClass("d-block").addClass("d-none");
     deploymentContentElem.removeClass("d-block").addClass("d-none");
     incidentContentElem.removeClass("d-none").addClass("d-block");
+    changeRequestContentElem.removeClass("d-block").addClass("d-none");
+}
+
+function selectChangeRequests(updateHistory, slug) {
+
+    if (updateHistory) {
+        history.pushState({"pageTitle": 'Change Requests - ' + slug}, null, '/changerequests/' + slug);
+    } else {
+        history.replaceState({"pageTitle": 'Change Requests - ' + slug}, null, '/changerequests/' + slug);
+    }
+
+    loadTeam(slug).done(updateTeamName);
+    loadChangeRequests();
+
+    teamExplorerLinkElem.removeClass("active");
+    dashboardLinkElem.removeClass("active");
+    collectionLinkElem.removeClass("active");
+    captureLinkElem.removeClass("active");
+    deploymentLinkElem.removeClass("active");
+    incidentLinkElem.removeClass("active");
+    changeRequestLinkElem.addClass("active");
+
+    teamExplorerContentElem.removeClass("d-block").addClass("d-none");
+    dashboardContentElem.removeClass("d-block").addClass("d-none");
+    collectionContentElem.removeClass("d-block").addClass("d-none");
+    captureContentElem.removeClass("d-block").addClass("d-none");
+    deploymentContentElem.removeClass("d-block").addClass("d-none");
+    incidentContentElem.removeClass("d-block").addClass("d-none");
+    changeRequestContentElem.removeClass("d-none").addClass("d-block");
 }
 
 function updateTeamName(data) {
@@ -531,6 +588,10 @@ $("#deployment-refresh-button").click(function () {
 
 $("#incident-refresh-button").click(function () {
     loadIncidents();
+});
+
+$("#change-request-refresh-button").click(function () {
+    loadChangeRequests();
 });
 
 function loadTeamHierarchy() {
@@ -648,6 +709,13 @@ function loadDeploymentData(slug) {
 function loadIncidentData(slug) {
     return $.ajax({
         url: "/incs/" + slug + "/",
+        dataType: "json"
+    });
+}
+
+function loadChangeRequestData(slug) {
+    return $.ajax({
+        url: "/crs/" + slug + "/",
         dataType: "json"
     });
 }
@@ -849,6 +917,41 @@ function drawIncidentTable(data){
             + '<td scope="row">' + moment(incident.resolved).format('YYYY-MM-DD HH:mm') + ' (' + moment(incident.resolved).fromNow() + ')</td>'
             + '<td scope="row">' + moment.duration(incident.mttrSeconds, 'seconds').humanize() + '</td>'
             + '<td scope="row">' + incident.mttrPerfLevel + '</td>';
+        html += '</tr>';
+    });
+
+    html += '</tr></tbody>';
+
+    tableBodyElem.append(html);
+}
+
+function drawChangeRequestTable(data){
+    var tableBodyElem = $('#change-request-table-body');
+    tableBodyElem.empty();
+    var html = '<thead>' +
+        '<tr>' +
+        '<th scope="col">Application Id</th>' +
+        '<th scope="col">Change Request ID</th>' +
+        '<th scope="col">Description</th>' +
+        '<th scope="col">Creation Time</th>' +
+        '<th scope="col">Start Time</th>' +
+        '<th scope="col">Finish Time</th>' +
+        '<th scope="col">Close Time</th>' +
+        '<th scope="col">Failed</th>' +
+        '</tr>' +
+        '</thead>' +
+        '<tbody>';
+
+    jQuery.each(data, function (j, cr) {
+        html += '<tr>'
+            + '<td scope="row">' + cr.applicationId + '</td>'
+            + '<td scope="row">' + cr.changeRequestId + '</td>'
+            + '<td scope="row">' + cr.description + '</td>'
+            + '<td scope="row">' + moment(cr.created).format('YYYY-MM-DD HH:mm') + ' (' + moment(cr.created).fromNow() + ')</td>'
+            + '<td scope="row">' + moment(cr.started).format('YYYY-MM-DD HH:mm') + ' (' + moment(cr.started).fromNow() + ')</td>'
+            + '<td scope="row">' + moment(cr.finished).format('YYYY-MM-DD HH:mm') + ' (' + moment(cr.finished).fromNow() + ')</td>'
+            + '<td scope="row">' + moment(cr.closed).format('YYYY-MM-DD HH:mm') + ' (' + moment(cr.closed).fromNow() + ')</td>'
+            + '<td scope="row">' + cr.failed + '</td>';
         html += '</tr>';
     });
 

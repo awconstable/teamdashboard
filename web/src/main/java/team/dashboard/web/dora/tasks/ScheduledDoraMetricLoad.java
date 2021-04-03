@@ -5,10 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import team.dashboard.web.dora.services.DeploymentFrequencyService;
-import team.dashboard.web.dora.services.DeploymentService;
-import team.dashboard.web.dora.services.LeadTimeService;
-import team.dashboard.web.dora.services.MttrService;
+import team.dashboard.web.dora.services.*;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -25,14 +22,16 @@ public class ScheduledDoraMetricLoad
         private final DeploymentService deploymentService;
         private final LeadTimeService leadTimeService;
         private final MttrService mttrService;
+        private final ChangeFailureRateService changeFailureRateService;
 
         @Autowired
-        public ScheduledDoraMetricLoad(DeploymentFrequencyService deploymentFrequencyService, DeploymentService deploymentService, LeadTimeService leadTimeService, MttrService mttrService)
+        public ScheduledDoraMetricLoad(DeploymentFrequencyService deploymentFrequencyService, DeploymentService deploymentService, LeadTimeService leadTimeService, MttrService mttrService, ChangeFailureRateService changeFailureRateService)
         {
             this.deploymentFrequencyService = deploymentFrequencyService;
             this.deploymentService = deploymentService;
             this.leadTimeService = leadTimeService;
             this.mttrService = mttrService;
+            this.changeFailureRateService = changeFailureRateService;
         }
         
         @Scheduled(cron = "${cron.schedule}")
@@ -41,10 +40,12 @@ public class ScheduledDoraMetricLoad
             {
                 ZonedDateTime reportingDate = LocalDate.now().minusDays(1).atStartOfDay(ZoneId.of("UTC"));
                 log.info("The reporting date is {}", DateTimeFormatter.ISO_LOCAL_DATE.format(reportingDate));
-                deploymentFrequencyService.loadAll(Date.from(reportingDate.toInstant()));
-                deploymentService.loadAll(Date.from(reportingDate.toInstant()));
-                leadTimeService.loadAll(Date.from(reportingDate.toInstant()));
-                mttrService.loadAll(Date.from(reportingDate.toInstant()));
+                Date date = Date.from(reportingDate.toInstant());
+                deploymentFrequencyService.loadAll(date);
+                deploymentService.loadAll(date);
+                leadTimeService.loadAll(date);
+                mttrService.loadAll(date);
+                changeFailureRateService.loadAll(date);
             } catch (Exception e){
                 log.error("Error loading dora metrics", e);
             }

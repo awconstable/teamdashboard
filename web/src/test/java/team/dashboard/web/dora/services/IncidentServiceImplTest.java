@@ -9,11 +9,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import team.dashboard.web.dora.domain.Incident;
 import team.dashboard.web.dora.repos.IncidentClient;
-import team.dashboard.web.hierarchy.domain.EntityType;
-import team.dashboard.web.hierarchy.domain.HierarchyEntity;
-import team.dashboard.web.hierarchy.domain.Relation;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -39,21 +38,7 @@ class IncidentServiceImplTest
         }
     @Autowired private IncidentService incidentService;
     @Autowired private IncidentClient mockIncidentClient;
-
-    private HierarchyEntity getTeam(String appId){
-        Relation c1 = new Relation(appId + "c1", EntityType.TEAM, appId + "c1", appId, Collections.emptyList());
-        Relation c2 = new Relation(appId + "c2", EntityType.TEAM, appId + "c2", appId, Collections.emptyList());
-        Relation c3 = new Relation(appId + "c3", EntityType.TEAM, appId + "c3", appId, Collections.emptyList());
-
-    return new HierarchyEntity(appId,
-        EntityType.TEAM,
-        appId,
-        null,
-        Collections.emptyList(),
-        Arrays.asList(c1, c2, c3),
-        Collections.emptyList());
-    }
-
+    
     private List<Incident> getIncidents(Date reportingDate)
         {
         Incident i1 = new Incident("id1", "Incident 1", "app1", reportingDate, reportingDate, "test");

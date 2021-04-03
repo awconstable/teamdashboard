@@ -45,6 +45,12 @@
                           </a>
                       </li>
                       <li class="nav-item">
+                          <a class="nav-link" id="change-requests-link">
+                              <span data-feather="file-text"></span>
+                              Change Requests
+                          </a>
+                      </li>
+                      <li class="nav-item">
                           <a class="nav-link" id="collection-link">
                               <span data-feather="trending-up"></span>
                               Collection Report
@@ -233,6 +239,31 @@
                           </div>
                           <small class="form-text text-muted">
                               All team incidents.
+                          </small>
+                      </div>
+                      <hr class="mb-3">
+                  </div>
+              </div>
+              <div class="d-none" id="change-requests-content">
+                  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                      <h1 class="h2">Incidents</h1>
+                      <div class="btn-toolbar mb-2 mb-md-0">
+                          <div class="btn-group mr-2">
+                              <button class="btn btn-sm btn-outline-secondary" id="change-request-refresh-button"
+                                      type="button"><span
+                                  data-feather="refresh-cw"></span></button>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="container">
+                      <div class="row">
+                          <div class="table-responsive">
+                              <table class="table table-striped table-sm" id="change-request-table-body">
+
+                              </table>
+                          </div>
+                          <small class="form-text text-muted">
+                              All team Change Requests.
                           </small>
                       </div>
                       <hr class="mb-3">
