@@ -12,14 +12,12 @@ import team.dashboard.web.dora.repos.IncidentClient;
 import team.dashboard.web.hierarchy.domain.EntityType;
 import team.dashboard.web.hierarchy.domain.HierarchyEntity;
 import team.dashboard.web.hierarchy.domain.Relation;
-import team.dashboard.web.hierarchy.repos.HierarchyClient;
 
 import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
@@ -30,20 +28,17 @@ class IncidentServiceImplTest
     static class IncidentServiceTestContextConfiguration
         {
         @MockBean private IncidentClient mockIncidentClient;
-        @MockBean private HierarchyClient mockHierarchyClient;
 
         @Bean
         public IncidentService incidentService()
             {
             return new IncidentServiceImpl(
-                mockIncidentClient,
-                mockHierarchyClient
+                mockIncidentClient
             );
             }
         }
     @Autowired private IncidentService incidentService;
     @Autowired private IncidentClient mockIncidentClient;
-    @Autowired private HierarchyClient mockHierarchyClient;
 
     private HierarchyEntity getTeam(String appId){
         Relation c1 = new Relation(appId + "c1", EntityType.TEAM, appId + "c1", appId, Collections.emptyList());
@@ -77,25 +72,12 @@ class IncidentServiceImplTest
     void listIncidents()
         {
         String appId = "app1";
-        when(mockHierarchyClient.findEntityBySlug(appId)).thenReturn(getTeam(appId));
-        when(mockIncidentClient.listForApplication(anyString())).thenReturn(getIncidents(new Date()));
+        when(mockIncidentClient.listForHierarchy(appId)).thenReturn(getIncidents(new Date()));
 
         List<Incident> incidents = incidentService.list(appId);
 
-        verify(mockIncidentClient, times(4)).listForApplication(anyString());
-        assertThat(incidents.size(), is(equalTo(12)));
+        verify(mockIncidentClient, times(1)).listForHierarchy(appId);
+        assertThat(incidents.size(), is(equalTo(3)));
         }
-
-    @Test
-    void listIncidentsWithoutHierarchy()
-        {
-        String appId = "app1";
-        when(mockHierarchyClient.findEntityBySlug(appId)).thenReturn(null);
-        when(mockIncidentClient.listForApplication(anyString())).thenReturn(getIncidents(new Date()));
-
-        List<Incident> incidents = incidentService.list(appId);
-
-        verify(mockIncidentClient, never()).listForApplication(anyString());
-        assertThat(incidents.size(), is(equalTo(0)));
-        }
+    
     }
