@@ -54,16 +54,16 @@ public class TeamCollectionReportServiceTest
                 null,
                 Arrays.asList(new Relation("team1", EntityType.TEAM, "Team 1", "team0", Collections.emptyList()),
                         new Relation("team2", EntityType.TEAM, "Team 2", "team1", Collections.emptyList()))
-                , null, null);
+                , null);
         team1 = new HierarchyEntity("team1", EntityType.TEAM, "Team 1", "team0",
                 Collections.singletonList(new Relation("team0", EntityType.TEAM, "Team 0", null, Collections.emptyList())),
                 Collections.singletonList(new Relation("team2", EntityType.TEAM, "Team 2", "team1", Collections.emptyList()))
-                , null, null);
+                , null);
         team2 = new HierarchyEntity("team2", EntityType.TEAM, "Team 2", "team1",
                 Arrays.asList(new Relation("team0", EntityType.TEAM, "Team 0", null, Collections.emptyList()),
                         new Relation("team1", EntityType.TEAM, "Team 1", "team0", Collections.emptyList())),
                 Collections.emptyList()
-                , null, null);
+                , null);
 
         }
 
@@ -105,7 +105,7 @@ public class TeamCollectionReportServiceTest
 
         when(mockHierarchyRestRepository.findEntityBySlug("team-no-ancestors"))
                 .thenReturn(new HierarchyEntity("team-no-ancestors", EntityType.TEAM, "Team No Ancestors", null,
-                        Collections.emptyList(), Collections.emptyList(), null, null));
+                        Collections.emptyList(), Collections.emptyList(), null));
 
         teamCollectionReportService.updateCollectionStats("team-no-ancestors", 2019, Month.APRIL.getValue());
 

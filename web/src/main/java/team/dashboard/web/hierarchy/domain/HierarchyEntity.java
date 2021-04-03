@@ -15,10 +15,9 @@ public class HierarchyEntity
     private final Collection<Relation> ancestors;
     private final Collection<Relation> children;
     private final Collection<Member> members;
-    private final Collection<ApplicationId> applicationIds;
     private String id;
 
-    public HierarchyEntity(String slug, EntityType entityType, String name, String parentSlug, Collection<Relation> ancestors, Collection<Relation> children, Collection<Member> members, Collection<ApplicationId> applicationIds)
+    public HierarchyEntity(String slug, EntityType entityType, String name, String parentSlug, Collection<Relation> ancestors, Collection<Relation> children, Collection<Member> members)
         {
         this.slug = slug;
         this.entityType = entityType;
@@ -27,7 +26,6 @@ public class HierarchyEntity
         this.ancestors = ancestors;
         this.children = children;
         this.members = members;
-        this.applicationIds = applicationIds;
         }
 
     public String getId()
@@ -79,14 +77,6 @@ public class HierarchyEntity
         return members;
         }
 
-    public Collection<ApplicationId> getApplicationIds()
-        {
-        if(applicationIds == null){
-            return new ArrayList<>();
-        }
-        return applicationIds;
-        }
-
     @JsonIgnore
     public Relation getRelation()
         {
@@ -105,7 +95,6 @@ public class HierarchyEntity
                 ", ancestors=" + ancestors +
                 ", children=" + children +
                 ", teamMembers=" + members +
-                ", applicationIds=" + applicationIds +
                 '}';
         }
     }

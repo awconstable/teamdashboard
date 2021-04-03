@@ -157,7 +157,6 @@ class MttrServiceImplTest
             null,
             Collections.emptyList(),
             Collections.emptyList(),
-            Collections.emptyList(),
             Collections.emptyList());
         HierarchyEntity t2 = new HierarchyEntity("app2",
             EntityType.TEAM,
@@ -165,13 +164,11 @@ class MttrServiceImplTest
             null,
             Collections.emptyList(),
             Collections.emptyList(),
-            Collections.emptyList(),
             Collections.emptyList());
         HierarchyEntity t3 = new HierarchyEntity("app3",
             EntityType.TEAM,
             "app3",
             null,
-            Collections.emptyList(),
             Collections.emptyList(),
             Collections.emptyList(),
             Collections.emptyList());

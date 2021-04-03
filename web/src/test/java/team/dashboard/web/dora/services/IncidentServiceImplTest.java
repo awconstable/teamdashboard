@@ -51,7 +51,6 @@ class IncidentServiceImplTest
         null,
         Collections.emptyList(),
         Arrays.asList(c1, c2, c3),
-        Collections.emptyList(),
         Collections.emptyList());
     }
 

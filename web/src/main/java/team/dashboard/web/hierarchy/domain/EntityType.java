@@ -10,11 +10,13 @@ public enum EntityType
     {
         COMPANY("Company"),
         DOMAIN("Domain"),
+        CLUSTER("Cluster"),
         PLATFORM("Platform"),
+        VALUE_STREAM("Value Stream"),
         TEAM_OF_TEAMS("Team of Teams"),
         TEAM("Team"),
         APPLICATION("Application"),
-        RELEASE("Release");
+        COMPONENT("Component");
 
     private final String key;
     private final String name;
