@@ -27,8 +27,8 @@ public interface DeploymentClient
     @RequestMapping(method = RequestMethod.GET, value = "/api/v1/deployment/application/{appId}/lead_time/{reportingDate}")
     LeadTime getLeadTime(@PathVariable("appId") String applicationId, @PathVariable("reportingDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date reportingDate);
 
-    @RequestMapping(method = RequestMethod.GET, value = "/api/v1/deployment/application/{appId}")
-    List<Deployment> getDeploymentsForApplication(@PathVariable("appId") String applicationId);
+    @RequestMapping(method = RequestMethod.GET, value = "/api/v1/deployment/hierarchy/{appId}")
+    List<Deployment> getDeploymentsForHierarchy(@PathVariable("appId") String applicationId);
 
     @RequestMapping(method = RequestMethod.GET, value = "/api/v1/deployment/application/{appId}/date/{reportingDate}")
     List<Deployment> getDeploymentsForApplicationWithDate(@PathVariable("appId") String applicationId, @PathVariable("reportingDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date reportingDate);

@@ -12,7 +12,6 @@ import team.dashboard.web.dora.domain.Deployment;
 import team.dashboard.web.dora.repos.DeploymentClient;
 import team.dashboard.web.hierarchy.domain.EntityType;
 import team.dashboard.web.hierarchy.domain.HierarchyEntity;
-import team.dashboard.web.hierarchy.domain.Relation;
 import team.dashboard.web.hierarchy.repos.HierarchyClient;
 import team.dashboard.web.metrics.domain.TeamMetricType;
 import team.dashboard.web.metrics.services.TeamMetricService;
@@ -54,21 +53,6 @@ class DeploymentServiceImplTest
     @Autowired private DeploymentClient mockDeploymentClient;
     @Autowired private HierarchyClient mockHierarchyClient;
     @Autowired private TeamMetricService mockTeamMetricService;
-    
-    private HierarchyEntity getTeam(String appId){
-    Relation c1 = new Relation(appId + "c1", EntityType.TEAM, appId + "c1", appId, Collections.emptyList());
-    Relation c2 = new Relation(appId + "c2", EntityType.TEAM, appId + "c2", appId, Collections.emptyList());
-    Relation c3 = new Relation(appId + "c3", EntityType.TEAM, appId + "c3", appId, Collections.emptyList());
-
-    return new HierarchyEntity(appId,
-        EntityType.TEAM,
-        appId,
-        null,
-        Collections.emptyList(),
-        Arrays.asList(c1, c2, c3),
-        Collections.emptyList(),
-        Collections.emptyList());
-    }
     
     private List<HierarchyEntity> getTeams(){
         List<HierarchyEntity> teams = new ArrayList<>();
@@ -176,25 +160,12 @@ class DeploymentServiceImplTest
     void listDeployments()
         {
         String appId = "app1";
-        when(mockHierarchyClient.findEntityBySlug(appId)).thenReturn(getTeam(appId));
-        when(mockDeploymentClient.getDeploymentsForApplication(anyString())).thenReturn(getDeployments(new Date()));
+        when(mockDeploymentClient.getDeploymentsForHierarchy(anyString())).thenReturn(getDeployments(new Date()));
         
         List<Deployment> deployments = deploymentService.listDeployments(appId);
 
-        verify(mockDeploymentClient, times(4)).getDeploymentsForApplication(anyString());
-        assertThat(deployments.size(), is(equalTo(12)));
+        verify(mockDeploymentClient, times(1)).getDeploymentsForHierarchy(anyString());
+        assertThat(deployments.size(), is(equalTo(3)));
         }
 
-    @Test
-    void listDeploymentsWithoutHierarchy()
-        {
-        String appId = "app1";
-        when(mockHierarchyClient.findEntityBySlug(appId)).thenReturn(null);
-        when(mockDeploymentClient.getDeploymentsForApplication(anyString())).thenReturn(getDeployments(new Date()));
-
-        List<Deployment> deployments = deploymentService.listDeployments(appId);
-
-        verify(mockDeploymentClient, never()).getDeploymentsForApplication(anyString());
-        assertThat(deployments.size(), is(equalTo(0)));
-        }
     }

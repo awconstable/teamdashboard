@@ -14,7 +14,10 @@ import team.dashboard.web.metrics.services.TeamMetricService;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class DeploymentServiceImpl implements DeploymentService
@@ -87,17 +90,7 @@ public class DeploymentServiceImpl implements DeploymentService
     @Override
     public List<Deployment> listDeployments(String applicationId)
         {
-        List<Deployment> deployments = new ArrayList<>();
-        Set<String> teams = new HashSet<>();
-        HierarchyEntity team = hierarchyClient.findEntityBySlug(applicationId);
-        if(team == null){
-            return deployments;
-        }
-        teams.add(team.getSlug());
-        team.getChildren().forEach(child -> teams.add(child.getSlug()));
-        log.info("List all deployments for applications with ids {}", teams);
-        teams.forEach(t -> deployments.addAll(deploymentClient.getDeploymentsForApplication(t)));
-        deployments.sort(Comparator.comparing(Deployment::getCreated).reversed());
-        return deployments;
+        log.info("List all deployments for hierarchy starting at application with id {}", applicationId);
+        return deploymentClient.getDeploymentsForHierarchy(applicationId);
         }
     }
