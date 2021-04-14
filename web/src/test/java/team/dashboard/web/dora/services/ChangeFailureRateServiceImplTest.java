@@ -79,7 +79,7 @@ class ChangeFailureRateServiceImplTest
         String appId = "app1";
         ZonedDateTime date = LocalDate.now().minusDays(1).atStartOfDay(ZoneId.of("UTC"));
         Date reportingDate = Date.from(date.toInstant());
-        ChangeFailureRate cfr = new ChangeFailureRate(appId, Date.from(reportingDate.toInstant()), 0.0, 4, DORALevel.ELITE);
+        ChangeFailureRate cfr = new ChangeFailureRate(appId, Date.from(reportingDate.toInstant()), 0.1, 4, DORALevel.ELITE);
         when(mockChangeRequestClient.getChangeFailureRate(appId, reportingDate)).thenReturn(cfr);
         when(mockDoraChangeFailureRateRepository.findByApplicationIdAndReportingDate(appId, Date.from(reportingDate.toInstant()))).thenReturn(Optional.empty());
 
@@ -90,7 +90,7 @@ class ChangeFailureRateServiceImplTest
         verify(mockTeamMetricService, times(1)).save(
             TeamMetricType.CHANGE_FAILURE_RATE.getKey(),
             appId, LocalDate.ofInstant(reportingDate.toInstant(), ZoneId.of("UTC")),
-            0.0,
+            10.0,
             null
         );
         }

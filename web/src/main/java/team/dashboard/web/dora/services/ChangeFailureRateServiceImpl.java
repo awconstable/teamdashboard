@@ -57,7 +57,7 @@ public class ChangeFailureRateServiceImpl implements ChangeFailureRateService
             TeamMetricType.CHANGE_FAILURE_RATE.getKey(),
             applicationId,
             LocalDate.ofInstant(reportingDate.toInstant(), ZoneId.of("UTC")),
-            cfr.getChangeFailureRatePercent(),
+            cfr.getChangeFailureRatePercent() * 100,
             null
         );
         }
