@@ -206,7 +206,7 @@ function loadGraphs() {
     loadTrendData("/lead_time/", team)
         .done(function (data) {
             clearDownChart(chart1);
-            chart1 = drawChart('line', data, "#chart1", "Average Lead Time", "Mins");
+            chart1 = drawChart('line', data, "#chart1", "Average Lead Time", "Mins", {beginAtZero: true});
         });
     loadTrendData("/deployment_count/", team)
         .done(function (data) {
@@ -215,48 +215,68 @@ function loadGraphs() {
             data.datasets[0].maxBarThickness = 4;
             data.datasets[0].minBarLength = 2;
             
-            chart2 = drawChart( 'bar', data, "#chart2", "Deployment Count", "Deployments");
+            chart2 = drawChart( 'bar', data, "#chart2", "Deployment Count", "Deployments", {beginAtZero: true});
         });
     //stability metrics
     loadTrendData("/change_failure_rate/", team)
         .done(function (data) {
             clearDownChart(chart3);
-            chart3 = drawChart('line', data, "#chart3", "Change Failure Rate", "%");
+            chart3 = drawChart('line', data, "#chart3", "Change Failure Rate", "%",
+                {
+                    beginAtZero: true,
+                    max: 100,
+                    stepSize: 10
+            });
         });
     loadTrendData("/mttr/", team)
         .done(function (data) {
             clearDownChart(chart4);
-            chart4 = drawChart('line', data, "#chart4", "Mean Time to Recovery", "Minutes");
+            chart4 = drawChart('line', data, "#chart4", "Mean Time to Recovery", "Minutes", {beginAtZero: true});
         });
     loadTrendData("/team_happiness/", team)
         .done(function (data) {
             clearDownChart(chart8);
-            chart8 = drawChart('line', data, "#chart8", "Team Happiness", "Happiness Index");
+            chart8 = drawChart('line', data, "#chart8", "Team Happiness", "Happiness Index",
+                {
+                    beginAtZero: true,
+                    max: 5,
+                    stepSize: 1
+                });
         });
     loadTrendData("/customer_satisfaction/", team)
         .done(function (data) {
             clearDownChart(chart9);
-            chart9 = drawChart('line', data, "#chart9", "Customer Satisfaction", "CSAT Index");
+            chart9 = drawChart('line', data, "#chart9", "Customer Satisfaction", "CSAT Index",
+                {
+                    beginAtZero: true,
+                    max: 5,
+                    stepSize: 1
+                });
         });
     loadTrendData("/batch_size/", team)
         .done(function (data) {
             clearDownChart(chart10);
-            chart10 = drawChart('line', data, "#chart10", "Batch Size", "Batch Size");
+            chart10 = drawChart('line', data, "#chart10", "Batch Size", "Batch Size", {beginAtZero: true, precision: 0});
         });
     loadTrendData("/test_automation_coverage/", team)
         .done(function (data) {
             clearDownChart(chart11);
-            chart11 = drawChart('line', data, "#chart11", "Test Automation Coverage", "%");
+            chart11 = drawChart('line', data, "#chart11", "Test Automation Coverage", "%",
+                {
+                    beginAtZero: true,
+                    max: 100,
+                    stepSize: 10
+                });
         });
     loadTrendData("/total_test_execution_count/", team)
         .done(function (data) {
             clearDownChart(chart12);
-            chart12 = drawChart('line', data, "#chart12", "Total Test Execution Count", "#");
+            chart12 = drawChart('line', data, "#chart12", "Total Test Execution Count", "#", {beginAtZero: true, precision: 0});
         });
     loadTrendData("/test_automation_execution_count/", team)
         .done(function (data) {
             clearDownChart(chart13);
-            chart13 = drawChart('line', data, "#chart13", "Test Automation Execution Count", "#");
+            chart13 = drawChart('line', data, "#chart13", "Test Automation Execution Count", "#", {beginAtZero: true, precision: 0});
         });
 }
 
@@ -727,7 +747,7 @@ function loadTeamPerformanceData(slug) {
     });
 }
 
-function getChartConfig(type, data, title, yAxisLabel1) {
+function getChartConfig(type, data, title, yAxisLabel1, ticks) {
     return {
         type: type,
         data: data,
@@ -759,9 +779,7 @@ function getChartConfig(type, data, title, yAxisLabel1) {
                         labelString: yAxisLabel1
                     },
                     type: "linear",
-                    ticks: {
-                        beginAtZero: true
-                    },
+                    ticks: ticks,
                     position: "left",
                     id: "y-axis-1"
                 }],
@@ -843,9 +861,9 @@ function drawBarChart(data, chartElemId, title, yAxisLabel1) {
     return new Chart(ctx, getChartConfig('line', data, title, yAxisLabel1));
 }
 
-function drawChart(type, data, chartElemId, title, yAxisLabel1) {
+function drawChart(type, data, chartElemId, title, yAxisLabel1, ticks) {
     var ctx = $(chartElemId);
-    var config = getChartConfig(type, data, title, yAxisLabel1);
+    var config = getChartConfig(type, data, title, yAxisLabel1, ticks);
 
     if(type === 'bar'){
         config.options.scales.xAxes[0].offset = true;
