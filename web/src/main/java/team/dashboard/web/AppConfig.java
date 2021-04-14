@@ -7,12 +7,10 @@ import org.springframework.hateoas.client.LinkDiscoverer;
 import org.springframework.hateoas.client.LinkDiscoverers;
 import org.springframework.hateoas.mediatype.collectionjson.CollectionJsonLinkDiscoverer;
 import org.springframework.plugin.core.SimplePluginRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +18,6 @@ import java.util.List;
 import static springfox.documentation.builders.PathSelectors.regex;
 
 @Configuration
-@EnableSwagger2
 public class AppConfig implements WebMvcConfigurer
     {
 
@@ -40,12 +37,5 @@ public class AppConfig implements WebMvcConfigurer
                 .select().apis(RequestHandlerSelectors.basePackage("team.dashboard.web.metrics"))
                 .paths(regex("/api.*"))
                 .build();
-        }
-
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry)
-        {
-        registry.addResourceHandler("swagger-ui.html")
-                .addResourceLocations("classpath:/META-INF/resources/");
         }
 }
