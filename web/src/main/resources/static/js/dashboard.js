@@ -88,7 +88,7 @@ function loadCollectionGraphs() {
     loadCollectionData(team)
         .done(function (data) {
             clearDownChart(collectionChart);
-            collectionChart = drawBarChart(data, "#collection-chart1", "Collection Report", "Team Count");
+            collectionChart = drawBarChart(data, "#collection-chart1", "Collection Report", "Team Count", {beginAtZero: true, precision: 0});
         });
 }
 
@@ -855,10 +855,10 @@ function drawPolarChart(data, chartElemId, title) {
     return Chart.PolarArea(ctx, getPolarChartConfig(data, title));
 }
 
-function drawBarChart(data, chartElemId, title, yAxisLabel1) {
+function drawBarChart(data, chartElemId, title, yAxisLabel1, ticks) {
     var ctx = $(chartElemId);
 
-    return new Chart(ctx, getChartConfig('line', data, title, yAxisLabel1));
+    return new Chart(ctx, getChartConfig('line', data, title, yAxisLabel1, ticks));
 }
 
 function drawChart(type, data, chartElemId, title, yAxisLabel1, ticks) {
