@@ -2,10 +2,10 @@ package team.dashboard.web.version;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
-import team.dashboard.web.Application;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -21,7 +21,7 @@ public class VersionHolder
     public VersionHolder()
         {
         Properties props = new Properties();
-        Resource resource = new ClassPathResource("version.txt", Application.class.getClassLoader());
+        Resource resource = new ClassPathResource("version.txt", SpringBootApplication.class.getClassLoader());
         try {
             props = PropertiesLoaderUtils.loadProperties(resource);
         } catch (IOException e) {
