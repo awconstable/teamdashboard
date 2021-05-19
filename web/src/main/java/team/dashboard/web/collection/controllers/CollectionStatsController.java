@@ -82,7 +82,7 @@ public class CollectionStatsController
             }
 
         Color lineColour = Color.BLACK;
-        LineDataset teamCountDataSet = new LineDataset().setLabel("Total Team Count");
+        LineDataset teamCountDataSet = new LineDataset().setLabel("Total Node Count");
         teamCountDataSet.setBackgroundColor(lineColour);
         teamCountDataSet.setBackgroundColor(Color.TRANSPARENT);
         teamCountDataSet.setBorderColor(lineColour);
@@ -95,7 +95,7 @@ public class CollectionStatsController
         datasets.add(teamCountDataSet);
 
         lineColour = Color.DARK_ORANGE;
-        LineDataset teamCollectionCountDataSet = new LineDataset().setLabel("Team's Collecting Data");
+        LineDataset teamCollectionCountDataSet = new LineDataset().setLabel("Node's Collecting Data");
         teamCollectionCountDataSet.setBackgroundColor(lineColour);
         teamCollectionCountDataSet.setBackgroundColor(Color.TRANSPARENT);
         teamCollectionCountDataSet.setBorderColor(lineColour);

@@ -88,7 +88,7 @@ function loadCollectionGraphs() {
     loadCollectionData(team)
         .done(function (data) {
             clearDownChart(collectionChart);
-            collectionChart = drawBarChart(data, "#collection-chart1", "Collection Report", "Team Count", {beginAtZero: true, precision: 0});
+            collectionChart = drawBarChart(data, "#collection-chart1", "Collection Report", "Node Count", {beginAtZero: true, precision: 0});
         });
 }
 
