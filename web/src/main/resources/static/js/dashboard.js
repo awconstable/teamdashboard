@@ -206,7 +206,7 @@ function loadGraphs() {
     loadTrendData("/lead_time/", team)
         .done(function (data) {
             clearDownChart(chart1);
-            chart1 = drawChart('line', data, "#chart1", "Average Lead Time", "Mins", {beginAtZero: true});
+            chart1 = drawChart('line', data, "#chart1", "Average Lead Time", "Hours", {beginAtZero: true});
         });
     loadTrendData("/deployment_count/", team)
         .done(function (data) {

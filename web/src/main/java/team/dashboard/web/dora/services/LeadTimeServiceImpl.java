@@ -1,5 +1,6 @@
 package team.dashboard.web.dora.services;
 
+import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team.dashboard.web.dora.domain.DORALevel;
@@ -52,12 +53,12 @@ public class LeadTimeServiceImpl implements LeadTimeService
                 LocalDate.ofInstant(reportingDate.toInstant(), ZoneId.of("UTC")));
         } else {
             doraLeadTimeRepository.save(leadTime);
-            long leadTimeMins = leadTime.getLeadTimeSeconds() / 60;
+            double leadTimeHrs = Long.valueOf(leadTime.getLeadTimeSeconds()).doubleValue() / 60 / 60;
             teamMetricService.save(
                 TeamMetricType.LEAD_TIME_FOR_CHANGE.getKey(),
                 applicationId,
                 LocalDate.ofInstant(reportingDate.toInstant(), ZoneId.of("UTC")),
-                Long.valueOf(leadTimeMins).doubleValue(),
+                Precision.round(leadTimeHrs, 2),
                 null
             );
             }
