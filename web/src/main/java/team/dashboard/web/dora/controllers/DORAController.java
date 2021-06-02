@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import team.dashboard.web.dora.domain.*;
 import team.dashboard.web.dora.services.*;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "/dora", produces = "application/json")
@@ -55,6 +55,24 @@ public class DORAController
         log.info("Load lead time with date {}", DateTimeFormatter.ISO_LOCAL_DATE.format(reportingDate));
         leadTimeService.loadAll(Date.from(reportingDate.atStartOfDay(ZoneId.of("UTC")).toInstant()));
         return "OK";
+    }
+    @GetMapping("/load/lead_time/from/{startDate}/to/{endDate}")
+    @ResponseBody
+    public Map<String, ArrayList<String>> loadLeadTimeFrom(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate, @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate){
+    ArrayList<String> datesLoaded = new ArrayList<>();
+    log.info("Load lead time from {} to {}", DateTimeFormatter.ISO_LOCAL_DATE.format(startDate), DateTimeFormatter.ISO_LOCAL_DATE.format(endDate));
+    long daysBetween = Duration.between(startDate.atStartOfDay(ZoneId.of("UTC")).toInstant(), endDate.atStartOfDay(ZoneId.of("UTC")).toInstant()).toDays();
+    for(int i = 0; i <= daysBetween; i++)
+    {
+        LocalDate localDate = startDate.plusDays(i);
+        Date date = Date.from(localDate.atStartOfDay(ZoneId.of("UTC")).toInstant());
+        try {
+            leadTimeService.loadAll(date);
+        } finally {
+            datesLoaded.add(DateTimeFormatter.ISO_LOCAL_DATE.format(localDate));
+        }
+    }
+    return Collections.singletonMap("datesLoaded", datesLoaded);
     }
 
     @GetMapping("/load/mttr")

@@ -77,6 +77,22 @@ class DORAControllerTest
         }
 
     @Test
+    void testLoadLeadTimeFromToDate() throws Exception
+        {
+        ZonedDateTime startDate = LocalDate.now().minusDays(10).atStartOfDay(ZoneId.of("UTC"));
+        ZonedDateTime endDate = LocalDate.now().atStartOfDay(ZoneId.of("UTC"));
+        String startDateString = DateTimeFormatter.ISO_LOCAL_DATE.format(startDate);
+        String endDateString = DateTimeFormatter.ISO_LOCAL_DATE.format(endDate);
+        
+        mockMvc.perform(get("/dora/load/lead_time/from/" + startDateString + "/to/" + endDateString).contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+
+        verify(leadTimeService, times(11)).loadAll(any(java.util.Date.class));
+
+        }
+
+    @Test
     void testLoadMttr() throws Exception
         {
         ZonedDateTime reportingDate = LocalDate.now().minusDays(1).atStartOfDay(ZoneId.of("UTC"));
