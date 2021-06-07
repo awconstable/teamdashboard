@@ -240,7 +240,7 @@ function processTeamPerfData (data) {
     };
 }
 
-function updateCurrentLeadTimeValues(data){
+function updateCurrentDeployFreqValues(data){
     let deployFreElem = $("#current_deploy_freq");
     deployFreElem.html(getTimePeriodValue(data.deploymentFrequency ? data.deploymentFrequency.timePeriod : null));
     deployFreElem.removeClass("dora-unknown-perf")
@@ -258,7 +258,7 @@ function loadGraphs() {
         .done(function (data) {
             clearDownChart(chart0);
             chart0 = drawPolarChart(processTeamPerfData(data), "#chart0", "Team Performance");
-            updateCurrentLeadTimeValues(data);
+            updateCurrentDeployFreqValues(data);
         });
     //throughput metrics
     loadTrendData("/lead_time/", team)
