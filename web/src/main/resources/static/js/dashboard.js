@@ -152,6 +152,21 @@ function getRGBColourForPerfLevel(perfLevel){
     } 
 }
 
+function getClassForPerfLevel(perfLevel){
+    switch(perfLevel){
+        case 0:
+            return "dora-unknown-perf";
+        case 1:
+            return "dora-low-perf";
+        case 2:
+            return "dora-med-perf";
+        case 3:
+            return "dora-high-perf";
+        case 4:
+            return "dora-elite-perf";
+    }
+}
+
 function getLevelValue(doraLevel){
     switch(doraLevel){
         case "LOW":
@@ -164,6 +179,36 @@ function getLevelValue(doraLevel){
             return 4;
         default:
             return 0;
+    }
+}
+
+function getTimePeriodValue(timePeriod){
+    switch(timePeriod){
+        case "YEAR":
+            return "Yearly";
+        case "MONTH":
+            return "Monthly";
+        case "WEEK":
+            return "Weekly";
+        case "DAY":
+            return "Daily";
+        default:
+            return "Unknown";
+    }
+}
+
+function getTimePeriodTxtValue(timePeriod, deploymentCount){
+    switch(timePeriod){
+        case "YEAR":
+            return deploymentCount + " deployments in the last year";
+        case "MONTH":
+            return deploymentCount + " deployments in the last month";
+        case "WEEK":
+            return deploymentCount + " deployments in the last week";
+        case "DAY":
+            return deploymentCount + " deployments in the last day";
+        default:
+            return "No deployment data (or a node type higher than application)";
     }
 }
 
@@ -195,12 +240,25 @@ function processTeamPerfData (data) {
     };
 }
 
+function updateCurrentTeamPerformanceValues(data){
+    let deployFreElem = $("#current_deploy_freq");
+    deployFreElem.html(getTimePeriodValue(data.deploymentFrequency ? data.deploymentFrequency.timePeriod : null));
+    deployFreElem.removeClass("dora-unknown-perf")
+        .removeClass("dora-low-perf")
+        .removeClass("dora-med-perf")
+        .removeClass("dora-high-perf")
+        .removeClass("dora-elite-perf");
+    deployFreElem.addClass(getClassForPerfLevel(getLevelValue(data.deploymentFrequency ? data.deploymentFrequency.deployFreqLevel : null)));
+    $("#current_deploy_freq_txt").html(getTimePeriodTxtValue(data.deploymentFrequency ? data.deploymentFrequency.timePeriod : null, data.deploymentFrequency ? data.deploymentFrequency.deploymentCount : null))
+}
+
 function loadGraphs() {
     //team performance chart
     loadTeamPerformanceData(team)
         .done(function (data) {
             clearDownChart(chart0);
             chart0 = drawPolarChart(processTeamPerfData(data), "#chart0", "Team Performance");
+            updateCurrentTeamPerformanceValues(data);
         });
     //throughput metrics
     loadTrendData("/lead_time/", team)

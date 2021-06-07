@@ -114,3 +114,23 @@ body {
     padding-top: 0px;
     padding-bottom: 0px;
 }
+
+.dora-unknown-perf {
+    background-color: #9d9d9d;
+}
+
+.dora-low-perf {
+    background-color: #ff5733;
+}
+
+.dora-med-perf {
+    background-color: #ff9233;
+}
+
+.dora-high-perf {
+    background-color: #ffcc33;
+}
+
+.dora-elite-perf {
+    background-color: #70ff33;
+}
