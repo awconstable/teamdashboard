@@ -8,6 +8,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +36,9 @@ import java.util.Optional;
 @ApiIgnore
 public class TeamMetricsController
     {
-
+    @Value("${display.previous.months:6}")
+    private int displayPreviousMonths;
+    
     private final TeamMetricRepository teamMetricRepository;
 
     private final HierarchyClient hierarchyRestRepository;
@@ -90,8 +93,8 @@ public class TeamMetricsController
             {
             teams.add(child.getSlug());
             }
-
-        List<TeamMetricTrend> metrics = teamMetricRepository.getDailyChildMetrics(teams.toArray(new String[]{}), type);
+        
+        List<TeamMetricTrend> metrics = teamMetricRepository.getDailyChildMetrics(teams.toArray(new String[]{}), type, displayPreviousMonths);
 
         Color lineColour = Color.random();
 

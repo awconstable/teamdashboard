@@ -12,7 +12,9 @@ import team.dashboard.web.metrics.domain.TeamMetricTrend;
 import team.dashboard.web.metrics.domain.TeamMetricType;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -66,7 +68,10 @@ public class TeamMetricRepositoryIT extends BaseMongoTest
     private LocalDate createDate(Integer year, Month month, Integer day){
         return LocalDate.of(year, month, day);
     }
-
+    private LocalDate getDateMonthsAgo(int months){
+        return LocalDate.ofInstant(LocalDateTime.now().minusMonths(months).toInstant(ZoneOffset.UTC), ZoneOffset.UTC);
+    }
+    
     @Test
     public void findByTeamIdTest()
         {
@@ -113,11 +118,16 @@ public class TeamMetricRepositoryIT extends BaseMongoTest
     public void getDailyChildMetricsTest()
         {
 
-        List<TeamMetricTrend> metrics = repository.getDailyChildMetrics(new String[]{"team3", "team2", "team1"}, TeamMetricType.CYCLE_TIME);
+        repository.save(new TeamMetric("team1", TeamMetricType.CYCLE_TIME, Double.valueOf("3.0"), Double.valueOf("1.0"),
+            getDateMonthsAgo(3)));
+        repository.save(new TeamMetric("team1", TeamMetricType.CYCLE_TIME, Double.valueOf("3.0"), Double.valueOf("1.0"),
+            getDateMonthsAgo(6))); // Should not feature in the results
+        repository.save(new TeamMetric("team1", TeamMetricType.CYCLE_TIME, Double.valueOf("3.0"), Double.valueOf("1.0"),
+            getDateMonthsAgo(1)));
+        
+        List<TeamMetricTrend> metrics = repository.getDailyChildMetrics(new String[]{"team3", "team2", "team1"}, TeamMetricType.CYCLE_TIME, 6);
 
-        //TODO check calculated values
-        //TODO Dates and timezones cause a problem. Need to move away from LocalDate
-        AssertionsForClassTypes.assertThat(metrics.size()).isEqualTo(8);
+        AssertionsForClassTypes.assertThat(metrics.size()).isEqualTo(2);
         }
 
     //Make sure TeamMetricType.TEST_AUTOMATION_EXECUTION_COUNT and

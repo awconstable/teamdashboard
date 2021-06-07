@@ -11,6 +11,8 @@ import team.dashboard.web.metrics.domain.TeamMetricTrend;
 import team.dashboard.web.metrics.domain.TeamMetricType;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,8 +30,12 @@ public class TeamMetricAggregationRepositoryImpl implements TeamMetricAggregatio
         this.mongoTemplate = mongoTemplate;
         }
 
+    private LocalDate getDateMonthsAgo(int months){
+        return LocalDate.ofInstant(LocalDateTime.now().minusMonths(months).toInstant(ZoneOffset.UTC), ZoneOffset.UTC);   
+    }
+    
     @Override
-    public List<TeamMetricTrend> getDailyChildMetrics(String[] slugs, TeamMetricType metricType)
+    public List<TeamMetricTrend> getDailyChildMetrics(String[] slugs, TeamMetricType metricType, int months)
         {
         ProjectionOperation dateProjection = project()
                 .and("teamMetricType").as("teamMetricType")
@@ -44,7 +50,7 @@ public class TeamMetricAggregationRepositoryImpl implements TeamMetricAggregatio
                 .count().as("count");
 
         TypedAggregation<TeamMetric> agg = Aggregation.newAggregation(TeamMetric.class,
-                match(Criteria.where("teamId").in(slugs).and("teamMetricType").is(metricType)),
+                match(Criteria.where("teamId").in(slugs).and("teamMetricType").is(metricType).and("date").gt(getDateMonthsAgo(months))),
                 dateProjection,
                 groupBy,
                 sort(Sort.Direction.ASC, "year", "month", "day"));

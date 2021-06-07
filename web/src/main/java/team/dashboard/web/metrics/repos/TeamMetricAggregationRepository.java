@@ -9,7 +9,7 @@ import java.util.Set;
 
 public interface TeamMetricAggregationRepository
     {
-    List<TeamMetricTrend> getDailyChildMetrics(String[] slugs, TeamMetricType metricType);
+    List<TeamMetricTrend> getDailyChildMetrics(String[] slugs, TeamMetricType metricType, int months);
 
     Set<TeamCollectionStat> getCollectionStats(String[] slugs, Integer year, Integer month);
     }
