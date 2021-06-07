@@ -182,33 +182,59 @@ function getLevelValue(doraLevel){
     }
 }
 
+function getLeadTimeValue(leadTimeSeconds) {
+    if(leadTimeSeconds === null){
+        return "unknown";
+    }
+    return moment.duration(leadTimeSeconds, 'seconds').humanize();
+}
+
+function getLeadTimeTxtValue(doraLevel, leadTimeSeconds) {
+    let msg = "On average changes are deployed within ";
+    let leadTime;
+    switch(doraLevel){
+        case "LOW":
+            leadTime = moment.duration(leadTimeSeconds, 'seconds').asMonths();
+            return msg + Math.round(leadTime) + " month" + (leadTime > 1 ? "s" : "");
+        case "MEDIUM":
+            leadTime = moment.duration(leadTimeSeconds, 'seconds').asWeeks();
+            return msg + Math.round(leadTime) + " week" + (leadTime > 1 ? "s" : "");
+        case "HIGH":
+        case "ELITE":
+            leadTime = moment.duration(leadTimeSeconds, 'seconds').asHours();
+            return msg + Math.round(leadTime) + " hour" + (leadTime > 1 ? "s" : "");
+        default:
+            return "No lead time data (or node type higher than application)";
+    }
+}
+
 function getTimePeriodValue(timePeriod){
     switch(timePeriod){
         case "YEAR":
-            return "Yearly";
+            return "yearly";
         case "MONTH":
-            return "Monthly";
+            return "monthly";
         case "WEEK":
-            return "Weekly";
+            return "weekly";
         case "DAY":
-            return "Daily";
+            return "daily";
         default:
-            return "Unknown";
+            return "unknown";
     }
 }
 
 function getDeployFreqTxtValue(timePeriod, deploymentCount){
     switch(timePeriod){
         case "YEAR":
-            return deploymentCount + " deployments in the last year";
+            return deploymentCount + " deployment" + (deploymentCount > 1 ? "s" : "") + " in the last year";
         case "MONTH":
-            return deploymentCount + " deployments in the last month";
+            return deploymentCount + " deployment" + (deploymentCount > 1 ? "s" : "") + " in the last month";
         case "WEEK":
-            return deploymentCount + " deployments in the last week";
+            return deploymentCount + " deployment" + (deploymentCount > 1 ? "s" : "") + " in the last week";
         case "DAY":
-            return deploymentCount + " deployments in the last day";
+            return deploymentCount + " deployment" + (deploymentCount > 1 ? "s" : "") + " in the last day";
         default:
-            return "No deployment data (or a node type higher than application)";
+            return "No deployment data (or node type higher than application)";
     }
 }
 
@@ -240,14 +266,26 @@ function processTeamPerfData (data) {
     };
 }
 
-function updateCurrentDeployFreqValues(data){
-    let deployFreElem = $("#current_deploy_freq");
-    deployFreElem.html(getTimePeriodValue(data.deploymentFrequency ? data.deploymentFrequency.timePeriod : null));
-    deployFreElem.removeClass("dora-unknown-perf")
+function removeDoraPerfClass(elem){
+    elem.removeClass("dora-unknown-perf")
         .removeClass("dora-low-perf")
         .removeClass("dora-med-perf")
         .removeClass("dora-high-perf")
-        .removeClass("dora-elite-perf");
+        .removeClass("dora-elite-perf"); 
+}
+
+function updateCurrentLeadTimeValues(data){
+    let leadTimeElem = $("#current_lead_time");
+    leadTimeElem.html(getLeadTimeValue(data.leadTime ? data.leadTime.leadTimeSeconds : null));
+    removeDoraPerfClass(leadTimeElem);
+    leadTimeElem.addClass(getClassForPerfLevel(getLevelValue(data.leadTime ? data.leadTime.leadTimePerfLevel : null)));
+    $("#current_lead_time_txt").html(getLeadTimeTxtValue(data.leadTime ? data.leadTime.leadTimePerfLevel : null, data.leadTime ? data.leadTime.leadTimeSeconds : null))
+}
+
+function updateCurrentDeployFreqValues(data){
+    let deployFreElem = $("#current_deploy_freq");
+    deployFreElem.html(getTimePeriodValue(data.deploymentFrequency ? data.deploymentFrequency.timePeriod : null));
+    removeDoraPerfClass(deployFreElem);
     deployFreElem.addClass(getClassForPerfLevel(getLevelValue(data.deploymentFrequency ? data.deploymentFrequency.deployFreqLevel : null)));
     $("#current_deploy_freq_txt").html(getDeployFreqTxtValue(data.deploymentFrequency ? data.deploymentFrequency.timePeriod : null, data.deploymentFrequency ? data.deploymentFrequency.deploymentCount : null))
 }
@@ -259,6 +297,7 @@ function loadGraphs() {
             clearDownChart(chart0);
             chart0 = drawPolarChart(processTeamPerfData(data), "#chart0", "Team Performance");
             updateCurrentDeployFreqValues(data);
+            updateCurrentLeadTimeValues(data)
         });
     //throughput metrics
     loadTrendData("/lead_time/", team)
