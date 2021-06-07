@@ -197,7 +197,7 @@ function getTimePeriodValue(timePeriod){
     }
 }
 
-function getTimePeriodTxtValue(timePeriod, deploymentCount){
+function getDeployFreqTxtValue(timePeriod, deploymentCount){
     switch(timePeriod){
         case "YEAR":
             return deploymentCount + " deployments in the last year";
@@ -240,7 +240,7 @@ function processTeamPerfData (data) {
     };
 }
 
-function updateCurrentTeamPerformanceValues(data){
+function updateCurrentLeadTimeValues(data){
     let deployFreElem = $("#current_deploy_freq");
     deployFreElem.html(getTimePeriodValue(data.deploymentFrequency ? data.deploymentFrequency.timePeriod : null));
     deployFreElem.removeClass("dora-unknown-perf")
@@ -249,7 +249,7 @@ function updateCurrentTeamPerformanceValues(data){
         .removeClass("dora-high-perf")
         .removeClass("dora-elite-perf");
     deployFreElem.addClass(getClassForPerfLevel(getLevelValue(data.deploymentFrequency ? data.deploymentFrequency.deployFreqLevel : null)));
-    $("#current_deploy_freq_txt").html(getTimePeriodTxtValue(data.deploymentFrequency ? data.deploymentFrequency.timePeriod : null, data.deploymentFrequency ? data.deploymentFrequency.deploymentCount : null))
+    $("#current_deploy_freq_txt").html(getDeployFreqTxtValue(data.deploymentFrequency ? data.deploymentFrequency.timePeriod : null, data.deploymentFrequency ? data.deploymentFrequency.deploymentCount : null))
 }
 
 function loadGraphs() {
@@ -258,7 +258,7 @@ function loadGraphs() {
         .done(function (data) {
             clearDownChart(chart0);
             chart0 = drawPolarChart(processTeamPerfData(data), "#chart0", "Team Performance");
-            updateCurrentTeamPerformanceValues(data);
+            updateCurrentLeadTimeValues(data);
         });
     //throughput metrics
     loadTrendData("/lead_time/", team)
