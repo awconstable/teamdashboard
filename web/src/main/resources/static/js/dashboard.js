@@ -252,6 +252,32 @@ function getChangeFailureRateTxtValue(failureRate, changeCount) {
     return getChangeFailureRateValue(failureRate) + " of the last " + changeCount + " change" + (changeCount > 1 ? "s" : "") + " failed";
 }
 
+function getMTTRValue(mttr) {
+    if(mttr === null){
+        return "unknown";
+    }
+    return moment.duration(mttr, 'seconds').humanize();
+}
+
+function getMTTRTxtValue(mttrSeconds, doraLevel) {
+    let msg = "On average incidents are recovered within ";
+    let mttr;
+    switch(doraLevel){
+        case "LOW":
+            mttr = moment.duration(mttrSeconds, 'seconds').asWeeks();
+            return msg + Math.round(mttr) + " week" + (mttr > 1 ? "s" : "");
+        case "MEDIUM":
+        case "HIGH":
+            mttr = moment.duration(mttrSeconds, 'seconds').asHours();
+            return msg + Math.round(mttr) + " hour" + (mttr > 1 ? "s" : "");
+        case "ELITE":
+            mttr = moment.duration(mttrSeconds, 'seconds').asMinutes();
+            return msg + Math.round(mttr) + " minute" + (mttr > 1 ? "s" : "");
+        default:
+            return "No incident data (or node type higher than application)";
+    }
+}
+
 function processTeamPerfData (data) {
     console.log(data);
     var dataOut = [];
@@ -312,6 +338,14 @@ function updateCurrentChangeFailureRateValues(data){
     $("#current_change_failure_rate_txt").html(getChangeFailureRateTxtValue(data.changeFailureRate ? data.changeFailureRate.changeFailureRatePercent : null, data.changeFailureRate ? data.changeFailureRate.changeRequestCount : null));
 }
 
+function updateCurrentMTTRValues(data){
+    let elem = $("#current_mttr");
+    elem.html(getMTTRValue(data.mttr ? data.mttr.meanTimeToRecoverSeconds : null));
+    removeDoraPerfClass(elem);
+    elem.addClass(getClassForPerfLevel(getLevelValue(data.mttr ? data.mttr.doraLevel : null)));
+    $("#current_mttr_txt").html(getMTTRTxtValue(data.mttr ? data.mttr.meanTimeToRecoverSeconds : null, data.mttr ? data.mttr.doraLevel : null));
+}
+
 function loadGraphs() {
     //team performance chart
     loadTeamPerformanceData(team)
@@ -321,6 +355,7 @@ function loadGraphs() {
             updateCurrentDeployFreqValues(data);
             updateCurrentLeadTimeValues(data);
             updateCurrentChangeFailureRateValues(data);
+            updateCurrentMTTRValues(data);
         });
     //throughput metrics
     loadTrendData("/lead_time/", team)
