@@ -194,15 +194,15 @@ function getLeadTimeTxtValue(doraLevel, leadTimeSeconds) {
     let leadTime;
     switch(doraLevel){
         case "LOW":
-            leadTime = moment.duration(leadTimeSeconds, 'seconds').asMonths();
-            return msg + Math.round(leadTime) + " month" + (leadTime > 1 ? "s" : "");
+            leadTime = Math.round(moment.duration(leadTimeSeconds, 'seconds').asMonths());
+            return msg + leadTime + " month" + (leadTime > 1 ? "s" : "");
         case "MEDIUM":
-            leadTime = moment.duration(leadTimeSeconds, 'seconds').asWeeks();
-            return msg + Math.round(leadTime) + " week" + (leadTime > 1 ? "s" : "");
+            leadTime = Math.round(moment.duration(leadTimeSeconds, 'seconds').asWeeks());
+            return msg + leadTime + " week" + (leadTime > 1 ? "s" : "");
         case "HIGH":
         case "ELITE":
-            leadTime = moment.duration(leadTimeSeconds, 'seconds').asHours();
-            return msg + Math.round(leadTime) + " hour" + (leadTime > 1 ? "s" : "");
+            leadTime = Math.round(moment.duration(leadTimeSeconds, 'seconds').asHours());
+            return msg + leadTime + " hour" + (leadTime > 1 ? "s" : "");
         default:
             return "No lead time data";
     }
@@ -264,15 +264,15 @@ function getMTTRTxtValue(mttrSeconds, doraLevel) {
     let mttr;
     switch(doraLevel){
         case "LOW":
-            mttr = moment.duration(mttrSeconds, 'seconds').asWeeks();
-            return msg + Math.round(mttr) + " week" + (mttr > 1 ? "s" : "");
+            mttr = Math.round(moment.duration(mttrSeconds, 'seconds').asWeeks());
+            return msg + mttr + " week" + (mttr > 1 ? "s" : "");
         case "MEDIUM":
         case "HIGH":
-            mttr = moment.duration(mttrSeconds, 'seconds').asHours();
-            return msg + Math.round(mttr) + " hour" + (mttr > 1 ? "s" : "");
+            mttr = Math.round(moment.duration(mttrSeconds, 'seconds').asHours());
+            return msg + mttr + " hour" + (mttr > 1 ? "s" : "");
         case "ELITE":
-            mttr = moment.duration(mttrSeconds, 'seconds').asMinutes();
-            return msg + Math.round(mttr) + " minute" + (mttr > 1 ? "s" : "");
+            mttr = Math.round(moment.duration(mttrSeconds, 'seconds').asMinutes());
+            return msg + mttr + " minute" + (mttr > 1 ? "s" : "");
         default:
             return "No incident data";
     }
