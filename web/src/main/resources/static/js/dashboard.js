@@ -204,7 +204,7 @@ function getLeadTimeTxtValue(doraLevel, leadTimeSeconds) {
             leadTime = moment.duration(leadTimeSeconds, 'seconds').asHours();
             return msg + Math.round(leadTime) + " hour" + (leadTime > 1 ? "s" : "");
         default:
-            return "No lead time data (or node type higher than application)";
+            return "No lead time data";
     }
 }
 
@@ -234,7 +234,7 @@ function getDeployFreqTxtValue(timePeriod, deploymentCount){
         case "DAY":
             return deploymentCount + " deployment" + (deploymentCount > 1 ? "s" : "") + " in the last day";
         default:
-            return "No deployment data (or node type higher than application)";
+            return "No deployment data";
     }
 }
 
@@ -247,7 +247,7 @@ function getChangeFailureRateValue(failureRate) {
 
 function getChangeFailureRateTxtValue(failureRate, changeCount) {
     if(failureRate === null){
-        return "No change request data (or node type higher than application)";
+        return "No change request data";
     }
     return getChangeFailureRateValue(failureRate) + " of the last " + changeCount + " change" + (changeCount > 1 ? "s" : "") + " failed";
 }
@@ -274,7 +274,7 @@ function getMTTRTxtValue(mttrSeconds, doraLevel) {
             mttr = moment.duration(mttrSeconds, 'seconds').asMinutes();
             return msg + Math.round(mttr) + " minute" + (mttr > 1 ? "s" : "");
         default:
-            return "No incident data (or node type higher than application)";
+            return "No incident data";
     }
 }
 
@@ -494,6 +494,8 @@ var changeRequestLinkElem = $("#change-requests-link");
 
 var teamExplorerContentElem = $("#teamexplorer-content");
 var dashboardContentElem = $("#dashboard-content");
+var doraPerformanceContentElem = $("#dora-performance-content");
+var doraPerformanceContentHrElem = $("#dora-performance-content-hr");
 var collectionContentElem = $("#collection-content");
 var captureContentElem = $("#capture-content");
 var deploymentContentElem = $("#deployments-content");
@@ -551,7 +553,7 @@ function selectTeamExplorer(updateHistory) {
 
     loadTeams();
 
-    loadTeam(team).done(updateTeamName);
+    loadTeam(team).done(updateTeam);
 
     teamExplorerLinkElem.addClass("active");
     dashboardLinkElem.removeClass("active");
@@ -578,7 +580,7 @@ function selectDashboard(updateHistory, slug) {
         history.replaceState({"pageTitle": 'Team Dashboard - ' + slug}, null, '/dashboard/' + slug);
     }
 
-    loadTeam(slug).done(updateTeamName);
+    loadTeam(slug).done(updateTeam);
     loadGraphs();
 
     teamExplorerLinkElem.removeClass("active");
@@ -606,7 +608,7 @@ function selectCollection(updateHistory, slug) {
         history.replaceState({"pageTitle": 'Collection Dashboard - ' + slug}, null, '/collection/' + slug);
     }
 
-    loadTeam(slug).done(updateTeamName);
+    loadTeam(slug).done(updateTeam);
     loadCollectionGraphs();
 
     teamExplorerLinkElem.removeClass("active");
@@ -634,7 +636,7 @@ function selectCapture(updateHistory, slug) {
         history.replaceState({"pageTitle": 'Capture - ' + slug}, null, '/capture/' + slug);
     }
 
-    loadTeam(slug).done(updateTeamName);
+    loadTeam(slug).done(updateTeam);
 
     teamExplorerLinkElem.removeClass("active");
     dashboardLinkElem.removeClass("active");
@@ -661,7 +663,7 @@ function selectDeployments(updateHistory, slug) {
         history.replaceState({"pageTitle": 'Deployments - ' + slug}, null, '/deployments/' + slug);
     }
 
-    loadTeam(slug).done(updateTeamName);
+    loadTeam(slug).done(updateTeam);
     loadDeployments();
 
     teamExplorerLinkElem.removeClass("active");
@@ -689,7 +691,7 @@ function selectIncidents(updateHistory, slug) {
         history.replaceState({"pageTitle": 'Incidents - ' + slug}, null, '/incidents/' + slug);
     }
 
-    loadTeam(slug).done(updateTeamName);
+    loadTeam(slug).done(updateTeam);
     loadIncidents();
 
     teamExplorerLinkElem.removeClass("active");
@@ -717,7 +719,7 @@ function selectChangeRequests(updateHistory, slug) {
         history.replaceState({"pageTitle": 'Change Requests - ' + slug}, null, '/changerequests/' + slug);
     }
 
-    loadTeam(slug).done(updateTeamName);
+    loadTeam(slug).done(updateTeam);
     loadChangeRequests();
 
     teamExplorerLinkElem.removeClass("active");
@@ -737,12 +739,21 @@ function selectChangeRequests(updateHistory, slug) {
     changeRequestContentElem.removeClass("d-none").addClass("d-block");
 }
 
-function updateTeamName(data) {
-
+function updateTeam(data) {
+    console.log(data);
     if (!data) {
         teamNameElem.text("");
     }
     teamNameElem.text(data.name);
+    if(!data || (data.entityType.key !== "APPLICATION" && data.entityType.key !== "COMPONENT")){
+        console.log("hide perf");
+        doraPerformanceContentElem.removeClass("d-flex").addClass("d-none");
+        doraPerformanceContentHrElem.removeClass("d-block").addClass("d-none");
+    } else {
+        console.log("show perf");
+        doraPerformanceContentElem.removeClass("d-none").addClass("d-flex");
+        doraPerformanceContentHrElem.removeClass("d-none").addClass("d-block");
+    }
 }
 
 $("#teamexplorer-refresh-button").click(function () {
