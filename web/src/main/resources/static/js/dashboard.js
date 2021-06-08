@@ -238,6 +238,20 @@ function getDeployFreqTxtValue(timePeriod, deploymentCount){
     }
 }
 
+function getChangeFailureRateValue(failureRate) {
+    if(failureRate === null){
+        return "unknown";
+    }
+    return (failureRate * 100) + "%";
+}
+
+function getChangeFailureRateTxtValue(failureRate, changeCount) {
+    if(failureRate === null){
+        return "No change request data (or node type higher than application)";
+    }
+    return getChangeFailureRateValue(failureRate) + " of the last " + changeCount + " change" + (changeCount > 1 ? "s" : "") + " failed";
+}
+
 function processTeamPerfData (data) {
     console.log(data);
     var dataOut = [];
@@ -279,7 +293,7 @@ function updateCurrentLeadTimeValues(data){
     leadTimeElem.html(getLeadTimeValue(data.leadTime ? data.leadTime.leadTimeSeconds : null));
     removeDoraPerfClass(leadTimeElem);
     leadTimeElem.addClass(getClassForPerfLevel(getLevelValue(data.leadTime ? data.leadTime.leadTimePerfLevel : null)));
-    $("#current_lead_time_txt").html(getLeadTimeTxtValue(data.leadTime ? data.leadTime.leadTimePerfLevel : null, data.leadTime ? data.leadTime.leadTimeSeconds : null))
+    $("#current_lead_time_txt").html(getLeadTimeTxtValue(data.leadTime ? data.leadTime.leadTimePerfLevel : null, data.leadTime ? data.leadTime.leadTimeSeconds : null));
 }
 
 function updateCurrentDeployFreqValues(data){
@@ -287,7 +301,15 @@ function updateCurrentDeployFreqValues(data){
     deployFreElem.html(getTimePeriodValue(data.deploymentFrequency ? data.deploymentFrequency.timePeriod : null));
     removeDoraPerfClass(deployFreElem);
     deployFreElem.addClass(getClassForPerfLevel(getLevelValue(data.deploymentFrequency ? data.deploymentFrequency.deployFreqLevel : null)));
-    $("#current_deploy_freq_txt").html(getDeployFreqTxtValue(data.deploymentFrequency ? data.deploymentFrequency.timePeriod : null, data.deploymentFrequency ? data.deploymentFrequency.deploymentCount : null))
+    $("#current_deploy_freq_txt").html(getDeployFreqTxtValue(data.deploymentFrequency ? data.deploymentFrequency.timePeriod : null, data.deploymentFrequency ? data.deploymentFrequency.deploymentCount : null));
+}
+
+function updateCurrentChangeFailureRateValues(data){
+    let elem = $("#current_change_failure_rate");
+    elem.html(getChangeFailureRateValue(data.changeFailureRate ? data.changeFailureRate.changeFailureRatePercent : null));
+    removeDoraPerfClass(elem);
+    elem.addClass(getClassForPerfLevel(getLevelValue(data.changeFailureRate ? data.changeFailureRate.doraLevel : null)));
+    $("#current_change_failure_rate_txt").html(getChangeFailureRateTxtValue(data.changeFailureRate ? data.changeFailureRate.changeFailureRatePercent : null, data.changeFailureRate ? data.changeFailureRate.changeRequestCount : null));
 }
 
 function loadGraphs() {
@@ -297,7 +319,8 @@ function loadGraphs() {
             clearDownChart(chart0);
             chart0 = drawPolarChart(processTeamPerfData(data), "#chart0", "Team Performance");
             updateCurrentDeployFreqValues(data);
-            updateCurrentLeadTimeValues(data)
+            updateCurrentLeadTimeValues(data);
+            updateCurrentChangeFailureRateValues(data);
         });
     //throughput metrics
     loadTrendData("/lead_time/", team)

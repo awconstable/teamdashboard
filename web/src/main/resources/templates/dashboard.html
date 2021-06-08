@@ -96,7 +96,6 @@
                       </div>
                   </div>
                   <div class="container">
-                      <h3 class="mb-3">Team Performance</h3>
                       <div class="row">
                           <div class="col">
                               <div class="card">
@@ -108,7 +107,7 @@
                                       <p class="card-text"><small class="text-muted" id="current_lead_time_txt"></small></p>
                                   </div>
                               </div>
-                              <hr class="mb-3">
+                              <br>
                               <div class="card">
                                   <div class="card-header">
                                       <h6 class="card-title">Deployment Frequency</h6>
@@ -120,12 +119,38 @@
                               </div>
                           </div>
                           <div class="col-6">
-                              <canvas class="my-4" id="chart0"></canvas>
-                              <small class="form-text text-muted">
-                                  Team throughput and stability performance over the last 90 days
-                              </small>
+                              <div class="card">
+                                  <div class="card-header">
+                                      <h6 class="card-title">DORA Benchmark</h6>
+                                  </div>
+                                  <div class="card-body text-center">
+                                      <canvas class="my-4" id="chart0"></canvas>
+                                      <small class="form-text text-muted">
+                                          Team throughput and stability performance over the last 90 days
+                                      </small>
+                                  </div>
+                              </div>
                           </div>
                           <div class="col">
+                              <div class="card">
+                                  <div class="card-header">
+                                      <h6 class="card-title">Change Failure Rate</h6>
+                                  </div>
+                                  <div class="card-body text-center">
+                                      <p class="h1"><span class="badge" id="current_change_failure_rate"></span></p>
+                                      <p class="card-text"><small class="text-muted" id="current_change_failure_rate_txt"></small></p>
+                                  </div>
+                              </div>
+                              <br>
+                              <div class="card">
+                                  <div class="card-header">
+                                      <h6 class="card-title">Mean Time to Recover (MTTR)</h6>
+                                  </div>
+                                  <div class="card-body text-center">
+                                      <p class="h1"><span class="badge" id="current_mttr"></span></p>
+                                      <p class="card-text"><small class="text-muted" id="current_mttr_txt"></small></p>
+                                  </div>
+                              </div>
                           </div>
                       </div>
                       <hr class="mb-3">
