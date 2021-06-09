@@ -16,7 +16,7 @@ The Team Dashboard is here to help by providing a simple set of containerised se
 [![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/awconstable/teamdashboard.svg)](https://libraries.io/github/awconstable/teamdashboard)
 [![dockerhub](https://img.shields.io/docker/pulls/awconstable/teamdashboard.svg)](https://cloud.docker.com/repository/docker/awconstable/teamdashboard)
 
-![Dashboard Screenshot](https://github.com/awconstable/teamdashboard/raw/master/.github/metrics-screenshot.png?raw=true "Team Dashboard")
+![Dashboard Screenshot](https://github.com/awconstable/teamdashboard/raw/master/.github/metrics-screenshot.jpg?raw=true "Team Dashboard")
 ![Team Explorer Screenshot](https://github.com/awconstable/teamdashboard/raw/master/.github/explorer-screenshot.png?raw=true "Team Explorer")
 ![Deployments Screenshot](https://github.com/awconstable/teamdashboard/raw/master/.github/deployments-screenshot.png?raw=true "Deployments")
 
