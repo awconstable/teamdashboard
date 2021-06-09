@@ -22,7 +22,7 @@ workflows:
 jobs:
   unit-test:
     machine:
-      - image: ubuntu-2004:202010-01
+        image: ubuntu-2004:202010-01
 
     working_directory: ~/repo
 
