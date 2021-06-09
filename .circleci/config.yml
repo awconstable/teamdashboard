@@ -21,8 +21,8 @@ workflows:
 
 jobs:
   unit-test:
-    docker:
-      - image: circleci/openjdk:11-jdk
+    machine:
+      - image: ubuntu-2004:202010-01
 
     working_directory: ~/repo
 
