@@ -242,7 +242,7 @@ function getChangeFailureRateValue(failureRate) {
     if(failureRate === null){
         return "unknown";
     }
-    return (failureRate * 100) + "%";
+    return Math.round(failureRate * 100) + "%";
 }
 
 function getChangeFailureRateTxtValue(failureRate, changeCount) {
