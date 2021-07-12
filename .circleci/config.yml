@@ -18,7 +18,15 @@ workflows:
               only: /.*/
             branches:
               only: master
-
+      - release-notes:
+          requires:
+            - publish-docker
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              only: master
+              
 jobs:
   unit-test:
     machine:
@@ -104,3 +112,26 @@ jobs:
               -Dbuild.user=${CIRCLE_PROJECT_USERNAME} \
               -Dbuild.repo=${CIRCLE_PROJECT_REPONAME} \
               $LATEST_DOCKER_TAG
+  release-notes:
+      docker:
+          - image: awconstable/releaseutil:v0.3-alpha
+      working_directory: ~/repo
+      steps:
+          - checkout
+          - run:
+                name: Extract release notes
+                command: |
+                    if [ -n "$CIRCLE_TAG" ]; \
+                    then \
+                      export RELEASE_VERSION=${CIRCLE_TAG}; \
+                    else \
+                      export RELEASE_VERSION=b${CIRCLE_BUILD_NUM}; \
+                    fi; \
+                    java -cp @/app/jib-classpath-file team.releaseutil.ReleaseutilApplication \
+                    --curReleaseTag=${RELEASE_VERSION} \
+                    --rfcRef=rfc-na \
+                    --appId=release-util \
+                    --deployDesc="Auto deploy ${RELEASE_VERSION}" \
+                    --release.git.repo.location=/home/circleci/repo
+          - store_artifacts:
+                path: release-notes.json
