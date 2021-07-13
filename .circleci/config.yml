@@ -114,7 +114,7 @@ jobs:
               $LATEST_DOCKER_TAG
   release-notes:
       docker:
-          - image: awconstable/releaseutil:v0.4-alpha
+          - image: awconstable/releaseutil:v0.5-alpha
       working_directory: ~/repo
       steps:
           - checkout
